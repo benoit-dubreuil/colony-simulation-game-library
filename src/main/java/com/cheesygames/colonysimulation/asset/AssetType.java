@@ -159,19 +159,6 @@ public enum AssetType {
         ((ArrayList<String>) m_supportedFormats).trimToSize();
     }
 
-    public List<String> getSupportedFormats() {
-        return m_supportedFormats;
-    }
-
-    @SuppressWarnings("rawtypes")
-    public Class<? extends AssetKey> getAssetKeyClass() {
-        return AssetKey.class;
-    }
-
-    public Class<?> getAssetTypeClass() {
-        return Object.class;
-    }
-
     /**
      * Creates an {@link AssetKey#} depending on the asset key class of the asset type.
      *
@@ -183,5 +170,18 @@ public enum AssetType {
     public <T extends AssetKey> T createAssetKey(String path) {
         //noinspection unchecked
         return (T) new AssetKey(path);
+    }
+
+    public List<String> getSupportedFormats() {
+        return m_supportedFormats;
+    }
+
+    @SuppressWarnings("rawtypes")
+    public Class<? extends AssetKey> getAssetKeyClass() {
+        return AssetKey.class;
+    }
+
+    public Class<?> getAssetTypeClass() {
+        return Object.class;
     }
 }

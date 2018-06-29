@@ -9,7 +9,7 @@ import com.jme3.system.AppSettings;
 
 import java.awt.*;
 
-public class GameMain extends SimpleApplication {
+public abstract class Game extends SimpleApplication {
 
     private volatile boolean m_isUpdating;
 
@@ -34,7 +34,6 @@ public class GameMain extends SimpleApplication {
     public void simpleInitApp() {
         setLostFocusBehavior(LostFocusBehavior.PauseOnLostFocus);
         GameGlobal.initStatics(this, assetManager, stateManager, rootNode);
-        viewPort.setBackgroundColor(ColorRGBA.LightGray);
 
         initKeys();
     }
@@ -48,10 +47,13 @@ public class GameMain extends SimpleApplication {
         if (!GameGlobal.isPaused()) {
             // TODO : AI
             // BehaviorClock.update(tpf);
+            updateGame();
         }
 
         m_isUpdating = false;
     }
+
+    protected abstract void updateGame();
 
     private void initKeys() {
         inputManager.clearMappings();

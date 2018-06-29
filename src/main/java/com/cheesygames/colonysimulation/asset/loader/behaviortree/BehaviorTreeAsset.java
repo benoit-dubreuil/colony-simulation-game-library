@@ -17,8 +17,8 @@ public class BehaviorTreeAsset implements CloneableSmartAsset {
     }
 
     @Override
-    public void setKey(AssetKey key) {
-        this.m_key = (BehaviorTreeAssetKey) key;
+    public BehaviorTreeAsset clone() {
+        return new BehaviorTreeAsset((BehaviorTree) m_behaviorTree.cloneTask());
     }
 
     @Override
@@ -26,12 +26,12 @@ public class BehaviorTreeAsset implements CloneableSmartAsset {
         return m_key;
     }
 
-    public BehaviorTree getBehaviorTree() {
-        return m_behaviorTree;
+    @Override
+    public void setKey(AssetKey key) {
+        this.m_key = (BehaviorTreeAssetKey) key;
     }
 
-    @Override
-    public BehaviorTreeAsset clone() {
-        return new BehaviorTreeAsset((BehaviorTree) m_behaviorTree.cloneTask());
+    public BehaviorTree getBehaviorTree() {
+        return m_behaviorTree;
     }
 }

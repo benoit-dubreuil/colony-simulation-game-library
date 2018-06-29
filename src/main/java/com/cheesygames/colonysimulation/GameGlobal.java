@@ -18,7 +18,7 @@ public final class GameGlobal {
     public static final float DEFAULT_INVERTED_PHYSICS_ACCURACY = 120;
 
     public static volatile AssetManager assetManager;
-    public static volatile GameMain game;
+    public static volatile Game game;
 
     public static volatile Node rootNode;
     public static volatile Node terrainNode;
@@ -28,7 +28,7 @@ public final class GameGlobal {
     public static volatile long mainThreadId;
     private static volatile boolean isPaused;
 
-    public static void initStatics(GameMain game, AssetManager assetManager, AppStateManager stateManager, Node rootNode) {
+    public static void initStatics(Game game, AssetManager assetManager, AppStateManager stateManager, Node rootNode) {
         initThreadIds();
 
         GameGlobal.assetManager = assetManager;
