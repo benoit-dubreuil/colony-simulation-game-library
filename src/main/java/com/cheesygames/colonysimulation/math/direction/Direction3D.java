@@ -83,7 +83,7 @@ public enum Direction3D {
     /**
      * The orthogonal directions in a croissant and dimension order. In a cube, these directions are the faces.
      */
-    public static final Direction3D[] ORTHOGONALS = { LEFT, RIGHT, BOTTOM, TOP, BACK, FRONT };
+    public static final Direction3D[] ORTHOGONALS = { RIGHT, LEFT, TOP, BOTTOM, FRONT, BACK };
     /**
      * The orthogonal directions along the Y axis.
      */
