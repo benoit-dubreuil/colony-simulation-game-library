@@ -12,5 +12,14 @@ public interface IChunkVoxelData {
         return getVoxelAt(index.x, index.y, index.z);
     }
 
-    VoxelType getSideVoxelAt(Direction3D direction, int x, int y);
+    /**
+     * Gets a voxel at the specified side of the chunk at the given coordinates.
+     *
+     * @param direction The direction that defines the side. Orthogonal directions are accepted.
+     * @param sideX     The X index projected onto the 2D side of the chunk from the inside.
+     * @param sideY     The Y index projected onto the 2D side of the chunk from the inside.
+     *
+     * @return The voxel at the specified side of the chunk at the given coordinates.
+     */
+    VoxelType getSideVoxelAt(Direction3D direction, int sideX, int sideY);
 }
