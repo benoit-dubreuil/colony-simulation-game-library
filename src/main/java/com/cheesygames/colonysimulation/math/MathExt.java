@@ -20,6 +20,17 @@ public final class MathExt {
     }
 
     /**
+     * Indexifies a normal that is either -1, 0 or 1. In other words, negative numbers become 0, positive numbers become 1 and zero is left unchanged.
+     *
+     * @param normal A normal that should be either -1, 0 or 1. If it's small that -1, it will treated as -1. If it's bigger than 1, it will be treated as 1.
+     *
+     * @return An index that is either 0 (negative and null normal) or 1 (positive normal).
+     */
+    public static int indexifyNormal(int normal) {
+        return ~(normal - 1 >> 31) & 1;
+    }
+
+    /**
      * Checks if the supplied number is a power of 2.
      *
      * @param number The number to check against.

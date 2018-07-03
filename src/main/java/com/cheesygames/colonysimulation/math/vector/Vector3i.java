@@ -54,6 +54,12 @@ public class Vector3i implements Savable, Cloneable, java.io.Serializable, IVect
         this.z = z;
     }
 
+    public Vector3i(int xyz) {
+        this.x = xyz;
+        this.y = xyz;
+        this.z = xyz;
+    }
+
     /**
      * Constructor instantiates a new <code>Vector3i</code> that is a copy of the provided vector
      *
