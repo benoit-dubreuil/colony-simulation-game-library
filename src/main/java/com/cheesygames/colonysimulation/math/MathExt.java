@@ -20,6 +20,17 @@ public final class MathExt {
     }
 
     /**
+     * Checks if the supplied number is a power of 2.
+     *
+     * @param number The number to check against.
+     *
+     * @return True if the given number is a power of 2, false otherwise.
+     */
+    public static boolean isPowerOfTwo(int number) {
+        return number > 0 && ((number & (number - 1)) == 0);
+    }
+
+    /**
      * Cycles between the inclusive minimum and the exclusive maximum.
      *
      * @param min          The inclusive minimum.
