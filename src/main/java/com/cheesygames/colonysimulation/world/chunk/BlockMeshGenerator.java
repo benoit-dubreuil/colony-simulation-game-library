@@ -13,19 +13,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class BlockMeshGenerator extends MeshGenerator {
+public class BlockMeshGenerator implements IMeshGenerator {
 
     private static final Vector3f[] FRONT_CUBE_FACE = { new Vector3f(-0.5f, 0.5f, -0.5f), new Vector3f(0.5f, 0.5f, -0.5f), new Vector3f(0.5f, -0.5f, -0.5f),
         new Vector3f(-0.5f, -0.5f, -0.5f) };
 
     @Override
-    public Mesh generateMesh(World world, Vector3i index) {
+    public Mesh generateMesh(World world, Chunk chunk) {
         Mesh mesh = new Mesh();
 
-        Chunk chunk = world.getChunkAt(index);
         Vector3i chunkSize = chunk.getSize();
-
-        Map<Direction3D, IChunkVoxelData> adjacentChunks = world.getAdjacentChunks(index);
+        Map<Direction3D, IChunkVoxelData> adjacentChunks = world.getAdjacentChunks(chunk.getIndex());
 
         List<Vector3f> vertices = new ArrayList<>();
         List<Vector3f> normals = new ArrayList<>();
