@@ -110,8 +110,8 @@ public final class MeshBufferUtils {
     }
 
     /**
-     * Creates a position buffer and fills it with the supplied vertices.Unlike {@link MeshBufferUtils#createPositionBuffer(Vector3f...)}, it takes an Integer limit that limits the
-     * range of vertices it'll read
+     * Creates a position buffer and fills it with the supplied vertices. Unlike {@link MeshBufferUtils#createPositionBuffer(Vector3f...)}, it takes an Integer limit that limits
+     * the range of vertices it'll read
      *
      * @param vertices The vertices to add to the newly created vertex buffer.
      * @param limit    The amount of vertices to take
@@ -147,13 +147,31 @@ public final class MeshBufferUtils {
     }
 
     /**
+     * Creates a normal buffer from a list of normals and fills it with that supplied list.
+     *
+     * @param normals The normals to create the buffer from.
+     *
+     * @return A newly created normal buffer made up of the supplied normals.
+     */
+    public static FloatBuffer createNormalBuffer(List<Vector3f> normals) {
+        FloatBuffer normalBuffer = (FloatBuffer) VertexBuffer.createBuffer(VertexBuffer.Format.Float, NORMAL_BUFFER_COMPONENT_COUNT, normals.size());
+
+        for (int i = 0; i < normals.size(); ++i) {
+            Vector3f position = normals.get(i);
+            normalBuffer.put(position.x).put(position.y).put(position.z);
+        }
+
+        return normalBuffer;
+    }
+
+    /**
      * Creates a normal buffer from a vertex list, supposing that the vertices are not shared.
      *
      * @param vertices The vertices used to construct the normals
      *
      * @return A newly created normal buffer.
      */
-    public static FloatBuffer createNormalBuffer(List<Vector3f> vertices) {
+    public static FloatBuffer createNormalBufferFromVertices(List<Vector3f> vertices) {
         FloatBuffer normalBuffer = (FloatBuffer) VertexBuffer.createBuffer(VertexBuffer.Format.Float, NORMAL_BUFFER_COMPONENT_COUNT, vertices.size());
 
         for (int i = VERTICES_PER_TRIANGLE - 1; i < vertices.size(); i += VERTICES_PER_TRIANGLE) {
@@ -174,7 +192,7 @@ public final class MeshBufferUtils {
      *
      * @return A newly created normal buffer.
      */
-    public static FloatBuffer createNormalBuffer(Vector3f... vertices) {
+    public static FloatBuffer createNormalBufferFromVertices(Vector3f... vertices) {
         FloatBuffer normalBuffer = (FloatBuffer) VertexBuffer.createBuffer(VertexBuffer.Format.Float, NORMAL_BUFFER_COMPONENT_COUNT, vertices.length);
 
         for (int i = VERTICES_PER_TRIANGLE - 1; i < vertices.length; i += VERTICES_PER_TRIANGLE) {

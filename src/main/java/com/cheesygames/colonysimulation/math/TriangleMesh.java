@@ -29,7 +29,7 @@ public class TriangleMesh extends Mesh {
         this.m_v3 = v3;
 
         MeshBufferUtils.setMeshBuffer(this, VertexBuffer.Type.Position, MeshBufferUtils.createPositionBuffer(v1, v2, v3));
-        MeshBufferUtils.setMeshBuffer(this, VertexBuffer.Type.Normal, MeshBufferUtils.createNormalBuffer(v1, v2, v3));
+        MeshBufferUtils.setMeshBuffer(this, VertexBuffer.Type.Normal, MeshBufferUtils.createNormalBufferFromVertices(v1, v2, v3));
 
         updateBound();
     }
