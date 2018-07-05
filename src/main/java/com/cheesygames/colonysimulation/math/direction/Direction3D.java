@@ -162,21 +162,34 @@ public enum Direction3D {
     /**
      * Finds the direction that can be represented by the supplied value, which is used manhattan normalized value. I other words, the signs of the given value are used.
      *
-     * @param value The value to search for.
+     * @param value The value to search for. It will be modified by the method to compute the result.
      *
      * @return The Direction3D equivalent to the supplied value.
      */
-    public static Direction3D findDirectionFromVector(Vector3i value) {
+    public static Direction3D findDirectionFromVectorLocal(Vector3i value) {
         Direction3D[] directions = IEnumCachedValues.getCachedValues(Direction3D.class);
-        Vector3i manhattanNormalizedValue = new Vector3i((int) Math.signum(value.x), (int) Math.signum(value.y), (int) Math.signum(value.z));
+
+        // Manhattan normalized value
+        value.set((int) Math.signum(value.x), (int) Math.signum(value.y), (int) Math.signum(value.z));
 
         for (Direction3D direction : directions) {
-            if (direction.getDirection().equals(manhattanNormalizedValue)) {
+            if (direction.getDirection().equals(value)) {
                 return direction;
             }
         }
 
         return null;
+    }
+
+    /**
+     * Finds the direction that can be represented by the supplied value, which is used manhattan normalized value. I other words, the signs of the given value are used.
+     *
+     * @param value The value to search for.
+     *
+     * @return The Direction3D equivalent to the supplied value.
+     */
+    public static Direction3D findDirectionFromVector(Vector3i value) {
+        return findDirectionFromVectorLocal(new Vector3i(value));
     }
 
     /**
