@@ -256,6 +256,18 @@ public enum Direction3D {
     }
 
     /**
+     * Swizzle the vertex components according to the direction. Only orthogonal directions can swizzle vertices. Swizzling interchanges components and might change the sign of
+     * those.
+     *
+     * @param vertex The vertex to swizzle it's components.
+     *
+     * @return A new vector based upon the one given that is now swizzled.
+     */
+    public Vector3f swizzleAccordingToDirection(Vector3f vertex) {
+        return swizzleAccordingToDirectionLocal(new Vector3f(vertex));
+    }
+
+    /**
      * Gets this enum value's index in the DIAGONALS_3D array.
      *
      * @return This enum value's index in the DIAGONALS_3D array.
