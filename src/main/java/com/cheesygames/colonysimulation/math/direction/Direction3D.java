@@ -18,11 +18,21 @@ public enum Direction3D {
         public Vector3f projectPlanar(float x, float y, float offsetX, float offsetY) {
             return super.projectPlanar(x, y, offsetX, offsetY).set(getDirectionX(), y + offsetY, x + offsetX);
         }
+
+        @Override
+        public Vector3f swizzleAccordingToDirectionLocal(Vector3f vertex) {
+            return vertex.set(-vertex.z, vertex.y, vertex.x);
+        }
     },
     RIGHT(1, 0, 0) {
         @Override
         public Vector3f projectPlanar(float x, float y, float offsetX, float offsetY) {
             return super.projectPlanar(x, y, offsetX, offsetY).set(getDirectionX(), y + offsetY, -(x + offsetX));
+        }
+
+        @Override
+        public Vector3f swizzleAccordingToDirectionLocal(Vector3f vertex) {
+            return vertex.set(vertex.z, vertex.y, -vertex.x);
         }
     },
     BOTTOM(0, -1, 0) {
@@ -30,17 +40,32 @@ public enum Direction3D {
         public Vector3f projectPlanar(float x, float y, float offsetX, float offsetY) {
             return super.projectPlanar(x, y, offsetX, offsetY).set(x + offsetX, getDirectionY(), y + offsetY);
         }
+
+        @Override
+        public Vector3f swizzleAccordingToDirectionLocal(Vector3f vertex) {
+            return vertex.set(vertex.x, -vertex.z, vertex.y);
+        }
     },
     TOP(0, 1, 0) {
         @Override
         public Vector3f projectPlanar(float x, float y, float offsetX, float offsetY) {
             return super.projectPlanar(x, y, offsetX, offsetY).set(x + offsetX, getDirectionY(), -(y + offsetY));
         }
+
+        @Override
+        public Vector3f swizzleAccordingToDirectionLocal(Vector3f vertex) {
+            return vertex.set(vertex.x, vertex.z, -vertex.y);
+        }
     },
     BACK(0, 0, -1) {
         @Override
         public Vector3f projectPlanar(float x, float y, float offsetX, float offsetY) {
             return super.projectPlanar(x, y, offsetX, offsetY).set(x + offsetX, -(y + offsetY), getDirectionZ());
+        }
+
+        @Override
+        public Vector3f swizzleAccordingToDirectionLocal(Vector3f vertex) {
+            return vertex.set(-vertex.x, vertex.y, -vertex.z);
         }
     },
     FRONT(0, 0, 1) {
@@ -216,6 +241,18 @@ public enum Direction3D {
      */
     public Vector3f projectPlanar(float x, float y, float offsetX, float offsetY) {
         return m_direction.toVector3f();
+    }
+
+    /**
+     * Swizzle the vertex components according to the direction. Only orthogonal directions can swizzle vertices. Swizzling interchanges components and might change the sign of
+     * those.
+     *
+     * @param vertex The vertex to locally swizzle it's components.
+     *
+     * @return The supplied vertex that is now swizzled.
+     */
+    public Vector3f swizzleAccordingToDirectionLocal(Vector3f vertex) {
+        return vertex;
     }
 
     /**
