@@ -38,7 +38,7 @@ public class BlockMeshGenerator implements IMeshGenerator {
                             int adjacentVoxelY = y + cubeFace.getDirectionY();
                             int adjacentVoxelZ = z + cubeFace.getDirectionZ();
 
-                            if (adjacentVoxelX <= 0 || adjacentVoxelX >= chunkSize.x || adjacentVoxelY <= 0 || adjacentVoxelY >= chunkSize.y || adjacentVoxelZ <= 0
+                            if (adjacentVoxelX < 0 || adjacentVoxelX >= chunkSize.x || adjacentVoxelY < 0 || adjacentVoxelY >= chunkSize.y || adjacentVoxelZ < 0
                                 || adjacentVoxelZ >= chunkSize.z) {
                                 adjacentVoxelType = adjacentChunks.get(cubeFace).getVoxelFromSide(cubeFace.getOpposite(), x, y, z);
                             }
