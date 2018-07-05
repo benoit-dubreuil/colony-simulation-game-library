@@ -16,7 +16,7 @@ import java.util.Map;
 public class BlockMeshGenerator implements IMeshGenerator {
 
     private static final Vector3f[] FRONT_CUBE_FACE = { new Vector3f(-0.5f, 0.5f, -0.5f), new Vector3f(0.5f, 0.5f, -0.5f), new Vector3f(0.5f, -0.5f, -0.5f),
-        new Vector3f(-0.5f, -0.5f, -0.5f) };
+        new Vector3f(0.5f, -0.5f, -0.5f), new Vector3f(-0.5f, -0.5f, -0.5f), new Vector3f(-0.5f, 0.5f, -0.5f) };
 
     @Override
     public Mesh generateMesh(World world, Chunk chunk) {
@@ -40,7 +40,7 @@ public class BlockMeshGenerator implements IMeshGenerator {
 
                             if (adjacentVoxelX <= 0 || adjacentVoxelX >= chunkSize.x || adjacentVoxelY <= 0 || adjacentVoxelY >= chunkSize.y || adjacentVoxelZ <= 0
                                 || adjacentVoxelZ >= chunkSize.z) {
-                                adjacentVoxelType = adjacentChunks.get(cubeFace.getDirection()).getVoxelFromSide(cubeFace.getOpposite(), x, y, z);
+                                adjacentVoxelType = adjacentChunks.get(cubeFace).getVoxelFromSide(cubeFace.getOpposite(), x, y, z);
                             }
                             else {
                                 adjacentVoxelType = chunk.getVoxelAt(adjacentVoxelX, adjacentVoxelY, adjacentVoxelZ);
@@ -48,7 +48,7 @@ public class BlockMeshGenerator implements IMeshGenerator {
 
                             if (!adjacentVoxelType.isSolid()) {
                                 for (Vector3f frontCubeFaceVertex : FRONT_CUBE_FACE) {
-                                    vertices.add(cubeFace.swizzleAccordingToDirection(frontCubeFaceVertex));
+                                    vertices.add(cubeFace.swizzleAccordingToDirection(frontCubeFaceVertex).addLocal(x, y, z));
                                     normals.add(cubeFace.getDirection().toVector3f());
                                 }
                             }
