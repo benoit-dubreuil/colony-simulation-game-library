@@ -1,11 +1,13 @@
 package com.cheesygames.colonysimulation.world.chunk;
 
+import com.cheesygames.colonysimulation.math.MeshBufferUtils;
 import com.cheesygames.colonysimulation.math.direction.Direction3D;
 import com.cheesygames.colonysimulation.math.vector.Vector3i;
 import com.cheesygames.colonysimulation.world.World;
 import com.cheesygames.colonysimulation.world.chunk.voxel.VoxelType;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Mesh;
+import com.jme3.scene.VertexBuffer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,16 +15,11 @@ import java.util.Map;
 
 public class BlockMeshGenerator extends MeshGenerator {
 
-    private static final Vector3f[] FRONT_CUBE_FACE = {
-        new Vector3f(-0.5f, 0.5f, -0.5f),
-        new Vector3f(0.5f, 0.5f, -0.5f),
-        new Vector3f(0.5f, -0.5f, -0.5f),
-        new Vector3f(-0.5f, -0.5f, -0.5f)
-    };
+    private static final Vector3f[] FRONT_CUBE_FACE = { new Vector3f(-0.5f, 0.5f, -0.5f), new Vector3f(0.5f, 0.5f, -0.5f), new Vector3f(0.5f, -0.5f, -0.5f),
+        new Vector3f(-0.5f, -0.5f, -0.5f) };
 
     @Override
     public Mesh generateMesh(World world, Vector3i index) {
-        // TODO
         Mesh mesh = new Mesh();
 
         Chunk chunk = world.getChunkAt(index);
@@ -63,6 +60,10 @@ public class BlockMeshGenerator extends MeshGenerator {
             }
         }
 
-        return null;
+        MeshBufferUtils.setMeshBuffer(mesh, VertexBuffer.Type.Position, MeshBufferUtils.createPositionBuffer(vertices));
+        MeshBufferUtils.setMeshBuffer(mesh, VertexBuffer.Type.Normal, MeshBufferUtils.createNormalBuffer(normals));
+        mesh.updateBound();
+
+        return mesh;
     }
 }
