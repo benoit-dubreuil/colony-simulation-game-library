@@ -15,8 +15,13 @@ import java.util.Map;
 
 public class BlockMeshGenerator implements IMeshGenerator {
 
-    private static final Vector3f[] FRONT_CUBE_FACE = { new Vector3f(-0.5f, 0.5f, -0.5f), new Vector3f(0.5f, 0.5f, -0.5f), new Vector3f(0.5f, -0.5f, -0.5f),
-        new Vector3f(0.5f, -0.5f, -0.5f), new Vector3f(-0.5f, -0.5f, -0.5f), new Vector3f(-0.5f, 0.5f, -0.5f) };
+    private static final Vector3f[] FRONT_CUBE_FACE = {
+        new Vector3f(-0.5f, 0.5f, 0.5f),
+        new Vector3f(0.5f, 0.5f, 0.5f),
+        new Vector3f(0.5f, -0.5f, 0.5f),
+        new Vector3f(0.5f, -0.5f, 0.5f),
+        new Vector3f(-0.5f, -0.5f, 0.5f),
+        new Vector3f(-0.5f, 0.5f, 0.5f) };
 
     @Override
     public Mesh generateMesh(World world, Chunk chunk) {
