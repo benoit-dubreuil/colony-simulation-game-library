@@ -1,6 +1,5 @@
 package com.cheesygames.colonysimulation.world.chunk;
 
-import com.cheesygames.colonysimulation.math.direction.Direction3D;
 import com.cheesygames.colonysimulation.math.vector.Vector3i;
 import com.cheesygames.colonysimulation.world.WorldGenerator;
 import com.cheesygames.colonysimulation.world.chunk.voxel.VoxelType;
@@ -30,11 +29,10 @@ public class Chunk extends AbstractChunk {
     public void generateData(WorldGenerator generator) {
         m_voxels = new VoxelType[m_size.x][m_size.y][m_size.z];
 
-        // TODO : Tmp
         for (int x = 0; x < m_size.x; ++x) {
             for (int y = 0; y < m_size.y; ++y) {
                 for (int z = 0; z < m_size.z; ++z) {
-                    m_voxels[x][y][z] = VoxelType.SOLID;
+                    m_voxels[x][y][z] = generator.generateVoxel(x, y, z);
                 }
             }
         }
@@ -43,5 +41,13 @@ public class Chunk extends AbstractChunk {
     @Override
     public VoxelType getVoxelAt(int x, int y, int z) {
         return m_voxels[x][y][z];
+    }
+
+    public Mesh getMesh() {
+        return m_mesh;
+    }
+
+    public void setMesh(Mesh mesh) {
+        m_mesh = mesh;
     }
 }

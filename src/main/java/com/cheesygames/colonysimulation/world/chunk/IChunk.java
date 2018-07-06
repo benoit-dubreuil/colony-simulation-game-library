@@ -10,12 +10,11 @@ import com.cheesygames.colonysimulation.world.chunk.voxel.VoxelType;
  */
 public interface IChunk extends IChunkVoxelData {
 
-    // TODO
     @Override
-    default VoxelType getSideVoxelAt(Direction3D direction, int x, int y) {
-        return getVoxelAt(MathExt.indexifyNormal(direction.getDirectionX()) * getSize().x - 1,
-            MathExt.indexifyNormal(direction.getDirectionY()) * getSize().y - 1,
-            MathExt.indexifyNormal(direction.getDirectionZ()) * getSize().z - 1);
+    default VoxelType getVoxelFromSide(Direction3D direction, int x, int y, int z) {
+        return getVoxelAt((1 - MathExt.indexifyNormalZeroPositive(direction.getDirectionX())) * (getSize().x - 1) + ((direction.getDirectionX() | 1) * x),
+            (1 - MathExt.indexifyNormalZeroPositive(direction.getDirectionY())) * (getSize().y - 1) + ((direction.getDirectionY() | 1) * y),
+            (1 - MathExt.indexifyNormalZeroPositive(direction.getDirectionZ())) * (getSize().z - 1) + ((direction.getDirectionZ() | 1) * z));
     }
 
     Vector3i getIndex();

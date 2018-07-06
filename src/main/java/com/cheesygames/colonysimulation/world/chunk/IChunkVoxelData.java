@@ -13,13 +13,14 @@ public interface IChunkVoxelData {
     }
 
     /**
-     * Gets a voxel at the specified side of the chunk at the given coordinates.
+     * Gets a voxel from the side specified by its direction. The direction defines the origin of the coordinate system.
      *
      * @param direction The direction that defines the side. Orthogonal directions are accepted.
-     * @param sideX     The X index projected onto the 2D side of the chunk from the inside.
-     * @param sideY     The Y index projected onto the 2D side of the chunk from the inside.
+     * @param x     The X coordinate of the voxel to get. If the direction affects this coordinate's axis, then it is an offset from the direction's side.
+     * @param y     The Y coordinate of the voxel to get. If the direction affects this coordinate's axis, then it is an offset from the direction's side.
+     * @param z     The Z coordinate of the voxel to get. If the direction affects this coordinate's axis, then it is an offset from the direction's side.
      *
-     * @return The voxel at the specified side of the chunk at the given coordinates.
+     * @return The voxel at the specified side of the chunk at the given coordinates, whilst keeping in mind that the direction defines the origin of the coordinate system.
      */
-    VoxelType getSideVoxelAt(Direction3D direction, int sideX, int sideY);
+    VoxelType getVoxelFromSide(Direction3D direction, int x, int y, int z);
 }

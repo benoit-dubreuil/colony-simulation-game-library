@@ -18,7 +18,7 @@ public abstract class AbstractChunk implements IChunk {
      */
     public AbstractChunk(Vector3i index, int sizeX, int sizeY, int sizeZ) {
         this.m_index = index;
-        this.m_size= new Vector3i(sizeX, sizeY, sizeZ);
+        this.m_size = new Vector3i(sizeX, sizeY, sizeZ);
 
         assert MathExt.isPowerOfTwo(sizeX);
         assert MathExt.isPowerOfTwo(sizeY);
@@ -29,7 +29,7 @@ public abstract class AbstractChunk implements IChunk {
      * Creates a {@link Chunk} object.
      *
      * @param index The chunk's index in the world.
-     * @param size The size of the chunk on all the X, Y and Z axes. Must be a power of two.
+     * @param size  The size of the chunk on all the X, Y and Z axes. Must be a power of two.
      */
     public AbstractChunk(Vector3i index, int size) {
         this.m_index = index;
