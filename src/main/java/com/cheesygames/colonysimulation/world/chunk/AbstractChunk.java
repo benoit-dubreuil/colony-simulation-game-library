@@ -1,41 +1,22 @@
 package com.cheesygames.colonysimulation.world.chunk;
 
-import com.cheesygames.colonysimulation.math.MathExt;
 import com.cheesygames.colonysimulation.math.vector.Vector3i;
+import com.cheesygames.colonysimulation.world.World;
 
 public abstract class AbstractChunk implements IChunk {
 
+    protected World m_world;
     protected Vector3i m_index;
-    protected Vector3i m_size;
 
     /**
      * Creates a {@link Chunk} object.
      *
+     * @param world The world owning the chunk.
      * @param index The chunk's index in the world.
-     * @param sizeX The size of the chunk on the X axis. Must be a power of two.
-     * @param sizeY The size of the chunk on the Y axis. Must be a power of two.
-     * @param sizeZ The size of the chunk on the Z axis. Must be a power of two.
      */
-    public AbstractChunk(Vector3i index, int sizeX, int sizeY, int sizeZ) {
+    public AbstractChunk(World world, Vector3i index) {
+        this.m_world = world;
         this.m_index = index;
-        this.m_size = new Vector3i(sizeX, sizeY, sizeZ);
-
-        assert MathExt.isPowerOfTwo(sizeX);
-        assert MathExt.isPowerOfTwo(sizeY);
-        assert MathExt.isPowerOfTwo(sizeZ);
-    }
-
-    /**
-     * Creates a {@link Chunk} object.
-     *
-     * @param index The chunk's index in the world.
-     * @param size  The size of the chunk on all the X, Y and Z axes. Must be a power of two.
-     */
-    public AbstractChunk(Vector3i index, int size) {
-        this.m_index = index;
-        this.m_size = new Vector3i(size);
-
-        assert MathExt.isPowerOfTwo(size);
     }
 
     @Override
@@ -45,6 +26,6 @@ public abstract class AbstractChunk implements IChunk {
 
     @Override
     public Vector3i getSize() {
-        return m_size;
+        return m_world.getChunkSize();
     }
 }

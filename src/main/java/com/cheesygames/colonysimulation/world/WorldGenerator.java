@@ -3,25 +3,29 @@ package com.cheesygames.colonysimulation.world;
 import com.cheesygames.colonysimulation.math.vector.Vector3i;
 import com.cheesygames.colonysimulation.world.chunk.Chunk;
 import com.cheesygames.colonysimulation.world.chunk.voxel.VoxelType;
+import com.jme3.math.Vector3f;
 
 import java.util.Map;
 
 // TODO
 public class WorldGenerator {
 
-    public void generateWorld(Map<Vector3i, Chunk> chunks) {
+    public void generateWorld(World world) {
         Vector3i index = new Vector3i();
-        generateChunk(chunks, index);
+        generateChunk(world, index);
     }
 
-    private void generateChunk(Map<Vector3i, Chunk> chunks, Vector3i index) {
-        Chunk chunk = new Chunk(index, 32);
+    private void generateChunk(World world, Vector3i index) {
+        Chunk chunk = new Chunk(world, index);
         chunk.generateData(this);
 
-        chunks.put(index, chunk);
+        world.getChunks().put(index, chunk);
     }
 
     public VoxelType generateVoxel(int x, int y, int z) {
-        return VoxelType.SOLID;
+        Vector3f gradient = new Vector3f(-16, 16, -16);
+        float gradientValue = new Vector3f(x, y, z).addLocal(-32, 0, -32).dot(gradient) / gradient.dot(gradient);
+
+        return gradientValue < 1f ? VoxelType.SOLID : VoxelType.AIR;
     }
 }

@@ -1,6 +1,7 @@
 package com.cheesygames.colonysimulation.world.chunk;
 
 import com.cheesygames.colonysimulation.math.vector.Vector3i;
+import com.cheesygames.colonysimulation.world.World;
 import com.cheesygames.colonysimulation.world.WorldGenerator;
 import com.cheesygames.colonysimulation.world.chunk.voxel.VoxelType;
 import com.jme3.scene.Mesh;
@@ -13,12 +14,8 @@ public class Chunk extends AbstractChunk {
     private VoxelType[][][] m_voxels;
     private Mesh m_mesh;
 
-    public Chunk(Vector3i index, int sizeX, int sizeY, int sizeZ) {
-        super(index, sizeX, sizeY, sizeZ);
-    }
-
-    public Chunk(Vector3i index, int size) {
-        super(index, size);
+    public Chunk(World world, Vector3i index) {
+        super(world, index);
     }
 
     /**
@@ -27,11 +24,12 @@ public class Chunk extends AbstractChunk {
      * @param generator The generator used to generate the voxel data.
      */
     public void generateData(WorldGenerator generator) {
-        m_voxels = new VoxelType[m_size.x][m_size.y][m_size.z];
+        final Vector3i chunkSize = getSize();
+        m_voxels = new VoxelType[chunkSize.x][chunkSize.y][chunkSize.z];
 
-        for (int x = 0; x < m_size.x; ++x) {
-            for (int y = 0; y < m_size.y; ++y) {
-                for (int z = 0; z < m_size.z; ++z) {
+        for (int x = 0; x < chunkSize.x; ++x) {
+            for (int y = 0; y < chunkSize.y; ++y) {
+                for (int z = 0; z < chunkSize.z; ++z) {
                     m_voxels[x][y][z] = generator.generateVoxel(x, y, z);
                 }
             }
