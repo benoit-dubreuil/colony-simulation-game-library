@@ -18,11 +18,21 @@ public enum Direction3D {
         public Vector3f projectPlanar(float x, float y, float offsetX, float offsetY) {
             return super.projectPlanar(x, y, offsetX, offsetY).set(getDirectionX(), y + offsetY, x + offsetX);
         }
+
+        @Override
+        public Vector3f swizzleAccordingToDirectionLocal(Vector3f vertex) {
+            return vertex.set(-vertex.z, vertex.y, vertex.x);
+        }
     },
     RIGHT(1, 0, 0) {
         @Override
         public Vector3f projectPlanar(float x, float y, float offsetX, float offsetY) {
             return super.projectPlanar(x, y, offsetX, offsetY).set(getDirectionX(), y + offsetY, -(x + offsetX));
+        }
+
+        @Override
+        public Vector3f swizzleAccordingToDirectionLocal(Vector3f vertex) {
+            return vertex.set(vertex.z, vertex.y, -vertex.x);
         }
     },
     BOTTOM(0, -1, 0) {
@@ -30,17 +40,32 @@ public enum Direction3D {
         public Vector3f projectPlanar(float x, float y, float offsetX, float offsetY) {
             return super.projectPlanar(x, y, offsetX, offsetY).set(x + offsetX, getDirectionY(), y + offsetY);
         }
+
+        @Override
+        public Vector3f swizzleAccordingToDirectionLocal(Vector3f vertex) {
+            return vertex.set(vertex.x, -vertex.z, vertex.y);
+        }
     },
     TOP(0, 1, 0) {
         @Override
         public Vector3f projectPlanar(float x, float y, float offsetX, float offsetY) {
             return super.projectPlanar(x, y, offsetX, offsetY).set(x + offsetX, getDirectionY(), -(y + offsetY));
         }
+
+        @Override
+        public Vector3f swizzleAccordingToDirectionLocal(Vector3f vertex) {
+            return vertex.set(vertex.x, vertex.z, -vertex.y);
+        }
     },
     BACK(0, 0, -1) {
         @Override
         public Vector3f projectPlanar(float x, float y, float offsetX, float offsetY) {
             return super.projectPlanar(x, y, offsetX, offsetY).set(x + offsetX, -(y + offsetY), getDirectionZ());
+        }
+
+        @Override
+        public Vector3f swizzleAccordingToDirectionLocal(Vector3f vertex) {
+            return vertex.set(-vertex.x, vertex.y, -vertex.z);
         }
     },
     FRONT(0, 0, 1) {
@@ -83,7 +108,7 @@ public enum Direction3D {
     /**
      * The orthogonal directions in a croissant and dimension order. In a cube, these directions are the faces.
      */
-    public static final Direction3D[] ORTHOGONALS = { LEFT, RIGHT, BOTTOM, TOP, BACK, FRONT };
+    public static final Direction3D[] ORTHOGONALS = { RIGHT, LEFT, TOP, BOTTOM, FRONT, BACK };
     /**
      * The orthogonal directions along the Y axis.
      */
@@ -162,21 +187,34 @@ public enum Direction3D {
     /**
      * Finds the direction that can be represented by the supplied value, which is used manhattan normalized value. I other words, the signs of the given value are used.
      *
-     * @param value The value to search for.
+     * @param value The value to search for. It will be modified by the method to compute the result.
      *
      * @return The Direction3D equivalent to the supplied value.
      */
-    public static Direction3D findDirectionFromVector(Vector3i value) {
+    public static Direction3D findDirectionFromVectorLocal(Vector3i value) {
         Direction3D[] directions = IEnumCachedValues.getCachedValues(Direction3D.class);
-        Vector3i manhattanNormalizedValue = new Vector3i((int) Math.signum(value.x), (int) Math.signum(value.y), (int) Math.signum(value.z));
+
+        // Manhattan normalized value
+        value.set((int) Math.signum(value.x), (int) Math.signum(value.y), (int) Math.signum(value.z));
 
         for (Direction3D direction : directions) {
-            if (direction.getDirection().equals(manhattanNormalizedValue)) {
+            if (direction.getDirection().equals(value)) {
                 return direction;
             }
         }
 
         return null;
+    }
+
+    /**
+     * Finds the direction that can be represented by the supplied value, which is used manhattan normalized value. I other words, the signs of the given value are used.
+     *
+     * @param value The value to search for.
+     *
+     * @return The Direction3D equivalent to the supplied value.
+     */
+    public static Direction3D findDirectionFromVector(Vector3i value) {
+        return findDirectionFromVectorLocal(new Vector3i(value));
     }
 
     /**
@@ -203,6 +241,30 @@ public enum Direction3D {
      */
     public Vector3f projectPlanar(float x, float y, float offsetX, float offsetY) {
         return m_direction.toVector3f();
+    }
+
+    /**
+     * Swizzle the vertex components according to the direction. Only orthogonal directions can swizzle vertices. Swizzling interchanges components and might change the sign of
+     * those.
+     *
+     * @param vertex The vertex to locally swizzle it's components.
+     *
+     * @return The supplied vertex that is now swizzled.
+     */
+    public Vector3f swizzleAccordingToDirectionLocal(Vector3f vertex) {
+        return vertex;
+    }
+
+    /**
+     * Swizzle the vertex components according to the direction. Only orthogonal directions can swizzle vertices. Swizzling interchanges components and might change the sign of
+     * those.
+     *
+     * @param vertex The vertex to swizzle it's components.
+     *
+     * @return A new vector based upon the one given that is now swizzled.
+     */
+    public Vector3f swizzleAccordingToDirection(Vector3f vertex) {
+        return swizzleAccordingToDirectionLocal(new Vector3f(vertex));
     }
 
     /**

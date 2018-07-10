@@ -20,6 +20,39 @@ public final class MathExt {
     }
 
     /**
+     * Indexifies a normal that is either -1, 0 or 1. In other words, negative numbers become 0 and positive numbers, including 0, become 1.
+     *
+     * @param normal A normal that should be either -1, 0 or 1. If it's smaller than -1, it will treated as -1. If it's bigger than 1, it will be treated as 1.
+     *
+     * @return An index that is either 0 (negative) or 1 (null or positive normal).
+     */
+    public static int indexifyNormalZeroPositive(int normal) {
+        return ~((normal | 1) - 1 >> 31) & 1;
+    }
+
+    /**
+     * Indexifies a normal that is either -1, 0 or 1. In other words, negative numbers become 0, positive numbers become 1 and zero is left unchanged.
+     *
+     * @param normal A normal that should be either -1, 0 or 1. If it's smaller than -1, it will treated as -1. If it's bigger than 1, it will be treated as 1.
+     *
+     * @return An index that is either 0 (negative and null normal) or 1 (positive normal).
+     */
+    public static int indexifyNormal(int normal) {
+        return ~(normal - 1 >> 31) & 1;
+    }
+
+    /**
+     * Checks if the supplied number is a power of 2.
+     *
+     * @param number The number to check against.
+     *
+     * @return True if the given number is a power of 2, false otherwise.
+     */
+    public static boolean isPowerOfTwo(int number) {
+        return number > 0 && ((number & (number - 1)) == 0);
+    }
+
+    /**
      * Cycles between the inclusive minimum and the exclusive maximum.
      *
      * @param min          The inclusive minimum.

@@ -4,6 +4,7 @@ import com.badlogic.gdx.ai.GdxAI;
 import com.badlogic.gdx.ai.Logger;
 import com.badlogic.gdx.ai.StdoutLogger;
 import com.cheesygames.colonysimulation.asset.loader.behaviortree.BehaviorTreeAssetLoader;
+import com.cheesygames.colonysimulation.world.World;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.scene.Node;
@@ -19,6 +20,7 @@ public final class GameGlobal {
 
     public static volatile AssetManager assetManager;
     public static volatile Game game;
+    public static volatile World world;
 
     public static volatile Node rootNode;
     public static volatile Node terrainNode;
