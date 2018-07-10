@@ -15,7 +15,7 @@ import java.util.Map;
 public class World {
 
     private static final Vector3i DEFAULT_CHUNK_SIZE_BITS = new Vector3i(5, 5, 5);
-    private static final Vector3i DEFAULT_CHUNK_SIZE = new Vector3i(2 << DEFAULT_CHUNK_SIZE_BITS.x, 2 << DEFAULT_CHUNK_SIZE_BITS.y, 2 << DEFAULT_CHUNK_SIZE_BITS.z);
+    private static final Vector3i DEFAULT_CHUNK_SIZE = new Vector3i(1 << DEFAULT_CHUNK_SIZE_BITS.x, 1 << DEFAULT_CHUNK_SIZE_BITS.y, 1 << DEFAULT_CHUNK_SIZE_BITS.z);
 
     private Map<Vector3i, Chunk> m_chunks;
     private IChunkMeshGenerator m_meshGenerator;
@@ -26,7 +26,7 @@ public class World {
     public World() {
         this.m_chunks = new HashMap<>();
         this.m_meshGenerator = new BlockMeshGenerator();
-        this.m_worldGenerator = new GradientWorldGenerator(new Vector3f(-5, 32, -10));
+        this.m_worldGenerator = new GradientWorldGenerator(new Vector3f(-2, 16, -5));
         this.m_chunkSizeBits = new Vector3i(DEFAULT_CHUNK_SIZE_BITS);
         this.m_chunkSize = new Vector3i(DEFAULT_CHUNK_SIZE);
 
