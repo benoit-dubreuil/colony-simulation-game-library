@@ -1,10 +1,8 @@
 package com.cheesygames.colonysimulation;
 
 import com.cheesygames.colonysimulation.mainthread.MainThreadEventPool;
-import com.jme3.app.FlyCamAppState;
 import com.jme3.app.LostFocusBehavior;
 import com.jme3.app.SimpleApplication;
-import com.jme3.math.ColorRGBA;
 import com.jme3.system.AppSettings;
 
 import java.awt.*;
@@ -59,11 +57,14 @@ public abstract class Game extends SimpleApplication {
     private void initKeys() {
         inputManager.clearMappings();
 
+        // TODO : Temporary, remove comments
+        /*
         FlyCamAppState flyCamAppState = stateManager.getState(FlyCamAppState.class);
         flyCamAppState.setEnabled(false);
         stateManager.detach(flyCamAppState);
 
         inputManager.setCursorVisible(false);
+        */
     }
 
     public boolean isUpdating() {
