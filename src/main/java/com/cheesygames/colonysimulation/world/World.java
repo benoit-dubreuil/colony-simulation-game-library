@@ -4,6 +4,7 @@ import com.cheesygames.colonysimulation.math.MathExt;
 import com.cheesygames.colonysimulation.math.direction.Direction3D;
 import com.cheesygames.colonysimulation.math.vector.Vector3i;
 import com.cheesygames.colonysimulation.world.chunk.*;
+import com.jme3.math.Vector3f;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,13 +15,13 @@ public class World {
 
     private Map<Vector3i, Chunk> m_chunks;
     private IMeshGenerator m_meshGenerator;
-    private WorldGenerator m_worldGenerator;
+    private IWorldGenerator m_worldGenerator;
     private Vector3i m_chunkSize;
 
     public World() {
         this.m_chunks = new HashMap<>();
         this.m_meshGenerator = new BlockMeshGenerator();
-        this.m_worldGenerator = new WorldGenerator();
+        this.m_worldGenerator = new GradientWorldGenerator(new Vector3f(16, 16, 16));
         this.m_chunkSize = new Vector3i(DEFAULT_CHUNK_SIZE);
 
         assert MathExt.isPowerOfTwo(m_chunkSize.getX());

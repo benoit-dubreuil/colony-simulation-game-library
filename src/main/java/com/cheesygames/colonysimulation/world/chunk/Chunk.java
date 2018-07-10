@@ -1,8 +1,7 @@
 package com.cheesygames.colonysimulation.world.chunk;
 
 import com.cheesygames.colonysimulation.math.vector.Vector3i;
-import com.cheesygames.colonysimulation.world.World;
-import com.cheesygames.colonysimulation.world.WorldGenerator;
+import com.cheesygames.colonysimulation.world.IWorldGenerator;
 import com.cheesygames.colonysimulation.world.chunk.voxel.VoxelType;
 import com.jme3.scene.Mesh;
 
@@ -14,8 +13,8 @@ public class Chunk extends AbstractChunk {
     private VoxelType[][][] m_voxels;
     private Mesh m_mesh;
 
-    public Chunk(World world, Vector3i index) {
-        super(world, index);
+    public Chunk(Vector3i index) {
+        super(index);
     }
 
     /**
@@ -23,7 +22,7 @@ public class Chunk extends AbstractChunk {
      *
      * @param generator The generator used to generate the voxel data.
      */
-    public void generateData(WorldGenerator generator) {
+    public void generateData(IWorldGenerator generator) {
         final Vector3i chunkSize = getSize();
         m_voxels = new VoxelType[chunkSize.x][chunkSize.y][chunkSize.z];
 

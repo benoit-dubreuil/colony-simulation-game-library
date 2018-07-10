@@ -25,7 +25,7 @@ public class BlockMeshGenerator implements IMeshGenerator {
 
     @Override
     public Mesh generateMesh(World world, Chunk chunk) {
-        Mesh mesh = new Mesh();
+        Mesh mesh = new ChunkMesh();
 
         Vector3i chunkSize = chunk.getSize();
         Map<Direction3D, IChunkVoxelData> adjacentChunks = world.getAdjacentChunks(chunk.getIndex());
