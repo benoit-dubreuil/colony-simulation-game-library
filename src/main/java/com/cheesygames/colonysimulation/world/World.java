@@ -23,7 +23,7 @@ public class World {
     public World() {
         this.m_chunks = new HashMap<>();
         this.m_meshGenerator = new BlockMeshGenerator();
-        this.m_worldGenerator = new GradientWorldGenerator(new Vector3f(-16, 16, -16));
+        this.m_worldGenerator = new GradientWorldGenerator(new Vector3f(-5, 32, -10));
         this.m_chunkSizeBits = new Vector3i(DEFAULT_CHUNK_SIZE_BITS);
         this.m_chunkSize = new Vector3i(DEFAULT_CHUNK_SIZE);
 
@@ -56,7 +56,7 @@ public class World {
      * @retur The absolute index.
      */
     private int getAbsoluteIndex(int chunkIndex, int chunkRelativeIndex, int chunkSizeBits) {
-        return chunkIndex << chunkSizeBits + chunkRelativeIndex;
+        return (chunkIndex << chunkSizeBits) + chunkRelativeIndex;
     }
 
     /**
