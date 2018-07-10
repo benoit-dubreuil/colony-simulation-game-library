@@ -9,13 +9,16 @@ import com.jme3.math.Vector3f;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A world holds multiple chunks of voxels.
+ */
 public class World {
 
     private static final Vector3i DEFAULT_CHUNK_SIZE_BITS = new Vector3i(5, 5, 5);
     private static final Vector3i DEFAULT_CHUNK_SIZE = new Vector3i(2 << DEFAULT_CHUNK_SIZE_BITS.x, 2 << DEFAULT_CHUNK_SIZE_BITS.y, 2 << DEFAULT_CHUNK_SIZE_BITS.z);
 
     private Map<Vector3i, Chunk> m_chunks;
-    private IMeshGenerator m_meshGenerator;
+    private IChunkMeshGenerator m_meshGenerator;
     private IWorldGenerator m_worldGenerator;
     private Vector3i m_chunkSizeBits;
     private Vector3i m_chunkSize;

@@ -3,6 +3,9 @@ package com.cheesygames.colonysimulation.world.chunk;
 import com.cheesygames.colonysimulation.GameGlobal;
 import com.cheesygames.colonysimulation.math.vector.Vector3i;
 
+/**
+ * Holds universal data for any type of chunk.
+ */
 public abstract class AbstractChunk implements IChunk {
 
     protected Vector3i m_index;

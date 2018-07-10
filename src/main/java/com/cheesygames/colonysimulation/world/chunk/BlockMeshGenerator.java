@@ -13,7 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class BlockMeshGenerator implements IMeshGenerator {
+/**
+ * Block / bloxel mesh generator.
+ */
+public class BlockMeshGenerator implements IChunkMeshGenerator {
 
     private static final Vector3f[] FRONT_CUBE_FACE = {
         new Vector3f(-0.5f, 0.5f, 0.5f),

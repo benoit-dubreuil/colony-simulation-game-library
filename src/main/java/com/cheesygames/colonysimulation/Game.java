@@ -7,6 +7,9 @@ import com.jme3.system.AppSettings;
 
 import java.awt.*;
 
+/**
+ * Encapsulate the life cycle of a game.
+ */
 public abstract class Game extends SimpleApplication {
 
     private volatile boolean m_isUpdating;

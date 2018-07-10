@@ -6,7 +6,7 @@ import com.cheesygames.colonysimulation.math.vector.Vector3i;
 import com.cheesygames.colonysimulation.world.chunk.voxel.VoxelType;
 
 /**
- * Interface for a world chunk. A chunk supposedly holds a 3D array of voxel data.
+ * Interface for a world chunk. A chunk supposedly holds a 3D array of voxel data and has an index.
  */
 public interface IChunk extends IChunkVoxelData {
 
