@@ -20,6 +20,7 @@ public abstract class Game extends SimpleApplication {
         DisplayMode displayMode = GameGlobal.getDefaultDisplayMode();
 
         AppSettings appSettings = new AppSettings(true);
+        appSettings.setRenderer(AppSettings.LWJGL_OPENGL4);
         appSettings.setVSync(true);
         appSettings.setGammaCorrection(true);
         appSettings.setDepthBits(displayMode.getBitDepth());
