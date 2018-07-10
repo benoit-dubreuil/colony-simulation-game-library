@@ -17,10 +17,10 @@ public class BlockMeshGenerator implements IMeshGenerator {
 
     private static final Vector3f[] FRONT_CUBE_FACE = {
         new Vector3f(-0.5f, 0.5f, 0.5f),
-        new Vector3f(0.5f, 0.5f, 0.5f),
-        new Vector3f(0.5f, -0.5f, 0.5f),
-        new Vector3f(0.5f, -0.5f, 0.5f),
         new Vector3f(-0.5f, -0.5f, 0.5f),
+        new Vector3f(0.5f, -0.5f, 0.5f),
+        new Vector3f(0.5f, -0.5f, 0.5f),
+        new Vector3f(0.5f, 0.5f, 0.5f),
         new Vector3f(-0.5f, 0.5f, 0.5f) };
 
     @Override
