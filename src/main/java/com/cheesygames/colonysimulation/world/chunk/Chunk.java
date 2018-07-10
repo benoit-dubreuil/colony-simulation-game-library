@@ -31,8 +31,8 @@ public class Chunk extends AbstractChunk {
             for (int y = 0; y < chunkSize.y; ++y) {
                 for (int z = 0; z < chunkSize.z; ++z) {
                     m_voxels[x][y][z] = generator.generateVoxel(GameGlobal.world.getAbsoluteIndexX(m_index.x, x),
-                        GameGlobal.world.getAbsoluteIndexX(m_index.y, y),
-                        GameGlobal.world.getAbsoluteIndexX(m_index.z, z));
+                        GameGlobal.world.getAbsoluteIndexY(m_index.y, y),
+                        GameGlobal.world.getAbsoluteIndexZ(m_index.z, z));
                 }
             }
         }
