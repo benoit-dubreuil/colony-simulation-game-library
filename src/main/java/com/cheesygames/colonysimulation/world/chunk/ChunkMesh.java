@@ -14,6 +14,8 @@ public class ChunkMesh extends Mesh {
     public void updateBound() {
         VertexBuffer posBuf = getBuffer(VertexBuffer.Type.Position);
         if (posBuf != null) {
+            getBound().setCenter(GameGlobal.world.getChunkSize().x / 2f, GameGlobal.world.getChunkSize().y / 2f, GameGlobal.world.getChunkSize().z / 2f);
+
             ((BoundingBox) getBound()).setXExtent(GameGlobal.world.getChunkSize().x / 2f);
             ((BoundingBox) getBound()).setYExtent(GameGlobal.world.getChunkSize().y / 2f);
             ((BoundingBox) getBound()).setZExtent(GameGlobal.world.getChunkSize().z / 2f);
