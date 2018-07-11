@@ -23,6 +23,17 @@ public interface IChunk extends IChunkVoxelData {
             GameGlobal.world.getAbsoluteIndexZ(getIndex().z, 0) + getSize().z / 2f + 0.5f);
     }
 
+    /**
+     * Computes a new {@link Vector3i} that is the absolute position (first voxel index) of the chunk.
+     *
+     * @return A newly created {@link Vector3i} that is the absolute position (first voxel index) of the chunk.
+     */
+    default Vector3i computePositionIndex() {
+        return new Vector3i(GameGlobal.world.getAbsoluteIndexX(getIndex().x, 0),
+            GameGlobal.world.getAbsoluteIndexY(getIndex().y, 0),
+            GameGlobal.world.getAbsoluteIndexZ(getIndex().z, 0));
+    }
+
     @Override
     default VoxelType getVoxelFromSide(Direction3D direction, int x, int y, int z) {
         return getVoxelAt((1 - MathExt.indexifyNormalZeroPositive(direction.getDirectionX())) * (getSize().x - 1) + ((direction.getDirectionX() | 1) * x),
