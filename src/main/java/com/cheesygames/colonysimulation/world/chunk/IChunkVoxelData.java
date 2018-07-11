@@ -16,14 +16,16 @@ public interface IChunkVoxelData {
     }
 
     /**
-     * Gets a voxel from the side specified by its direction. The direction defines the origin of the coordinate system.
+     * Gets a voxel from the side specified by the absolute direction, i.e. negative directions are converted to positive directions. The direction defines the origin of the
+     * coordinate system.
      *
      * @param direction The direction that defines the side. Orthogonal directions are accepted.
-     * @param x         The X coordinate of the voxel to get. If the direction affects this coordinate's axis, then it is an offset from the direction's side.
-     * @param y         The Y coordinate of the voxel to get. If the direction affects this coordinate's axis, then it is an offset from the direction's side.
-     * @param z         The Z coordinate of the voxel to get. If the direction affects this coordinate's axis, then it is an offset from the direction's side.
+     * @param x         The X coordinate of the voxel to get. If the direction affects this coordinate's axis, then it is an offset from the absolute direction's side.
+     * @param y         The Y coordinate of the voxel to get. If the direction affects this coordinate's axis, then it is an offset from the absolute direction's side.
+     * @param z         The Z coordinate of the voxel to get. If the direction affects this coordinate's axis, then it is an offset from the absolute direction's side.
      *
-     * @return The voxel at the specified side of the chunk at the given coordinates, whilst keeping in mind that the direction defines the origin of the coordinate system.
+     * @return The voxel at the specified side of the chunk at the given coordinates, whilst keeping in mind that the absolute direction defines the origin of the coordinate
+     * system.
      */
-    VoxelType getVoxelFromSide(Direction3D direction, int x, int y, int z);
+    VoxelType getVoxelFromPositiveSide(Direction3D direction, int x, int y, int z);
 }

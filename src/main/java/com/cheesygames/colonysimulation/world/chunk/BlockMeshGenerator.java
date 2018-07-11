@@ -48,7 +48,7 @@ public class BlockMeshGenerator implements IChunkMeshGenerator {
 
                             if (adjacentVoxelX < 0 || adjacentVoxelX >= chunkSize.x || adjacentVoxelY < 0 || adjacentVoxelY >= chunkSize.y || adjacentVoxelZ < 0
                                 || adjacentVoxelZ >= chunkSize.z) {
-                                adjacentVoxelType = adjacentChunks.get(cubeFace).getVoxelFromSide(cubeFace.getOpposite(), x, y, z);
+                                adjacentVoxelType = adjacentChunks.get(cubeFace).getVoxelFromPositiveSide(cubeFace.getOpposite(), x, y, z);
                             }
                             else {
                                 adjacentVoxelType = chunk.getVoxelAt(adjacentVoxelX, adjacentVoxelY, adjacentVoxelZ);

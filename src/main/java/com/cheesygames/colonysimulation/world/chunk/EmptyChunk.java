@@ -16,7 +16,7 @@ public class EmptyChunk implements IChunkVoxelData {
     }
 
     @Override
-    public VoxelType getVoxelFromSide(Direction3D direction, int x, int y, int z) {
+    public VoxelType getVoxelFromPositiveSide(Direction3D direction, int x, int y, int z) {
         return VoxelType.AIR;
     }
 }
