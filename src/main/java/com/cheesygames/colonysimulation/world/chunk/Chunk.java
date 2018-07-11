@@ -13,9 +13,11 @@ public class Chunk extends AbstractChunk {
 
     private VoxelType[][][] m_voxels;
     private Mesh m_mesh;
+    private boolean m_isEmpty;
 
     public Chunk(Vector3i index) {
         super(index);
+        this.m_isEmpty = true;
     }
 
     /**
@@ -33,6 +35,8 @@ public class Chunk extends AbstractChunk {
                     m_voxels[x][y][z] = generator.generateVoxel(GameGlobal.world.getAbsoluteIndexX(m_index.x, x),
                         GameGlobal.world.getAbsoluteIndexY(m_index.y, y),
                         GameGlobal.world.getAbsoluteIndexZ(m_index.z, z));
+
+                    m_isEmpty &= (m_voxels[x][y][z] == VoxelType.AIR);
                 }
             }
         }
@@ -41,6 +45,11 @@ public class Chunk extends AbstractChunk {
     @Override
     public VoxelType getVoxelAt(int x, int y, int z) {
         return m_voxels[x][y][z];
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return m_isEmpty;
     }
 
     public Mesh getMesh() {

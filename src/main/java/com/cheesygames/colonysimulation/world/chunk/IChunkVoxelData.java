@@ -28,4 +28,11 @@ public interface IChunkVoxelData {
      * system.
      */
     VoxelType getVoxelFromPositiveSide(Direction3D direction, int x, int y, int z);
+
+    /**
+     * Checks if the chunk is empty, i.e. if it's filled with {@link VoxelType#AIR}.
+     *
+     * @return True if the chunk is empty, false otherwise.
+     */
+    boolean isEmpty();
 }

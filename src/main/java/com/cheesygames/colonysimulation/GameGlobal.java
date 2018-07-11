@@ -103,7 +103,7 @@ public final class GameGlobal {
 
         DisplayMode[] displayModes = device.getDisplayModes();
         for (int i = (displayModes.length >= 3 ? 3 : 0); i < displayModes.length; ++i) {
-            if (displayModes[i].getWidth() >= 600) {
+            if (displayModes[i].getWidth() >= 800) {
                 return displayModes[i]; // TODO : Menu -> Options -> Select this.
             }
         }

@@ -21,7 +21,7 @@ public class GradientWorldGenerator implements IWorldGenerator {
     @Override
     public void generateWorld(World world) {
         Vector3i minIndex = new Vector3i(-2, -2, -2);
-        Vector3i maxIndex = new Vector3i(2, 2, 2);
+        Vector3i maxIndex = new Vector3i(2, 1, 2);
 
         for (int x = minIndex.x; x <= maxIndex.x; ++x) {
             for (int y = minIndex.y; y <= maxIndex.y; ++y) {
