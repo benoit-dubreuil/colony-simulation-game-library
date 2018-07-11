@@ -5,8 +5,6 @@ import com.cheesygames.colonysimulation.world.chunk.Chunk;
 import com.cheesygames.colonysimulation.world.chunk.voxel.VoxelType;
 import com.jme3.math.Vector3f;
 
-import java.util.Map;
-
 /**
  * A basic {@link IWorldGenerator} that generates voxels according to a gradient. It simply creates one single chunk at (0, 0, 0).
  */
@@ -22,8 +20,16 @@ public class GradientWorldGenerator implements IWorldGenerator {
 
     @Override
     public void generateWorld(World world) {
-        Vector3i index = new Vector3i();
-        generateChunk(world, index);
+        Vector3i minIndex = new Vector3i(-2, -2, -2);
+        Vector3i maxIndex = new Vector3i(2, 2, 2);
+
+        for (int x = minIndex.x; x <= maxIndex.x; ++x) {
+            for (int y = minIndex.y; y <= maxIndex.y; ++y) {
+                for (int z = minIndex.z; z <= maxIndex.z; ++z) {
+                    generateChunk(world, new Vector3i(x, y, z));
+                }
+            }
+        }
     }
 
     @Override
