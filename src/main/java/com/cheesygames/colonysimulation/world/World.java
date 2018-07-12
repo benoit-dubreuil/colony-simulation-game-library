@@ -4,6 +4,7 @@ import com.cheesygames.colonysimulation.math.MathExt;
 import com.cheesygames.colonysimulation.math.direction.Direction3D;
 import com.cheesygames.colonysimulation.math.vector.Vector3i;
 import com.cheesygames.colonysimulation.world.chunk.*;
+import com.cheesygames.colonysimulation.world.chunk.voxel.VoxelType;
 import com.jme3.math.Vector3f;
 
 import java.util.HashMap;
@@ -64,6 +65,8 @@ public class World {
             return true;
         }
 
+        assert false;
+
         return false;
     }
 
@@ -84,11 +87,56 @@ public class World {
             return true;
         }
 
+        assert false;
+
         return false;
+    }
+
+    /**
+     * Sets the voxel type in the chunk specified by its supplied index at the given relative indices.
+     *
+     * @param voxelType      The voxel type to set at the specified coordinates.
+     * @param chunkIndex     The chunk's index.
+     * @param chunkRelativeX The chunk's voxel data index on the X axis.
+     * @param chunkRelativeY The chunk's voxel data index on the Y axis.
+     * @param chunkRelativeZ The chunk's voxel data index on the Z axis.
+     */
+    public void setVoxelAt(VoxelType voxelType, Vector3i chunkIndex, int chunkRelativeX, int chunkRelativeY, int chunkRelativeZ) {
+        assert isWorldGenerated();
+
+        Chunk chunk = m_chunks.get(chunkIndex);
+        boolean chunkDoesNotExist = (chunk == null);
+
+        if (chunkDoesNotExist) {
+            m_worldGenerator.createChunk(chunkIndex);
+        }
+
+        chunk.setVoxelAt(voxelType, chunkRelativeX, chunkRelativeY, chunkRelativeZ);
+
+        if (chunkDoesNotExist) {
+            addChunk(chunk);
+        }
+    }
+
+    public static void main(String[] args) {
+        System.out.println(-33 >> 5);
     }
 
     public Map<Vector3i, Chunk> getChunks() {
         return m_chunks;
+    }
+
+    /**
+     * Gets the chunk index based upon the supplied absolute position. The indices are axis independent, meaning that it does matter which is axis is chosen, as long as the
+     * parameters belong to the same one.
+     *
+     * @param absolutePosition The absolute position in the world.
+     * @param chunkSizeBits    The bit shift count for the chunk size. This allows to not mention the axis.
+     *
+     * @return The chunk's singular dimensional index.
+     */
+    public int getChunkIndex(int absolutePosition, int chunkSizeBits) {
+        return absolutePosition >> chunkSizeBits;
     }
 
     /**

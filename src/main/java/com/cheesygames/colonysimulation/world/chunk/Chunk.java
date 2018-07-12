@@ -59,4 +59,8 @@ public class Chunk extends AbstractChunk {
     public void setMesh(Mesh mesh) {
         m_mesh = mesh;
     }
+
+    public void setVoxelAt(VoxelType voxelType, int x, int y, int z) {
+        m_voxels[x][y][z] = voxelType;
+    }
 }
