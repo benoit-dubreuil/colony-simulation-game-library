@@ -220,4 +220,12 @@ public class World {
     public Vector3i getChunkSize() {
         return m_chunkSize;
     }
+
+    public IChunkMeshGenerator getMeshGenerator() {
+        return m_meshGenerator;
+    }
+
+    public IWorldGenerator getWorldGenerator() {
+        return m_worldGenerator;
+    }
 }
