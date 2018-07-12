@@ -18,13 +18,15 @@ import java.util.Map;
  */
 public class BlockMeshGenerator implements IChunkMeshGenerator {
 
+    private static final float HALF_EXTENT = 0.5f;
+
     private static final Vector3f[] FRONT_CUBE_FACE = {
-        new Vector3f(-0.5f, 0.5f, 0.5f),
-        new Vector3f(-0.5f, -0.5f, 0.5f),
-        new Vector3f(0.5f, -0.5f, 0.5f),
-        new Vector3f(0.5f, -0.5f, 0.5f),
-        new Vector3f(0.5f, 0.5f, 0.5f),
-        new Vector3f(-0.5f, 0.5f, 0.5f) };
+        new Vector3f(-HALF_EXTENT, HALF_EXTENT, HALF_EXTENT),
+        new Vector3f(-HALF_EXTENT, -HALF_EXTENT, HALF_EXTENT),
+        new Vector3f(HALF_EXTENT, -HALF_EXTENT, HALF_EXTENT),
+        new Vector3f(HALF_EXTENT, -HALF_EXTENT, HALF_EXTENT),
+        new Vector3f(HALF_EXTENT, HALF_EXTENT, HALF_EXTENT),
+        new Vector3f(-HALF_EXTENT, HALF_EXTENT, HALF_EXTENT) };
 
     @Override
     public Mesh generateMesh(World world, Chunk chunk) {
@@ -76,5 +78,10 @@ public class BlockMeshGenerator implements IChunkMeshGenerator {
                 }
             }
         }
+    }
+
+    @Override
+    public float getHalfExtend() {
+        return HALF_EXTENT;
     }
 }
