@@ -20,6 +20,8 @@ public class World {
     private Map<Vector3i, Chunk> m_chunks;
     private IChunkMeshGenerator m_meshGenerator;
     private IWorldGenerator m_worldGenerator;
+    private boolean m_isWorldGenerated;
+    private boolean m_areMeshesGenerated;
     private Vector3i m_chunkSizeBits;
     private Vector3i m_chunkSize;
 
@@ -37,12 +39,15 @@ public class World {
 
     public void generateWorld() {
         m_worldGenerator.generateWorld(this);
+        m_isWorldGenerated = true;
     }
 
     public void generateMeshes() {
         for (Chunk chunk : m_chunks.values()) {
             chunk.setMesh(m_meshGenerator.generateMesh(this, chunk));
         }
+
+        m_areMeshesGenerated = true;
     }
 
     /**
@@ -150,6 +155,14 @@ public class World {
         }
 
         return adjacentChunks;
+    }
+
+    public boolean isWorldGenerated() {
+        return m_isWorldGenerated;
+    }
+
+    public boolean isAreMeshesGenerated() {
+        return m_areMeshesGenerated;
     }
 
     public Vector3i getChunkSizeBits() {
