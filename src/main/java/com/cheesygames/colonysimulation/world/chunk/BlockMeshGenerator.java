@@ -39,29 +39,7 @@ public class BlockMeshGenerator implements IChunkMeshGenerator {
         for (int x = 0; x < chunkSize.x; ++x) {
             for (int y = 0; y < chunkSize.y; ++y) {
                 for (int z = 0; z < chunkSize.z; ++z) {
-                    if (chunk.getVoxelAt(x, y, z).isSolid()) {
-                        for (Direction3D cubeFace : Direction3D.ORTHOGONALS) {
-                            VoxelType adjacentVoxelType;
-                            int adjacentVoxelX = x + cubeFace.getDirectionX();
-                            int adjacentVoxelY = y + cubeFace.getDirectionY();
-                            int adjacentVoxelZ = z + cubeFace.getDirectionZ();
-
-                            if (adjacentVoxelX < 0 || adjacentVoxelX >= chunkSize.x || adjacentVoxelY < 0 || adjacentVoxelY >= chunkSize.y || adjacentVoxelZ < 0
-                                || adjacentVoxelZ >= chunkSize.z) {
-                                adjacentVoxelType = adjacentChunks.get(cubeFace).getVoxelFromPositiveSide(cubeFace.getOpposite(), x, y, z);
-                            }
-                            else {
-                                adjacentVoxelType = chunk.getVoxelAt(adjacentVoxelX, adjacentVoxelY, adjacentVoxelZ);
-                            }
-
-                            if (!adjacentVoxelType.isSolid()) {
-                                for (Vector3f frontCubeFaceVertex : FRONT_CUBE_FACE) {
-                                    vertices.add(cubeFace.swizzleAccordingToDirection(frontCubeFaceVertex).addLocal(x, y, z));
-                                    normals.add(cubeFace.getDirection().toVector3f());
-                                }
-                            }
-                        }
-                    }
+                    generateVoxelMesh(chunk, adjacentChunks, x, y, z, vertices, normals);
                 }
             }
         }
@@ -71,5 +49,32 @@ public class BlockMeshGenerator implements IChunkMeshGenerator {
         mesh.updateBound();
 
         return mesh;
+    }
+
+    @Override
+    public void generateVoxelMesh(Chunk chunk, Map<Direction3D, IChunkVoxelData> adjacentChunks, int x, int y, int z, List<Vector3f> vertices, List<Vector3f> normals) {
+        if (chunk.getVoxelAt(x, y, z).isSolid()) {
+            for (Direction3D cubeFace : Direction3D.ORTHOGONALS) {
+                VoxelType adjacentVoxelType;
+                int adjacentVoxelX = x + cubeFace.getDirectionX();
+                int adjacentVoxelY = y + cubeFace.getDirectionY();
+                int adjacentVoxelZ = z + cubeFace.getDirectionZ();
+
+                if (adjacentVoxelX < 0 || adjacentVoxelX >= chunk.getSize().x || adjacentVoxelY < 0 || adjacentVoxelY >= chunk.getSize().y || adjacentVoxelZ < 0
+                    || adjacentVoxelZ >= chunk.getSize().z) {
+                    adjacentVoxelType = adjacentChunks.get(cubeFace).getVoxelFromPositiveSide(cubeFace.getOpposite(), x, y, z);
+                }
+                else {
+                    adjacentVoxelType = chunk.getVoxelAt(adjacentVoxelX, adjacentVoxelY, adjacentVoxelZ);
+                }
+
+                if (!adjacentVoxelType.isSolid()) {
+                    for (Vector3f frontCubeFaceVertex : FRONT_CUBE_FACE) {
+                        vertices.add(cubeFace.swizzleAccordingToDirection(frontCubeFaceVertex).addLocal(x, y, z));
+                        normals.add(cubeFace.getDirection().toVector3f());
+                    }
+                }
+            }
+        }
     }
 }
