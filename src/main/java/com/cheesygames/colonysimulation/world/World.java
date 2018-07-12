@@ -45,6 +45,43 @@ public class World {
         }
     }
 
+    /**
+     * Adds the supplied chunk to the world, if there is no chunk at the supplied chunk's index and if it is not empty.
+     *
+     * @param chunk The chunk to add to the world.
+     *
+     * @return True if it was added successfully, false otherwise.
+     */
+    public boolean addChunk(Chunk chunk) {
+        if (!m_chunks.containsKey(chunk.getIndex()) && !chunk.isEmpty()) {
+            m_chunks.put(chunk.getIndex(), chunk);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Adds the supplied chunk to the world, if there is no chunk at the supplied chunk's index and if it is not empty. If the chunk is successfully added, then its index is set to
+     * the supplied index.
+     *
+     * @param index The index where to add the chunk.
+     * @param chunk The chunk to add to the world.
+     *
+     * @return True if it was added successfully, false otherwise.
+     */
+    public boolean addChunk(Vector3i index, Chunk chunk) {
+        if (!m_chunks.containsKey(index) && !chunk.isEmpty()) {
+            chunk.setIndex(index);
+            m_chunks.put(index, chunk);
+
+            return true;
+        }
+
+        return false;
+    }
+
     public Map<Vector3i, Chunk> getChunks() {
         return m_chunks;
     }

@@ -37,7 +37,7 @@ public class GradientWorldGenerator implements IWorldGenerator {
         Chunk chunk = new Chunk(index);
         chunk.generateData(this);
 
-        world.getChunks().put(index, chunk);
+        world.addChunk(chunk);
     }
 
     @Override
