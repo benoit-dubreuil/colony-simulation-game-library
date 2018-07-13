@@ -50,6 +50,16 @@ public class VoxelRay {
 
     private void computeVoxelDistance() {
         // TODO
+    /**
+     * Gets the position's integer index, according to the half extent of a voxel.
+     *
+     * @param position   The axis independent position.
+     * @param halfExtent The half extent (radius) of a voxel.
+     *
+     * @return The position's integer index.
+     */
+    private static int getPositionIndex(float position, float halfExtent) {
+        return (int) ((position + halfExtent) / (halfExtent * 2));
     }
 
     /**
@@ -62,8 +72,7 @@ public class VoxelRay {
      * @return The supplied index that was set to the position's index.
      */
     private static Vector3i getPositionIndexLocal(Vector3f position, float halfExtent, Vector3i index) {
-        final float extent = halfExtent * 2;
-        return index.set((int) ((position.x + halfExtent) / extent), (int) ((position.y + halfExtent) / extent), (int) ((position.z + halfExtent) / extent));
+        return index.set(getPositionIndex(position.x, halfExtent), getPositionIndex(position.y, halfExtent), getPositionIndex(position.z, halfExtent));
     }
 
     /**
