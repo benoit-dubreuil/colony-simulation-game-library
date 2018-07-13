@@ -2,7 +2,6 @@ package com.cheesygames.colonysimulation.math.bounding;
 
 import com.cheesygames.colonysimulation.math.MathExt;
 import com.cheesygames.colonysimulation.math.vector.Vector3i;
-import com.cheesygames.colonysimulation.world.World;
 import com.jme3.math.Vector3f;
 
 /**
@@ -49,6 +48,12 @@ public class VoxelRay {
         return null;
     }
 
+    /**
+     * Computes the voxel distance, a.k.a. the number of voxel to traverse, for the ray cast.
+     *
+     * @param halfExtent The half extent of a voxel.
+     * @param startIndex The starting position's index.
+     */
     private void computeVoxelDistance(float halfExtent, Vector3i startIndex) {
         int voxelDistanceX = computeAxisVoxelDistance(m_start.x, startIndex.x, halfExtent, m_direction.x);
         int voxelDistanceY = computeAxisVoxelDistance(m_start.y, startIndex.y, halfExtent, m_direction.y);
@@ -56,6 +61,15 @@ public class VoxelRay {
 
         m_voxelDistance = 1 + voxelDistanceX * MathExt.getSignZeroPositive(voxelDistanceX) + voxelDistanceY * MathExt.getSignZeroPositive(voxelDistanceY) + voxelDistanceZ * MathExt
             .getSignZeroPositive(voxelDistanceZ);
+    }
+
+    /**
+     * Computes the voxel distance, a.k.a. the number of voxel to traverse, for the ray cast.
+     *
+     * @param halfExtent The half extent of a voxel.
+     */
+    private void computeVoxelDistance(float halfExtent) {
+        computeVoxelDistance(halfExtent, getPositionIndex(m_start, halfExtent));
     }
 
     /**
@@ -71,6 +85,7 @@ public class VoxelRay {
     private int computeAxisVoxelDistance(float start, int startIndex, float halfExtent, float direction) {
         return getPositionIndex(start - startIndex * halfExtent * 2 + direction * m_length, halfExtent);
     }
+
     /**
      * Gets the position's integer index, according to the half extent of a voxel.
      *
