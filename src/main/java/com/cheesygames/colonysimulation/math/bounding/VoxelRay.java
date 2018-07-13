@@ -59,7 +59,8 @@ public class VoxelRay {
      * @return The position's integer index.
      */
     private static int getPositionIndex(float position, float halfExtent) {
-        return (int) ((position + halfExtent) / (halfExtent * 2));
+        float floatIndex = (position + halfExtent) / (halfExtent * 2);
+        return (int) (floatIndex + MathExt.getNegativeSign(floatIndex) * halfExtent * 2);
     }
 
     /**
