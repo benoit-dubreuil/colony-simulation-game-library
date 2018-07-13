@@ -66,7 +66,8 @@ public final class MathExt {
     }
 
     /**
-     * Gets the negative sign of the supplied number. So, in other words, if the number is negative, -1 is returned but if the number is positive or zero, then zero is returned.
+     * Gets the negative sign of the supplied number. So, in other words, if the number is negative, -1 is returned but if the number is positive or zero, then zero is returned. It
+     * does not check if the parameter is NaN.
      *
      * @param number The number to get its negative sign.
      *
