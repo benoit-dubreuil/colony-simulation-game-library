@@ -62,7 +62,8 @@ public class VoxelRay {
      * @return The supplied index that was set to the position's index.
      */
     private static Vector3i getPositionIndexLocal(Vector3f position, float halfExtent, Vector3i index) {
-        return index.set((int) (position.x + halfExtent), (int) (position.y + halfExtent), (int) (position.z + halfExtent));
+        final float extent = halfExtent * 2;
+        return index.set((int) ((position.x + halfExtent) / extent), (int) ((position.y + halfExtent) / extent), (int) ((position.z + halfExtent) / extent));
     }
 
     /**
