@@ -64,6 +64,17 @@ public final class MathExt {
     }
 
     /**
+     * Gets the negative sign of the supplied number. So, in other words, if the number is negative, -1 is returned but if the number is positive or zero, then zero is returned.
+     *
+     * @param number The number to get its negative sign.
+     *
+     * @return -1 if the number is negative, 0 otherwise.
+     */
+    public static int getNegativeSign(float number) {
+        return Float.floatToRawIntBits(number) >> 31;
+    }
+
+    /**
      * Checks if the supplied number is a power of 2.
      *
      * @param number The number to check against.
