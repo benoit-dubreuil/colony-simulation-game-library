@@ -42,6 +42,17 @@ public final class MathExt {
     }
 
     /**
+     * Gets the sign of the supplied number. The method being "zero position" means that the sign of zero is 1.
+     *
+     * @param number The number to get the sign from.
+     *
+     * @return The number's sign.
+     */
+    public static int getSignZeroPositive(int number) {
+        return (number & 0x80000000) >> 31 | 1;
+    }
+
+    /**
      * Checks if the supplied number is a power of 2.
      *
      * @param number The number to check against.
