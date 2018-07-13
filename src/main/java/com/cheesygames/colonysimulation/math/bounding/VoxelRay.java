@@ -2,6 +2,7 @@ package com.cheesygames.colonysimulation.math.bounding;
 
 import com.cheesygames.colonysimulation.math.MathExt;
 import com.cheesygames.colonysimulation.math.vector.Vector3i;
+import com.cheesygames.colonysimulation.world.World;
 import com.jme3.math.Vector3f;
 
 /**
@@ -40,9 +41,13 @@ public class VoxelRay {
         this.m_length = length;
     }
 
-    public Vector3i rayCastLocal(float halfExtent, Vector3i index) {
-        getPositionIndexLocal(m_start, halfExtent, index);
-        computeVoxelDistance(halfExtent, index);
+    public Vector3i rayCastLocal(World world, Vector3i index) {
+        getPositionIndexLocal(m_start, world.getMeshGenerator().getHalfExtend(), index);
+        computeVoxelDistance(world.getMeshGenerator().getHalfExtend(), index);
+
+        for (int i = 0; i < m_voxelDistance; ++i) {
+
+        }
 
         // TODO
         return null;
