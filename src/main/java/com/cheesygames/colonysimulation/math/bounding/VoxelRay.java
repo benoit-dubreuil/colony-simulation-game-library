@@ -1,5 +1,6 @@
 package com.cheesygames.colonysimulation.math.bounding;
 
+import com.cheesygames.colonysimulation.math.MathExt;
 import com.cheesygames.colonysimulation.math.vector.Vector3i;
 import com.cheesygames.colonysimulation.world.World;
 import com.jme3.math.Vector3f;
@@ -31,7 +32,7 @@ public class VoxelRay {
      * Constructs a {@link VoxelRay} from a start, a direction and a length. The start and direction vectors are kept as references.
      *
      * @param start     The absolute starting position of the ray. Is kept as reference.
-     * @param direction The direction of the ray, which is kept as reference.
+     * @param direction The direction of the ray, which is kept as reference. Must be normalized.
      * @param length    The length of the ray.
      */
     public VoxelRay(Vector3f start, Vector3f direction, float length) {
@@ -40,16 +41,36 @@ public class VoxelRay {
         this.m_length = length;
     }
 
-    public Vector3i rayCastLocal(World world, Vector3i index) {
-        final float halfExtent = world.getMeshGenerator().getHalfExtend();
+    public Vector3i rayCastLocal(float halfExtent, Vector3i index) {
         getPositionIndexLocal(m_start, halfExtent, index);
+        computeVoxelDistance(halfExtent, index);
 
         // TODO
         return null;
     }
 
-    private void computeVoxelDistance() {
-        // TODO
+    private void computeVoxelDistance(float halfExtent, Vector3i startIndex) {
+        int voxelDistanceX = computeAxisVoxelDistance(m_start.x, startIndex.x, halfExtent, m_direction.x);
+        int voxelDistanceY = computeAxisVoxelDistance(m_start.y, startIndex.y, halfExtent, m_direction.y);
+        int voxelDistanceZ = computeAxisVoxelDistance(m_start.z, startIndex.z, halfExtent, m_direction.z);
+
+        m_voxelDistance = 1 + voxelDistanceX * MathExt.getSignZeroPositive(voxelDistanceX) + voxelDistanceY * MathExt.getSignZeroPositive(voxelDistanceY) + voxelDistanceZ * MathExt
+            .getSignZeroPositive(voxelDistanceZ);
+    }
+
+    /**
+     * Computes the axis voxel distance for the supplied values according to the supposition that those values belong to the same axis.
+     *
+     * @param start      The starting float value.
+     * @param startIndex The starting index.
+     * @param halfExtent The half extent of a voxel.
+     * @param direction  The direction of the ray.
+     *
+     * @return The axis voxel distance. It may be positive, negative or zero.
+     */
+    private int computeAxisVoxelDistance(float start, int startIndex, float halfExtent, float direction) {
+        return getPositionIndex(start - startIndex * halfExtent * 2 + direction * m_length, halfExtent);
+    }
     /**
      * Gets the position's integer index, according to the half extent of a voxel.
      *
