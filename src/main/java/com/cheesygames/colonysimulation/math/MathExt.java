@@ -15,6 +15,8 @@ import java.util.Map;
 public final class MathExt {
 
     public static final float FLOAT_BIG_EPSILON = 0.0001f;
+    public static final int SIGN_BIT_MASK = 0x80000000;
+    public static final int BIT_COUNT_EXCLUDING_SIGN = 31;
 
     private MathExt() {
     }
@@ -27,7 +29,7 @@ public final class MathExt {
      * @return An index that is either 0 (negative) or 1 (null or positive normal).
      */
     public static int indexifyNormalZeroPositive(int normal) {
-        return ~((normal | 1) - 1 >> 31) & 1;
+        return ~((normal | 1) - 1 >> BIT_COUNT_EXCLUDING_SIGN) & 1;
     }
 
     /**
@@ -38,7 +40,7 @@ public final class MathExt {
      * @return An index that is either 0 (negative and null normal) or 1 (positive normal).
      */
     public static int indexifyNormal(int normal) {
-        return ~(normal - 1 >> 31) & 1;
+        return ~(normal - 1 >> BIT_COUNT_EXCLUDING_SIGN) & 1;
     }
 
     /**
@@ -49,7 +51,7 @@ public final class MathExt {
      * @return The number's sign.
      */
     public static int getSignZeroPositive(int number) {
-        return (number & 0x80000000) >> 31 | 1;
+        return (number & SIGN_BIT_MASK) >> BIT_COUNT_EXCLUDING_SIGN | 1;
     }
 
     /**
@@ -60,7 +62,7 @@ public final class MathExt {
      * @return -1 if the number is negative, 0 otherwise.
      */
     public static int getNegativeSign(int number) {
-        return number >> 31;
+        return number >> BIT_COUNT_EXCLUDING_SIGN;
     }
 
     /**
@@ -71,7 +73,7 @@ public final class MathExt {
      * @return -1 if the number is negative, 0 otherwise.
      */
     public static int getNegativeSign(float number) {
-        return Float.floatToRawIntBits(number) >> 31;
+        return Float.floatToRawIntBits(number) >> BIT_COUNT_EXCLUDING_SIGN;
     }
 
     /**
