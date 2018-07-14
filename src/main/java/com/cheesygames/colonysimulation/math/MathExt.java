@@ -29,7 +29,7 @@ public final class MathExt {
      * @return An index that is either 0 (negative) or 1 (null or positive normal).
      */
     public static int indexifyNormalZeroPositive(int normal) {
-        return ~((normal | 1) - 1 >> BIT_COUNT_EXCLUDING_SIGN) & 1;
+        return (normal >>> BIT_COUNT_EXCLUDING_SIGN) ^ 1;
     }
 
     /**
