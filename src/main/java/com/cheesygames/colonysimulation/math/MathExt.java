@@ -55,6 +55,17 @@ public final class MathExt {
     }
 
     /**
+     * Gets the sign of the supplied number. The method being "zero position" means that the sign of zero is 1.
+     *
+     * @param number The number to get the sign from.
+     *
+     * @return The number's sign.
+     */
+    public static int getSignZeroPositive(float number) {
+        return getNegativeSign(number) | 1;
+    }
+
+    /**
      * Gets the negative sign of the supplied number. So, in other words, if the number is negative, -1 is returned but if the number is positive or zero, then zero is returned.
      *
      * @param number The number to get its negative sign.
