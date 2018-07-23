@@ -81,7 +81,7 @@ public class BlockMeshGenerator implements IChunkMeshGenerator {
     }
 
     @Override
-    public float getHalfExtend() {
+    public float getHalfExtent() {
         return HALF_EXTENT;
     }
 }
