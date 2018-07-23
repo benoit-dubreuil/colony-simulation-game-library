@@ -54,6 +54,58 @@ public class VoxelRay {
     }
 
     /**
+     * Computes the relative position of a given absolute position according to the other parameters.
+     *
+     * @param direction The direction of the ray.
+     * @param position  The absolute euclidean position.
+     * @param index     The absolute position's index.
+     * @param extent    The extend of a voxel, which is the equivalent for a cube of sphere's radius.
+     *
+     * @return The relative position, which is between [-halfExtent, halfExtent]. Zero is the center of a voxel.
+     */
+    private static float computeRelativePosition(float direction, float position, int index, float extent) {
+        return MathExt.getSignZeroPositive(direction) * (position - index * extent) / extent;
+    }
+
+    /**
+     * Computes the relative position of a given absolute position according to the other parameters.
+     *
+     * @param direction The direction of the ray.
+     * @param position  The absolute euclidean position.
+     * @param index     The absolute position's index.
+     * @param extent    The extend of a voxel, which is the equivalent for a cube of sphere's radius.
+     *
+     * @return The relative position, which is between [-halfExtent, halfExtent] per axis. Zero is the center of a voxel.
+     */
+    private static Vector3f computeRelativePosition(Vector3f direction, Vector3f position, Vector3i index, float extent) {
+        return new Vector3f(computeRelativePosition(direction.x, position.x, index.x, extent),
+            computeRelativePosition(direction.y, position.y, index.y, extent),
+            computeRelativePosition(direction.z, position.z, index.z, extent));
+    }
+
+    /**
+     * Gets the biggest component for the supplied {@link Vector3f}.
+     *
+     * @param v The {@link Vector3f} to get the biggest component from.
+     *
+     * @return The biggest component.
+     */
+    private static float getBiggestComponent(Vector3f v) {
+        return v.x >= v.y ? (v.x >= v.z ? v.x : v.z) : (v.y >= v.z ? v.y : v.z);
+    }
+
+    /**
+     * Gets the biggest component's index for the supplied {@link Vector3f}.
+     *
+     * @param v The {@link Vector3f} to get the biggest component's index from.
+     *
+     * @return The biggest component's index.
+     */
+    private static int getBiggestComponentIndex(Vector3f v) {
+        return v.x >= v.y ? (v.x >= v.z ? 0 : 2) : (v.y >= v.z ? 1 : 2);
+    }
+
+    /**
      * Computes the voxel distance, a.k.a. the number of voxel to traverse, for the ray cast.
      *
      * @param halfExtent The half extent of a voxel.
