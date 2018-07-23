@@ -64,7 +64,7 @@ public class VoxelRay {
      * @return The relative position, which is between [-halfExtent, halfExtent]. Zero is the center of a voxel.
      */
     private static float computeRelativePosition(float direction, float position, int index, float extent) {
-        return MathExt.getSignZeroPositive(direction) * (position - index * extent) / extent;
+        return MathExt.getSignZeroPositive(direction) * (position - index * extent);
     }
 
     /**
