@@ -3,7 +3,11 @@ package com.cheesygames.colonysimulation.math.bounding;
 import com.cheesygames.colonysimulation.math.MathExt;
 import com.cheesygames.colonysimulation.math.vector.Vector3i;
 import com.cheesygames.colonysimulation.world.World;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.plugins.blender.math.Vector3d;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Ray for ray casting inside a voxel world. Each voxel is considered as a cube within this ray.
@@ -41,9 +45,91 @@ public class VoxelRay {
         this.m_length = length;
     }
 
-    public Vector3i rayCastLocal(World world, Vector3i index) {
+    public List<Vector3i> rayCastLocal(World world, Vector3i voxelIndex) {
+        double halfExtent = world.getMeshGenerator().getHalfExtent();
+        double extent = halfExtent * 2;
 
-        return null;
+        // TODO : assert not NaN
+
+        List<Vector3i> visitedVoxels = new ArrayList<>();
+
+        // This id of the first/current voxel hit by the ray.
+        // Using floor (round down) is actually very important,
+        // the implicit int-casting will round up for negative numbers.
+        voxelIndex.set((int) Math.floor((m_start.x + halfExtent) / extent),
+            (int) Math.floor((m_start.y + halfExtent) / extent),
+            (int) Math.floor((m_start.z + halfExtent) / extent));
+
+
+        // The id of the last voxel hit by the ray.
+        // TODO: what happens if the end point is on a border?
+        Vector3i lastVoxelIndex = new Vector3i((int) Math.floor((m_start.x + halfExtent + m_direction.x * m_length) / extent),
+            (int) Math.floor((m_start.y + halfExtent + m_direction.y * m_length) / extent),
+            (int) Math.floor((m_start.z + halfExtent + m_direction.z * m_length) / extent));
+
+        computeVoxelDistance(halfExtent, voxelIndex);
+        System.out.println(m_voxelDistance);
+
+        // In which direction the voxel ids are incremented.
+        double stepX = MathExt.getSignZeroPositive(m_direction.x);
+        double stepY = MathExt.getSignZeroPositive(m_direction.y);
+        double stepZ = MathExt.getSignZeroPositive(m_direction.z);
+
+        // Distance along the ray to the next voxel border from the current position (tMaxX, tMaxY, tMaxZ).
+        double nextVoxelBoundaryX = (voxelIndex.x + stepX) * extent;
+        double nextVoxelBoundaryY = (voxelIndex.y + stepY) * extent;
+        double nextVoxelBoundaryZ = (voxelIndex.z + stepZ) * extent;
+
+        // tMaxX, tMaxY, tMaxZ -- distance until next intersection with voxel-border
+        // the value of t at which the ray crosses the first vertical voxel boundary
+        double tMaxX = (m_direction.x != 0) ? (nextVoxelBoundaryX - m_start.x) / m_direction.x : Double.MAX_VALUE; //
+        double tMaxY = (m_direction.y != 0) ? (nextVoxelBoundaryY - m_start.y) / m_direction.y : Double.MAX_VALUE; //
+        double tMaxZ = (m_direction.z != 0) ? (nextVoxelBoundaryZ - m_start.z) / m_direction.z : Double.MAX_VALUE; //
+
+        // tDeltaX, tDeltaY, tDeltaZ --
+        // how far along the ray we must move for the horizontal component to equal the width of a voxel
+        // the direction in which we traverse the grid
+        // can only be FLT_MAX if we never go in that direction
+        double tDeltaX = (m_direction.x != 0) ? extent / m_direction.x * stepX : Double.MAX_VALUE;
+        double tDeltaY = (m_direction.y != 0) ? extent / m_direction.y * stepY : Double.MAX_VALUE;
+        double tDeltaZ = (m_direction.z != 0) ? extent / m_direction.z * stepZ : Double.MAX_VALUE;
+
+        visitedVoxels.add(new Vector3i(voxelIndex));
+
+        while(visitedVoxels.size() < m_voxelDistance) {
+            if (tMaxX < tMaxY) {
+                if (tMaxX < tMaxZ) {
+                    voxelIndex.x += stepX;
+                    tMaxX += tDeltaX;
+                } else {
+                    voxelIndex.z += stepZ;
+                    tMaxZ += tDeltaZ;
+                }
+            } else {
+                if (tMaxY < tMaxZ) {
+                    voxelIndex.y += stepY;
+                    tMaxY += tDeltaY;
+                } else {
+                    voxelIndex.z += stepZ;
+                    tMaxZ += tDeltaZ;
+                }
+            }
+
+            visitedVoxels.add(new Vector3i(voxelIndex));
+        }
+
+        return visitedVoxels;
+    }
+
+    public static void main(String[] args) {
+        Vector3d start = new Vector3d(0, 0, 0);
+        Vector3d end = new Vector3d(2, 4, 0);
+
+        World world = new World();
+        VoxelRay ray = new VoxelRay(start, end);
+        List<Vector3i> visitedVoxels = ray.rayCastLocal(world, new Vector3i());
+
+        System.out.println(visitedVoxels);
     }
 
     /**
@@ -156,8 +242,8 @@ public class VoxelRay {
      * @return The position's integer index.
      */
     private static int getPositionIndex(double position, double halfExtent) {
-        double floatIndex = (position + halfExtent) / (halfExtent * 2);
-        return (int) (floatIndex + MathExt.getNegativeSign(floatIndex) * halfExtent * 2);
+        double decimalIndex = (position + halfExtent) / (halfExtent * 2);
+        return (int) (decimalIndex + MathExt.getNegativeSign(decimalIndex) * halfExtent * 2);
     }
 
     /**
