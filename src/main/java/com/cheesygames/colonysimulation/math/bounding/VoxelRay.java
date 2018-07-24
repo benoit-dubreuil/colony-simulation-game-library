@@ -2,15 +2,14 @@ package com.cheesygames.colonysimulation.math.bounding;
 
 import com.cheesygames.colonysimulation.math.MathExt;
 import com.cheesygames.colonysimulation.math.vector.Vector3i;
-import com.cheesygames.colonysimulation.world.World;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.plugins.blender.math.Vector3d;
 
-import java.util.List;
 import java.util.function.Function;
 
 /**
- * Ray for ray casting inside a voxel world. Each voxel is considered as a cube within this ray.
+ * Ray for ray casting inside a voxel world. Each voxel is considered as a cube within this ray. A ray consists of a starting position, a direction and a length. The voxel distance
+ * is computed once the method {@link #rayCastLocal(double, Function, Vector3i)} or {@link #rayCast(double, Function)} is called.
  */
 public class VoxelRay {
 
@@ -178,17 +177,6 @@ public class VoxelRay {
                 return;
             }
         }
-    }
-
-    public static void main(String[] args) {
-        Vector3d start = new Vector3d(0, 0, 0);
-        Vector3d end = new Vector3d(2, 4, 0);
-
-        World world = new World();
-        VoxelRay ray = new VoxelRay(start, end);
-        List<Vector3i> visitedVoxels = ray.rayCastLocal(world, new Vector3i());
-
-        System.out.println(visitedVoxels);
     }
 
     /**
