@@ -60,15 +60,7 @@ public class VoxelRay {
             (int) Math.floor((m_start.y + halfExtent) / extent),
             (int) Math.floor((m_start.z + halfExtent) / extent));
 
-
-        // The id of the last voxel hit by the ray.
-        // TODO: what happens if the end point is on a border?
-        Vector3i lastVoxelIndex = new Vector3i((int) Math.floor((m_start.x + halfExtent + m_direction.x * m_length) / extent),
-            (int) Math.floor((m_start.y + halfExtent + m_direction.y * m_length) / extent),
-            (int) Math.floor((m_start.z + halfExtent + m_direction.z * m_length) / extent));
-
         computeVoxelDistance(halfExtent, voxelIndex);
-        System.out.println(m_voxelDistance);
 
         // In which direction the voxel ids are incremented.
         double stepX = MathExt.getSignZeroPositive(m_direction.x);
@@ -130,69 +122,6 @@ public class VoxelRay {
         List<Vector3i> visitedVoxels = ray.rayCastLocal(world, new Vector3i());
 
         System.out.println(visitedVoxels);
-    }
-
-    /**
-     * Computes the relative position of a given absolute position according to the other parameters.
-     *
-     * @param direction The direction of the ray.
-     * @param position  The absolute euclidean position.
-     * @param index     The absolute position's index.
-     * @param extent    The extend of a voxel, which is the equivalent for a cube of sphere's radius.
-     *
-     * @return The relative position, which is between [-halfExtent, halfExtent]. Zero is the center of a voxel.
-     */
-    private static double computeRelativePosition(double direction, double position, int index, double extent) {
-        return MathExt.getSignZeroPositive(direction) * (position - index * extent);
-    }
-
-    /**
-     * Computes the relative position of a given absolute position according to the other parameters.
-     *
-     * @param direction The direction of the ray.
-     * @param position  The absolute euclidean position.
-     * @param index     The absolute position's index.
-     * @param extent    The extend of a voxel, which is the equivalent for a cube of sphere's radius.
-     *
-     * @return The relative position, which is between [-halfExtent, halfExtent] per axis. Zero is the center of a voxel.
-     */
-    private static Vector3d computeRelativePosition(Vector3d direction, Vector3d position, Vector3i index, double extent) {
-        return new Vector3d(computeRelativePosition(direction.x, position.x, index.x, extent),
-            computeRelativePosition(direction.y, position.y, index.y, extent),
-            computeRelativePosition(direction.z, position.z, index.z, extent));
-    }
-
-    /**
-     * Gets the smallest component for the supplied {@link Vector3d}.
-     *
-     * @param v The {@link Vector3d} to get the smallest component from.
-     *
-     * @return The smallest component.
-     */
-    private static double getSmallestComponent(Vector3d v) {
-        return v.x < v.y ? (v.x < v.z ? v.x : v.z) : (v.y < v.z ? v.y : v.z);
-    }
-
-    /**
-     * Gets the biggest component for the supplied {@link Vector3d}.
-     *
-     * @param v The {@link Vector3d} to get the biggest component from.
-     *
-     * @return The biggest component.
-     */
-    private static double getBiggestComponent(Vector3d v) {
-        return v.x >= v.y ? (v.x >= v.z ? v.x : v.z) : (v.y >= v.z ? v.y : v.z);
-    }
-
-    /**
-     * Gets the biggest component's index for the supplied {@link Vector3d}.
-     *
-     * @param v The {@link Vector3d} to get the biggest component's index from.
-     *
-     * @return The biggest component's index.
-     */
-    private static int getBiggestComponentIndex(Vector3d v) {
-        return v.x >= v.y ? (v.x >= v.z ? 0 : 2) : (v.y >= v.z ? 1 : 2);
     }
 
     /**
@@ -281,5 +210,9 @@ public class VoxelRay {
 
     public double getLength() {
         return m_length;
+    }
+
+    public int getVoxelDistance() {
+        return m_voxelDistance;
     }
 }
