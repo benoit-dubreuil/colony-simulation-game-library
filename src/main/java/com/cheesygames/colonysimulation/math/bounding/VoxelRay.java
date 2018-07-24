@@ -46,10 +46,18 @@ public class VoxelRay {
     }
 
     public List<Vector3i> rayCastLocal(World world, Vector3i voxelIndex) {
+        assert !Double.isNaN(m_start.x);
+        assert !Double.isNaN(m_start.y);
+        assert !Double.isNaN(m_start.z);
+
+        assert !Double.isNaN(m_direction.x);
+        assert !Double.isNaN(m_direction.y);
+        assert !Double.isNaN(m_direction.z);
+
+        assert !Double.isNaN(m_length);
+
         double halfExtent = world.getMeshGenerator().getHalfExtent();
         double extent = halfExtent * 2;
-
-        // TODO : assert not NaN
 
         List<Vector3i> visitedVoxels = new ArrayList<>();
 
@@ -61,6 +69,7 @@ public class VoxelRay {
             (int) Math.floor((m_start.z + halfExtent) / extent));
 
         computeVoxelDistance(halfExtent, voxelIndex);
+        assert !Double.isNaN(m_voxelDistance);
 
         // In which direction the voxel ids are incremented.
         double stepX = MathExt.getSignZeroPositive(m_direction.x);
