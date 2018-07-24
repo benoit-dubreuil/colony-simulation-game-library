@@ -74,6 +74,21 @@ public class VoxelRay {
     /**
      * Casts the ray from its starting position towards its direction whilst keeping in mind its length. A lambda parameter is supplied and called each time a voxel is traversed.
      * This allows the lambda to stop anytime the algorithm to continue its loop.
+     *
+     * @param voxelHalfExtent   The half extent (radius) of a voxel.
+     * @param onTraversingVoxel The operation to execute when traversing a voxel. This method called the same number of times as the value of {@link #getVoxelDistance()}. The
+     *                          supplied {@link Vector3i} parameter is not a new instance but a local instance, so it is a reference. The return value {@link Boolean} defines if
+     *                          the algorithm should stop.
+     *
+     * @see <a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.42.3443&rep=rep1&type=pdf">A Fast Voxel Traversal Algorithm</a>
+     */
+    public void rayCast(double voxelHalfExtent, Function<Vector3i, Boolean> onTraversingVoxel) {
+        rayCastLocal(voxelHalfExtent, onTraversingVoxel, new Vector3i());
+    }
+
+    /**
+     * Casts the ray from its starting position towards its direction whilst keeping in mind its length. A lambda parameter is supplied and called each time a voxel is traversed.
+     * This allows the lambda to stop anytime the algorithm to continue its loop.
      * <p>
      * This method is local because the parameter voxelIndex is locally changed to avoid creating a new instance of {@link Vector3i}.
      *
