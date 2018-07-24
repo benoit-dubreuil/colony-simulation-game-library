@@ -16,7 +16,8 @@ public final class MathExt {
 
     public static final float FLOAT_BIG_EPSILON = 0.0001f;
     public static final int SIGN_BIT_MASK = 0x80000000;
-    public static final int BIT_COUNT_EXCLUDING_SIGN = 31;
+    public static final int BIT_COUNT_EXCLUDING_SIGN_32 = 31;
+    public static final int BIT_COUNT_EXCLUDING_SIGN_64 = 63;
 
     private MathExt() {
     }
@@ -51,7 +52,7 @@ public final class MathExt {
      * @return An index that is either 0 (negative) or 1 (null or positive normal).
      */
     public static int indexifyNormalZeroPositive(int normal) {
-        return (normal >>> BIT_COUNT_EXCLUDING_SIGN) ^ 1;
+        return (normal >>> BIT_COUNT_EXCLUDING_SIGN_32) ^ 1;
     }
 
     /**
@@ -62,7 +63,7 @@ public final class MathExt {
      * @return An index that is either 0 (negative and null normal) or 1 (positive normal).
      */
     public static int indexifyNormal(int normal) {
-        return ~(normal - 1 >> BIT_COUNT_EXCLUDING_SIGN) & 1;
+        return ~(normal - 1 >> BIT_COUNT_EXCLUDING_SIGN_32) & 1;
     }
 
     /**
@@ -73,7 +74,7 @@ public final class MathExt {
      * @return The number's sign.
      */
     public static int getSignZeroPositive(int number) {
-        return (number & SIGN_BIT_MASK) >> BIT_COUNT_EXCLUDING_SIGN | 1;
+        return (number & SIGN_BIT_MASK) >> BIT_COUNT_EXCLUDING_SIGN_32 | 1;
     }
 
     /**
@@ -88,6 +89,17 @@ public final class MathExt {
     }
 
     /**
+     * Gets the sign of the supplied number. The method being "zero position" means that the sign of zero is 1.
+     *
+     * @param number The number to get the sign from.
+     *
+     * @return The number's sign.
+     */
+    public static long getSignZeroPositive(double number) {
+        return getNegativeSign(number) | 1;
+    }
+
+    /**
      * Gets the negative sign of the supplied number. So, in other words, if the number is negative, -1 is returned but if the number is positive or zero, then zero is returned.
      *
      * @param number The number to get its negative sign.
@@ -95,7 +107,7 @@ public final class MathExt {
      * @return -1 if the number is negative, 0 otherwise.
      */
     public static int getNegativeSign(int number) {
-        return number >> BIT_COUNT_EXCLUDING_SIGN;
+        return number >> BIT_COUNT_EXCLUDING_SIGN_32;
     }
 
     /**
@@ -107,7 +119,19 @@ public final class MathExt {
      * @return -1 if the number is negative, 0 otherwise.
      */
     public static int getNegativeSign(float number) {
-        return Float.floatToRawIntBits(number) >> BIT_COUNT_EXCLUDING_SIGN;
+        return Float.floatToRawIntBits(number) >> BIT_COUNT_EXCLUDING_SIGN_32;
+    }
+
+    /**
+     * Gets the negative sign of the supplied number. So, in other words, if the number is negative, -1 is returned but if the number is positive or zero, then zero is returned. It
+     * does not check if the parameter is NaN.
+     *
+     * @param number The number to get its negative sign.
+     *
+     * @return -1 if the number is negative, 0 otherwise.
+     */
+    public static long getNegativeSign(double number) {
+        return Double.doubleToRawLongBits(number) >> BIT_COUNT_EXCLUDING_SIGN_64;
     }
 
     /**
