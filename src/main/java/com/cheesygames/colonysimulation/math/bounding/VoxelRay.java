@@ -33,9 +33,9 @@ public class VoxelRay {
     }
 
     /**
-     * Constructs a {@link VoxelRay} from two points : start and end. The start point is kept as reference.
+     * Constructs a {@link VoxelRay} from two points : start and end.
      *
-     * @param start The absolute starting position of the ray. Is kept as reference.
+     * @param start The absolute starting position of the ray.
      * @param end   The absolute ending position of the ray.
      */
     public VoxelRay(Vector3f start, Vector3f end) {
@@ -59,10 +59,10 @@ public class VoxelRay {
     }
 
     /**
-     * Constructs a {@link VoxelRay} from a start, a direction and a length. The start and direction vectors are kept as references.
+     * Constructs a {@link VoxelRay} from a start, a direction and a length.
      *
-     * @param start     The absolute starting position of the ray. Is kept as reference.
-     * @param direction The direction of the ray, which is kept as reference. Must be normalized.
+     * @param start     The absolute starting position of the ray.
+     * @param direction The direction of the ray. Must be normalized.
      * @param length    The length of the ray.
      */
     public VoxelRay(Vector3f start, Vector3f direction, float length) {
