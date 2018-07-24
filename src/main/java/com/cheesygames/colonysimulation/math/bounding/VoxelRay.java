@@ -6,8 +6,8 @@ import com.cheesygames.colonysimulation.world.World;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.plugins.blender.math.Vector3d;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * Ray for ray casting inside a voxel world. Each voxel is considered as a cube within this ray.
@@ -71,7 +71,21 @@ public class VoxelRay {
         this.m_length = length;
     }
 
-    public List<Vector3i> rayCastLocal(World world, Vector3i voxelIndex) {
+    /**
+     * Casts the ray from its starting position towards its direction whilst keeping in mind its length. A lambda parameter is supplied and called each time a voxel is traversed.
+     * This allows the lambda to stop anytime the algorithm to continue its loop.
+     * <p>
+     * This method is local because the parameter voxelIndex is locally changed to avoid creating a new instance of {@link Vector3i}.
+     *
+     * @param voxelHalfExtent   The half extent (radius) of a voxel.
+     * @param onTraversingVoxel The operation to execute when traversing a voxel. This method called the same number of times as the value of {@link #getVoxelDistance()}. The
+     *                          supplied {@link Vector3i} parameter is not a new instance but a local instance, so it is a reference. The return value {@link Boolean} defines if
+     *                          the algorithm should stop.
+     * @param voxelIndex        The voxel index to locally modify in order to traverse voxels. This parameter exists simply to avoid creating a new {@link Vector3i} instance.
+     *
+     * @see <a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.42.3443&rep=rep1&type=pdf">A Fast Voxel Traversal Algorithm</a>
+     */
+    public void rayCastLocal(double voxelHalfExtent, Function<Vector3i, Boolean> onTraversingVoxel, Vector3i voxelIndex) {
         assert !Double.isNaN(m_start.x);
         assert !Double.isNaN(m_start.y);
         assert !Double.isNaN(m_start.z);
@@ -82,19 +96,16 @@ public class VoxelRay {
 
         assert !Double.isNaN(m_length);
 
-        double halfExtent = world.getMeshGenerator().getHalfExtent();
-        double extent = halfExtent * 2;
-
-        List<Vector3i> visitedVoxels = new ArrayList<>();
+        double voxelExtent = voxelHalfExtent * 2;
 
         // This id of the first/current voxel hit by the ray.
         // Using floor (round down) is actually very important,
         // the implicit int-casting will round up for negative numbers.
-        voxelIndex.set((int) Math.floor((m_start.x + halfExtent) / extent),
-            (int) Math.floor((m_start.y + halfExtent) / extent),
-            (int) Math.floor((m_start.z + halfExtent) / extent));
+        voxelIndex.set((int) Math.floor((m_start.x + voxelHalfExtent) / voxelExtent),
+            (int) Math.floor((m_start.y + voxelHalfExtent) / voxelExtent),
+            (int) Math.floor((m_start.z + voxelHalfExtent) / voxelExtent));
 
-        computeVoxelDistance(halfExtent, voxelIndex);
+        computeVoxelDistance(voxelHalfExtent, voxelIndex);
         assert !Double.isNaN(m_voxelDistance);
 
         // In which direction the voxel ids are incremented.
@@ -103,9 +114,9 @@ public class VoxelRay {
         double stepZ = MathExt.getSignZeroPositive(m_direction.z);
 
         // Distance along the ray to the next voxel border from the current position (tMaxX, tMaxY, tMaxZ).
-        double nextVoxelBoundaryX = (voxelIndex.x + stepX) * extent;
-        double nextVoxelBoundaryY = (voxelIndex.y + stepY) * extent;
-        double nextVoxelBoundaryZ = (voxelIndex.z + stepZ) * extent;
+        double nextVoxelBoundaryX = (voxelIndex.x + stepX) * voxelExtent;
+        double nextVoxelBoundaryY = (voxelIndex.y + stepY) * voxelExtent;
+        double nextVoxelBoundaryZ = (voxelIndex.z + stepZ) * voxelExtent;
 
         // tMaxX, tMaxY, tMaxZ -- distance until next intersection with voxel-border
         // the value of t at which the ray crosses the first vertical voxel boundary
@@ -117,13 +128,16 @@ public class VoxelRay {
         // how far along the ray we must move for the horizontal component to equal the width of a voxel
         // the direction in which we traverse the grid
         // can only be FLT_MAX if we never go in that direction
-        double tDeltaX = (m_direction.x != 0) ? extent / m_direction.x * stepX : Double.MAX_VALUE;
-        double tDeltaY = (m_direction.y != 0) ? extent / m_direction.y * stepY : Double.MAX_VALUE;
-        double tDeltaZ = (m_direction.z != 0) ? extent / m_direction.z * stepZ : Double.MAX_VALUE;
+        double tDeltaX = (m_direction.x != 0) ? voxelExtent / m_direction.x * stepX : Double.MAX_VALUE;
+        double tDeltaY = (m_direction.y != 0) ? voxelExtent / m_direction.y * stepY : Double.MAX_VALUE;
+        double tDeltaZ = (m_direction.z != 0) ? voxelExtent / m_direction.z * stepZ : Double.MAX_VALUE;
 
-        visitedVoxels.add(new Vector3i(voxelIndex));
+        if (onTraversingVoxel.apply(voxelIndex)) {
+            return;
+        }
 
-        while (visitedVoxels.size() < m_voxelDistance) {
+        int traversedVoxelCount = 0;
+        while (++traversedVoxelCount < m_voxelDistance) {
             if (tMaxX < tMaxY) {
                 if (tMaxX < tMaxZ) {
                     voxelIndex.x += stepX;
@@ -145,10 +159,10 @@ public class VoxelRay {
                 }
             }
 
-            visitedVoxels.add(new Vector3i(voxelIndex));
+            if (onTraversingVoxel.apply(voxelIndex)) {
+                return;
+            }
         }
-
-        return visitedVoxels;
     }
 
     public static void main(String[] args) {
