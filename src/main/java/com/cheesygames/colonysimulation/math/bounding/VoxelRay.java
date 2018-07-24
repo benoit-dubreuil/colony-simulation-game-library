@@ -84,6 +84,17 @@ public class VoxelRay {
     }
 
     /**
+     * Gets the smallest component for the supplied {@link Vector3f}.
+     *
+     * @param v The {@link Vector3f} to get the smallest component from.
+     *
+     * @return The smallest component.
+     */
+    private static float getSmallestComponent(Vector3f v) {
+        return v.x < v.y ? (v.x < v.z ? v.x : v.z) : (v.y < v.z ? v.y : v.z);
+    }
+
+    /**
      * Gets the biggest component for the supplied {@link Vector3f}.
      *
      * @param v The {@link Vector3f} to get the biggest component from.
