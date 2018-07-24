@@ -33,6 +33,19 @@ public class VoxelRay {
     }
 
     /**
+     * Constructs a {@link VoxelRay} from two points : start and end. The start point is kept as reference.
+     *
+     * @param start The absolute starting position of the ray. Is kept as reference.
+     * @param end   The absolute ending position of the ray.
+     */
+    public VoxelRay(Vector3f start, Vector3f end) {
+        this.m_start = new Vector3d(start);
+        this.m_direction = new Vector3d(end).subtractLocal(m_start);
+        this.m_length = m_direction.length();
+        this.m_direction.normalizeLocal();
+    }
+
+    /**
      * Constructs a {@link VoxelRay} from a start, a direction and a length. The start and direction vectors are kept as references.
      *
      * @param start     The absolute starting position of the ray. Is kept as reference.
@@ -42,6 +55,19 @@ public class VoxelRay {
     public VoxelRay(Vector3d start, Vector3d direction, double length) {
         this.m_start = start;
         this.m_direction = direction;
+        this.m_length = length;
+    }
+
+    /**
+     * Constructs a {@link VoxelRay} from a start, a direction and a length. The start and direction vectors are kept as references.
+     *
+     * @param start     The absolute starting position of the ray. Is kept as reference.
+     * @param direction The direction of the ray, which is kept as reference. Must be normalized.
+     * @param length    The length of the ray.
+     */
+    public VoxelRay(Vector3f start, Vector3f direction, float length) {
+        this.m_start = new Vector3d(start);
+        this.m_direction = new Vector3d(direction);
         this.m_length = length;
     }
 
@@ -97,20 +123,23 @@ public class VoxelRay {
 
         visitedVoxels.add(new Vector3i(voxelIndex));
 
-        while(visitedVoxels.size() < m_voxelDistance) {
+        while (visitedVoxels.size() < m_voxelDistance) {
             if (tMaxX < tMaxY) {
                 if (tMaxX < tMaxZ) {
                     voxelIndex.x += stepX;
                     tMaxX += tDeltaX;
-                } else {
+                }
+                else {
                     voxelIndex.z += stepZ;
                     tMaxZ += tDeltaZ;
                 }
-            } else {
+            }
+            else {
                 if (tMaxY < tMaxZ) {
                     voxelIndex.y += stepY;
                     tMaxY += tDeltaY;
-                } else {
+                }
+                else {
                     voxelIndex.z += stepZ;
                     tMaxZ += tDeltaZ;
                 }
@@ -223,5 +252,40 @@ public class VoxelRay {
 
     public int getVoxelDistance() {
         return m_voxelDistance;
+    }
+
+    public void setStart(Vector3d start) {
+        m_start.set(start);
+    }
+
+    public void setStart(Vector3f start) {
+        m_start.set(start);
+    }
+
+    /**
+     * Sets the direction.
+     *
+     * @param direction The direction to set to the ray. Must be normalized.
+     */
+    public void setDirection(Vector3d direction) {
+        m_direction.set(direction);
+    }
+
+    /**
+     * Sets the direction.
+     *
+     * @param direction The direction to set to the ray. Must be normalized.
+     */
+    public void setDirection(Vector3f direction) {
+        m_direction.set(direction);
+    }
+
+    /**
+     * Sets the length of the ray.
+     *
+     * @param length The new length of the ray. Must be positive.
+     */
+    public void setLength(double length) {
+        m_length = length;
     }
 }
