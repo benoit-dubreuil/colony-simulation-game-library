@@ -13,10 +13,10 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Tests for the method {@link MathExt#abs(int)} and all its overloads.
+ * Tests for the method {@link MathExt#abs(int)} and all its overloads, if they exist.
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class AbsTests {
+public class Abs_Tests {
 
     private Random m_random;
 
@@ -51,7 +51,6 @@ public class AbsTests {
         assertEquals(Integer.MAX_VALUE, MathExt.abs(Integer.MAX_VALUE));
         assertTrue(MathExt.abs(Integer.MAX_VALUE) >= 0);
     }
-
 
     /**
      * The minimum integer does not have positive equivalent integer because the number zero counts as a positive number and thus the maximum integer is the absolute negative
