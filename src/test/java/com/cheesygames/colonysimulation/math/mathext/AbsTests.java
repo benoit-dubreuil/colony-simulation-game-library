@@ -1,5 +1,6 @@
-package com.cheesygames.colonysimulation.math;
+package com.cheesygames.colonysimulation.math.mathext;
 
+import com.cheesygames.colonysimulation.math.MathExt;
 import org.junit.jupiter.api.*;
 
 import java.util.ArrayList;
@@ -11,8 +12,11 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Tests for the method {@link MathExt#abs(int)} and all its overloads.
+ */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class MathExtTests {
+public class AbsTests {
 
     private Random m_random;
 
@@ -27,15 +31,15 @@ public class MathExtTests {
     }
 
     @TestFactory
-    public Stream<DynamicTest> abs_intZeroPositive_positive() {
+    public Stream<DynamicTest> intZeroPositive_positive() {
         return IntStream.iterate(0, n -> n = m_random.nextInt(Integer.MAX_VALUE)).limit(10).mapToObj(n -> DynamicTest.dynamicTest("test_" + n, () -> {
-            assertEquals(n, MathExt.abs(n));
+            Assertions.assertEquals(n, MathExt.abs(n));
             assertTrue(MathExt.abs(n) >= 0);
         }));
     }
 
     @TestFactory
-    public Stream<DynamicTest> abs_intNegative_positive() {
+    public Stream<DynamicTest> intNegative_positive() {
         return IntStream.iterate(-1, n -> n = -(m_random.nextInt(Integer.MAX_VALUE) + 1)).limit(10).mapToObj(n -> DynamicTest.dynamicTest("test_" + n, () -> {
             assertNotEquals(n, MathExt.abs(n));
             assertTrue(MathExt.abs(n) >= 0);
@@ -43,7 +47,7 @@ public class MathExtTests {
     }
 
     @Test
-    public void abs_intMax_positive() {
+    public void intMax_positive() {
         assertEquals(Integer.MAX_VALUE, MathExt.abs(Integer.MAX_VALUE));
         assertTrue(MathExt.abs(Integer.MAX_VALUE) >= 0);
     }
@@ -54,13 +58,13 @@ public class MathExtTests {
      * number + 1.
      */
     @Test
-    public void abs_intMin_negative() {
+    public void intMin_negative() {
         assertEquals(Integer.MIN_VALUE, MathExt.abs(Integer.MIN_VALUE));
         assertTrue(MathExt.abs(Integer.MIN_VALUE) < 0);
     }
 
     @TestFactory
-    public Collection<DynamicTest> abs_floatZeroPositive_positive() {
+    public Collection<DynamicTest> floatZeroPositive_positive() {
         List<DynamicTest> tests = new ArrayList<>();
 
         tests.add(DynamicTest.dynamicTest("test_0", () -> {
@@ -81,7 +85,7 @@ public class MathExtTests {
     }
 
     @TestFactory
-    public Collection<DynamicTest> abs_floatNegative_positive() {
+    public Collection<DynamicTest> floatNegative_positive() {
         List<DynamicTest> tests = new ArrayList<>();
 
         for (int i = 0; i < 10; ++i) {
@@ -97,42 +101,42 @@ public class MathExtTests {
     }
 
     @Test
-    public void abs_floatPositiveInfinity_positive() {
+    public void floatPositiveInfinity_positive() {
         assertEquals(Float.POSITIVE_INFINITY, MathExt.abs(Float.POSITIVE_INFINITY));
         assertTrue(MathExt.abs(Float.POSITIVE_INFINITY) >= 0);
     }
 
     @Test
-    public void abs_floatNegativeInfinity_positive() {
+    public void floatNegativeInfinity_positive() {
         assertEquals(-Float.NEGATIVE_INFINITY, MathExt.abs(Float.NEGATIVE_INFINITY));
         assertTrue(MathExt.abs(Float.NEGATIVE_INFINITY) >= 0);
     }
 
     @Test
-    public void abs_floatNaN_equals() {
+    public void floatNaN_equals() {
         assertEquals(Float.NaN, MathExt.abs(Float.NaN));
     }
 
     @Test
-    public void abs_floatMaxPositive_positive() {
+    public void floatMaxPositive_positive() {
         assertEquals(Float.MAX_VALUE, MathExt.abs(Float.MAX_VALUE));
         assertTrue(MathExt.abs(Float.MAX_VALUE) >= 0);
     }
 
     @Test
-    public void abs_floatMinPositive_positive() {
+    public void floatMinPositive_positive() {
         assertEquals(Float.MIN_VALUE, MathExt.abs(Float.MIN_VALUE));
         assertTrue(MathExt.abs(Float.MIN_VALUE) >= 0);
     }
 
     @Test
-    public void abs_floatMaxNegative_positive() {
+    public void floatMaxNegative_positive() {
         assertEquals(Float.MAX_VALUE, MathExt.abs(-Float.MAX_VALUE));
         assertTrue(MathExt.abs(-Float.MAX_VALUE) >= 0);
     }
 
     @Test
-    public void abs_floatMinNegative_positive() {
+    public void floatMinNegative_positive() {
         assertEquals(Float.MIN_VALUE, MathExt.abs(-Float.MIN_VALUE));
         assertTrue(MathExt.abs(-Float.MIN_VALUE) >= 0);
     }
