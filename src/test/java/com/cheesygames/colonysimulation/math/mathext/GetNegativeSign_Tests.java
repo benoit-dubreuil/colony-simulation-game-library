@@ -130,8 +130,8 @@ public class GetNegativeSign_Tests {
     }
 
     @Test
-    public void floatNaN_zeroSign() {
-        assertThrows(AssertionError.class, () ->  MathExt.getNegativeSign(Float.NaN));
+    public void floatNaN_assertError() {
+        assertThrows(AssertionError.class, () -> MathExt.getNegativeSign(Float.NaN));
     }
 
     @Test
@@ -192,7 +192,7 @@ public class GetNegativeSign_Tests {
 
     @Test
     public void doubleNaN_zeroSign() {
-        assertThrows(AssertionError.class, () ->  MathExt.getNegativeSign(Double.NaN));
+        assertThrows(AssertionError.class, () -> MathExt.getNegativeSign(Double.NaN));
     }
 
     @Test

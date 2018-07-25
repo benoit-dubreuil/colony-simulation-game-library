@@ -10,7 +10,6 @@ import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests for the method {@link MathExt#getSignZeroPositive(int)} and all its overloads, if they exist.
@@ -131,8 +130,8 @@ public class GetSignZeroPositive_Tests {
     }
 
     @Test
-    public void floatNaN_positiveSign() {
-        assertThrows(AssertionError.class, () ->  MathExt.getSignZeroPositive(Float.NaN));
+    public void floatNaN_assertError() {
+        assertThrows(AssertionError.class, () -> MathExt.getSignZeroPositive(Float.NaN));
     }
 
     @Test
@@ -193,7 +192,7 @@ public class GetSignZeroPositive_Tests {
 
     @Test
     public void doubleNaN_positiveSign() {
-        assertThrows(AssertionError.class, () ->  MathExt.getSignZeroPositive(Double.NaN));
+        assertThrows(AssertionError.class, () -> MathExt.getSignZeroPositive(Double.NaN));
     }
 
     @Test

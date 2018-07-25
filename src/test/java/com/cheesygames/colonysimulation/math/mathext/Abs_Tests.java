@@ -112,8 +112,8 @@ public class Abs_Tests {
     }
 
     @Test
-    public void floatNaN_equals() {
-        assertThrows(AssertionError.class, () ->  MathExt.abs(Float.NaN));
+    public void floatNaN_assertError() {
+        assertThrows(AssertionError.class, () -> MathExt.abs(Float.NaN));
     }
 
     @Test
