@@ -19,6 +19,15 @@ public class VoxelRay {
     private int m_voxelDistance;
 
     /**
+     * Constructs an invalid {@link VoxelRay} as its direction and length are null. The setters must be called after constructing a {@link VoxelRay} with this constructors.
+     */
+    public VoxelRay() {
+        this.m_start = new Vector3d();
+        this.m_direction = new Vector3d();
+        this.m_length = 0;
+    }
+
+    /**
      * Constructs a {@link VoxelRay} from two points : start and end. The start point is kept as reference.
      *
      * @param start The absolute starting position of the ray. Is kept as reference.
@@ -100,6 +109,8 @@ public class VoxelRay {
      * @see <a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.42.3443&rep=rep1&type=pdf">A Fast Voxel Traversal Algorithm</a>
      */
     public void rayCastLocal(double voxelHalfExtent, Function<Vector3i, Boolean> onTraversingVoxel, Vector3i voxelIndex) {
+        assert !Double.isNaN(voxelHalfExtent);
+
         assert !Double.isNaN(m_start.x);
         assert !Double.isNaN(m_start.y);
         assert !Double.isNaN(m_start.z);
