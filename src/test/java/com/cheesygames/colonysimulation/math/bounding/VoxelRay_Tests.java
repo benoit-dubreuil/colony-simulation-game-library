@@ -13,6 +13,7 @@ public class VoxelRay_Tests {
 
     private static final double DEFAULT_HALF_EXTENT = new World().getMeshGenerator().getHalfExtent();
     private static final int REPEAT_COUNT_HALF_EXTENT = 3;
+    private static final int VECTOR3_COMPONENT_COUNT = 3;
 
     private double m_halfExtent;
     private VoxelRay m_voxelRay;
@@ -106,5 +107,24 @@ public class VoxelRay_Tests {
         });
 
         assertEquals(1, traversedVoxelCount.get());
+    }
+
+    @RepeatedTest(REPEAT_COUNT_HALF_EXTENT * VECTOR3_COMPONENT_COUNT)
+    public void rayCast_length3DirectionX_4TraversedVoxels(RepetitionInfo repetitionInfo) {
+        final int length = 3;
+        final int currentRepetitionPlusVecComponentCount = repetitionInfo.getCurrentRepetition() + VECTOR3_COMPONENT_COUNT;
+
+        m_halfExtent *= currentRepetitionPlusVecComponentCount / VECTOR3_COMPONENT_COUNT;
+        m_voxelRay.setLength(length * (currentRepetitionPlusVecComponentCount / VECTOR3_COMPONENT_COUNT));
+        m_voxelRay.getDirection().set(repetitionInfo.getCurrentRepetition() % REPEAT_COUNT_HALF_EXTENT, 1.0);
+
+        AtomicInteger traversedVoxelCount = new AtomicInteger();
+
+        m_voxelRay.rayCast(m_halfExtent, (voxelIndex) -> {
+            traversedVoxelCount.incrementAndGet();
+            return false;
+        });
+
+        assertEquals(length + 1, traversedVoxelCount.get());
     }
 }
