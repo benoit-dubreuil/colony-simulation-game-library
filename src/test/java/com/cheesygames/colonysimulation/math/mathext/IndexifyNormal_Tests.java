@@ -39,9 +39,7 @@ public class IndexifyNormal_Tests {
     @Test
     public void minimum_assertError() {
         m_number = Integer.MIN_VALUE;
-        assertThrows(AssertionError.class, () -> {
-            MathExt.indexifyNormal(m_number);
-        });
+        assertThrows(AssertionError.class, () -> MathExt.indexifyNormal(m_number));
     }
 
     @Test

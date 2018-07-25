@@ -87,6 +87,7 @@ public final class MathExt {
      * @return The number's sign.
      */
     public static int getSignZeroPositive(float number) {
+        assert !Float.isNaN(number);
         return getNegativeSign(number) | 1;
     }
 
@@ -98,6 +99,7 @@ public final class MathExt {
      * @return The number's sign.
      */
     public static long getSignZeroPositive(double number) {
+        assert !Double.isNaN(number);
         return getNegativeSign(number) | 1;
     }
 
@@ -121,6 +123,7 @@ public final class MathExt {
      * @return -1 if the number is negative, 0 otherwise.
      */
     public static int getNegativeSign(float number) {
+        assert !Float.isNaN(number);
         return Float.floatToRawIntBits(number) >> BIT_COUNT_EXCLUDING_SIGN_32;
     }
 
@@ -133,6 +136,7 @@ public final class MathExt {
      * @return -1 if the number is negative, 0 otherwise.
      */
     public static long getNegativeSign(double number) {
+        assert !Double.isNaN(number);
         return Double.doubleToRawLongBits(number) >> BIT_COUNT_EXCLUDING_SIGN_64;
     }
 

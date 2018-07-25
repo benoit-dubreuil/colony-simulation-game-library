@@ -113,7 +113,7 @@ public class Abs_Tests {
 
     @Test
     public void floatNaN_equals() {
-        assertEquals(Float.NaN, MathExt.abs(Float.NaN));
+        assertThrows(AssertionError.class, () ->  MathExt.abs(Float.NaN));
     }
 
     @Test
