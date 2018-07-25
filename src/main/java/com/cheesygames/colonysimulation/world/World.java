@@ -1,10 +1,10 @@
 package com.cheesygames.colonysimulation.world;
 
-import com.cheesygames.colonysimulation.math.MathExt;
 import com.cheesygames.colonysimulation.math.direction.Direction3D;
 import com.cheesygames.colonysimulation.math.vector.Vector3i;
 import com.cheesygames.colonysimulation.world.chunk.*;
 import com.cheesygames.colonysimulation.world.chunk.voxel.VoxelType;
+import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 
 import java.util.HashMap;
@@ -33,9 +33,9 @@ public class World {
         this.m_chunkSizeBits = new Vector3i(DEFAULT_CHUNK_SIZE_BITS);
         this.m_chunkSize = new Vector3i(DEFAULT_CHUNK_SIZE);
 
-        assert MathExt.isPowerOfTwo(m_chunkSize.getX());
-        assert MathExt.isPowerOfTwo(m_chunkSize.getY());
-        assert MathExt.isPowerOfTwo(m_chunkSize.getZ());
+        assert FastMath.isPowerOfTwo(m_chunkSize.getX());
+        assert FastMath.isPowerOfTwo(m_chunkSize.getY());
+        assert FastMath.isPowerOfTwo(m_chunkSize.getZ());
     }
 
     public void generateWorld() {
