@@ -58,11 +58,13 @@ public final class MathExt {
     /**
      * Indexifies a normal that is either -1, 0 or 1. In other words, negative numbers become 0, positive numbers become 1 and zero is left unchanged.
      *
-     * @param normal A normal that should be either -1, 0 or 1. If it's smaller than -1, it will treated as -1. If it's bigger than 1, it will be treated as 1.
+     * @param normal A normal that should be either -1, 0 or 1. If it's smaller than -1, it will treated as -1. If it's bigger than 1, it will be treated as 1. Must not be equal to
+     *               {@link Integer#MIN_VALUE} and if it does, then the result is positive 1. An assert checks if the normal is not {@link Integer#MIN_VALUE}.
      *
-     * @return An index that is either 0 (negative and null normal) or 1 (positive normal).
+     * @return An index that is either 0 (negative and null normal) or 1 (positive normal). Positive 1 if the normal is {@link Integer#MIN_VALUE}.
      */
     public static int indexifyNormal(int normal) {
+        assert normal != Integer.MIN_VALUE;
         return ~(normal - 1 >> BIT_COUNT_EXCLUDING_SIGN_32) & 1;
     }
 
