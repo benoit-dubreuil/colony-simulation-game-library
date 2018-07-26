@@ -110,13 +110,32 @@ public class VoxelRay_Tests {
     }
 
     @RepeatedTest(REPEAT_COUNT_HALF_EXTENT * VECTOR3_COMPONENT_COUNT)
-    public void rayCast_length3DirectionX_4TraversedVoxels(RepetitionInfo repetitionInfo) {
+    public void rayCast_3length3Directions_4TraversedVoxels(RepetitionInfo repetitionInfo) {
         final int length = 3;
-        final int currentRepetitionPlusVecComponentCount = repetitionInfo.getCurrentRepetition() + VECTOR3_COMPONENT_COUNT;
+        final int currentRepetitionPlusVecComponentCount = repetitionInfo.getCurrentRepetition() + VECTOR3_COMPONENT_COUNT - 1;
 
         m_halfExtent *= currentRepetitionPlusVecComponentCount / VECTOR3_COMPONENT_COUNT;
         m_voxelRay.setLength(length * (currentRepetitionPlusVecComponentCount / VECTOR3_COMPONENT_COUNT));
-        m_voxelRay.getDirection().set(repetitionInfo.getCurrentRepetition() % REPEAT_COUNT_HALF_EXTENT, 1.0);
+        m_voxelRay.getDirection().set((repetitionInfo.getCurrentRepetition() - 1) % REPEAT_COUNT_HALF_EXTENT, 1.0);
+
+        AtomicInteger traversedVoxelCount = new AtomicInteger();
+
+        m_voxelRay.rayCast(m_halfExtent, (voxelIndex) -> {
+            traversedVoxelCount.incrementAndGet();
+            return false;
+        });
+
+        assertEquals(length + 1, traversedVoxelCount.get());
+    }
+
+    @RepeatedTest(REPEAT_COUNT_HALF_EXTENT * VECTOR3_COMPONENT_COUNT)
+    public void rayCast_3length3NegativeDirections_4TraversedVoxels(RepetitionInfo repetitionInfo) {
+        final int length = 3;
+        final int currentRepetitionPlusVecComponentCount = repetitionInfo.getCurrentRepetition() + VECTOR3_COMPONENT_COUNT - 1;
+
+        m_halfExtent *= currentRepetitionPlusVecComponentCount / VECTOR3_COMPONENT_COUNT;
+        m_voxelRay.setLength(length * (currentRepetitionPlusVecComponentCount / VECTOR3_COMPONENT_COUNT));
+        m_voxelRay.getDirection().set((repetitionInfo.getCurrentRepetition() - 1) % REPEAT_COUNT_HALF_EXTENT, -1.0);
 
         AtomicInteger traversedVoxelCount = new AtomicInteger();
 
