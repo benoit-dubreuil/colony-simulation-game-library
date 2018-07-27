@@ -237,7 +237,8 @@ public class VoxelRay {
      * @return The position's integer index.
      */
     private static int getPositionIndex(double position, double halfExtent) {
-        return (int) ((position + halfExtent) / (halfExtent * 2));
+        double gridDecimal = (position + halfExtent) / (halfExtent * 2);
+        return (int) (gridDecimal >= 0 && gridDecimal < 1 ? gridDecimal : Math.floor(gridDecimal));
     }
 
     /**

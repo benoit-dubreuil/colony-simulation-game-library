@@ -18,6 +18,8 @@ public final class MathExt {
     public static final int SIGN_BIT_MASK = 0x80000000;
     public static final int BIT_COUNT_EXCLUDING_SIGN_32 = 31;
     public static final int BIT_COUNT_EXCLUDING_SIGN_64 = 63;
+    public static final int FLOAT_DECIMAL_DIGIT_COUNT = 8;
+    public static final int DOUBLE_DECIMAL_DIGIT_COUNT = 16;
 
     private MathExt() {
     }
