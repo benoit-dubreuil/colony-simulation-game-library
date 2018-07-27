@@ -1,6 +1,7 @@
 package com.cheesygames.colonysimulation.math.bounding;
 
 import com.cheesygames.colonysimulation.math.MathExt;
+import com.cheesygames.colonysimulation.math.vector.Vector3i;
 import com.cheesygames.colonysimulation.world.World;
 import com.jme3.scene.plugins.blender.math.Vector3d;
 import org.junit.jupiter.api.*;
@@ -115,6 +116,27 @@ public class VoxelRay_Tests {
 
         // Expected 1 because the length is 0, however we still count the current voxel.
         assertEquals(1, traversedVoxelCount.get());
+    }
+
+    @RepeatedTest(REPEAT_COUNT_HALF_EXTENT)
+    public void rayCastLocal_1LengthFromNegativeToZero_2TraversedVoxels(RepetitionInfo repetitionInfo) {
+        // Garbage init
+        Vector3i index = new Vector3i(41, -98532, 634);
+
+        m_halfExtent *= repetitionInfo.getCurrentRepetition();
+        m_voxelRay.getStart().set(-1 * repetitionInfo.getCurrentRepetition(), 0, 0);
+        m_voxelRay.setLength(repetitionInfo.getCurrentRepetition());
+        m_voxelRay.setDirection(Vector3d.UNIT_X);
+        m_voxelRay.getDirection().normalizeLocal();
+
+        AtomicInteger traversedVoxelCount = new AtomicInteger();
+
+        m_voxelRay.rayCastLocal(m_halfExtent, (voxelIndex) -> {
+            traversedVoxelCount.incrementAndGet();
+            return false;
+        }, index);
+
+        assertEquals(2, traversedVoxelCount.get());
     }
 
     @RepeatedTest(REPEAT_COUNT_HALF_EXTENT)
