@@ -11,6 +11,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+/**
+ * Tests for the class {@link VoxelRay}.
+ */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class VoxelRay_Tests {
 
