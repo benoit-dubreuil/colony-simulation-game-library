@@ -120,10 +120,6 @@ public class World {
         }
     }
 
-    public static void main(String[] args) {
-        System.out.println(-33 >> 5);
-    }
-
     public Map<Vector3i, Chunk> getChunks() {
         return m_chunks;
     }
@@ -142,15 +138,15 @@ public class World {
     }
 
     /**
-     * Gets the chunk index based upon the supplied absolute voxel index. The method is local, meaning that the given chunkIndex's components will be set to different values and that
-     * it will be returned, even though it's still the same reference.
+     * Gets the chunk index based upon the supplied absolute voxel index. The method is local, meaning that the given chunkIndex's components will be set to different values and
+     * that it will be returned, even though it's still the same reference.
      *
      * @param absoluteVoxelIndex The absolute voxel index in the world.
-     * @param chunkIndex       The chunk index to modify and return.
+     * @param chunkIndex         The chunk index to modify and return.
      *
      * @return The modified chunk index.
      */
-    private Vector3i getChunkIndexLocal(Vector3i absoluteVoxelIndex, Vector3i chunkIndex) {
+    public Vector3i getChunkIndexLocal(Vector3i absoluteVoxelIndex, Vector3i chunkIndex) {
         return chunkIndex.set(getChunkIndex(absoluteVoxelIndex.x, m_chunkSizeBits.x),
             getChunkIndex(absoluteVoxelIndex.y, m_chunkSizeBits.y),
             getChunkIndex(absoluteVoxelIndex.z, m_chunkSizeBits.z));
@@ -163,10 +159,34 @@ public class World {
      *
      * @return The chunk index.
      */
-    private Vector3i getChunkIndex(Vector3i absoluteVoxelIndex) {
-        return new Vector3i().set(getChunkIndex(absoluteVoxelIndex.x, m_chunkSizeBits.x),
-            getChunkIndex(absoluteVoxelIndex.y, m_chunkSizeBits.y),
-            getChunkIndex(absoluteVoxelIndex.z, m_chunkSizeBits.z));
+    public Vector3i getChunkIndex(Vector3i absoluteVoxelIndex) {
+        return getChunkIndexLocal(absoluteVoxelIndex, new Vector3i());
+    }
+
+    /**
+     * Converts locally a world decimal position into a voxel absolute index. The method is local because the parameter voxelIndex is {@link Vector3i#set(int, int, int)} and then
+     * returned, so the reference is actually the same.
+     *
+     * @param worldPosition      The decimal world position to convert.
+     * @param absoluteVoxelIndex The absolute voxel index to modify and return.
+     *
+     * @return The modified absolute voxel index that was computed from the world position.
+     */
+    public Vector3i worldPositionToVoxelIndexLocal(Vector3f worldPosition, Vector3i absoluteVoxelIndex) {
+        return absoluteVoxelIndex.set((int) Math.floor(worldPosition.x + VOXEL_HALF_EXTENT),
+            (int) Math.floor(worldPosition.y + VOXEL_HALF_EXTENT),
+            (int) Math.floor(worldPosition.z + VOXEL_HALF_EXTENT));
+    }
+
+    /**
+     * Converts a world decimal position into a voxel absolute index.
+     *
+     * @param worldPosition The decimal world position to convert.
+     *
+     * @return The absolute voxel index that was computed from the world position.
+     */
+    public Vector3i worldPositionToVoxelIndex(Vector3f worldPosition) {
+        return worldPositionToVoxelIndexLocal(worldPosition, new Vector3i());
     }
 
     /**
