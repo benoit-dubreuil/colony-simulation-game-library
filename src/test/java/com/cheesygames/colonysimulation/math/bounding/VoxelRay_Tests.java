@@ -66,7 +66,7 @@ public class VoxelRay_Tests {
     }
 
     @RepeatedTest(REPEAT_COUNT_HALF_EXTENT)
-    public void rayCast_distanceZero_oneTraversedVoxel(RepetitionInfo repetitionInfo) {
+    public void rayCast_distanceZero_1TraversedVoxel(RepetitionInfo repetitionInfo) {
         m_halfExtent *= repetitionInfo.getCurrentRepetition();
         m_voxelRay.setDirection(Vector3d.UNIT_X);
         m_voxelRay.getDirection().normalizeLocal();
@@ -82,7 +82,7 @@ public class VoxelRay_Tests {
     }
 
     @RepeatedTest(REPEAT_COUNT_HALF_EXTENT)
-    public void rayCast_distanceZeroOnPositiveBorder_oneTraversedVoxel(RepetitionInfo repetitionInfo) {
+    public void rayCast_distanceZeroOnPositiveBorder_1TraversedVoxel(RepetitionInfo repetitionInfo) {
         m_halfExtent *= repetitionInfo.getCurrentRepetition();
         m_voxelRay.setStart(new Vector3d(m_halfExtent, m_halfExtent, m_halfExtent));
         m_voxelRay.setDirection(Vector3d.UNIT_X);
@@ -100,7 +100,7 @@ public class VoxelRay_Tests {
     }
 
     @RepeatedTest(REPEAT_COUNT_HALF_EXTENT)
-    public void rayCast_distanceZeroOnNegativeBorder_oneTraversedVoxel(RepetitionInfo repetitionInfo) {
+    public void rayCast_distanceZeroOnNegativeBorder_1TraversedVoxel(RepetitionInfo repetitionInfo) {
         m_halfExtent *= repetitionInfo.getCurrentRepetition();
         m_voxelRay.setStart(new Vector3d(-m_halfExtent, -m_halfExtent, -m_halfExtent));
         m_voxelRay.setDirection(Vector3d.UNIT_X);
@@ -138,7 +138,7 @@ public class VoxelRay_Tests {
     }
 
     @RepeatedTest(REPEAT_COUNT_HALF_EXTENT * VECTOR3_COMPONENT_COUNT)
-    public void rayCast_3length3Directions_TraversedVoxels(RepetitionInfo repetitionInfo) {
+    public void rayCast_3length3Directions_4TraversedVoxels(RepetitionInfo repetitionInfo) {
         final int length = 3;
         final int currentRepetitionPlusVecComponentCount = repetitionInfo.getCurrentRepetition() + VECTOR3_COMPONENT_COUNT - 1;
 
@@ -159,7 +159,7 @@ public class VoxelRay_Tests {
     }
 
     @RepeatedTest(REPEAT_COUNT_HALF_EXTENT * VECTOR3_COMPONENT_COUNT)
-    public void rayCast_3length3NegativeDirections_3TraversedVoxels(RepetitionInfo repetitionInfo) {
+    public void rayCast_3length3NegativeDirections_4TraversedVoxels(RepetitionInfo repetitionInfo) {
         final int length = 3;
         final int currentRepetitionPlusVecComponentCount = repetitionInfo.getCurrentRepetition() + VECTOR3_COMPONENT_COUNT - 1;
 
