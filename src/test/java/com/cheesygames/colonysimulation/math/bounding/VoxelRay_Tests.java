@@ -117,6 +117,25 @@ public class VoxelRay_Tests {
         assertEquals(1, traversedVoxelCount.get());
     }
 
+    @RepeatedTest(REPEAT_COUNT_HALF_EXTENT)
+    public void rayCast_2LengthFromNegativeToPositive_3TraversedVoxels(RepetitionInfo repetitionInfo) {
+        m_halfExtent *= repetitionInfo.getCurrentRepetition();
+        m_voxelRay.getStart().set(-1 * repetitionInfo.getCurrentRepetition(), 0, 0);
+        m_voxelRay.setLength(2 * repetitionInfo.getCurrentRepetition());
+        m_voxelRay.setDirection(Vector3d.UNIT_X);
+        m_voxelRay.getDirection().normalizeLocal();
+
+        AtomicInteger traversedVoxelCount = new AtomicInteger();
+
+        m_voxelRay.rayCast(m_halfExtent, (voxelIndex) -> {
+            traversedVoxelCount.incrementAndGet();
+            return false;
+        });
+
+        // Expected 1 because the length is 0, however we still count the current voxel.
+        assertEquals(3, traversedVoxelCount.get());
+    }
+
     @RepeatedTest(REPEAT_COUNT_HALF_EXTENT * VECTOR3_COMPONENT_COUNT)
     public void rayCast_halfExtentLength3Directions_2TraversedVoxels(RepetitionInfo repetitionInfo) {
         final int currentRepetitionPlusVecComponentCount = repetitionInfo.getCurrentRepetition() + VECTOR3_COMPONENT_COUNT - 1;
