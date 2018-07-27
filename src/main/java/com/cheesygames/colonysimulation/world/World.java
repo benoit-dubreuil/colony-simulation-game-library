@@ -164,6 +164,63 @@ public class World {
     }
 
     /**
+     * Gets the chunk's starting position on the X axis according to its index.
+     *
+     * @param chunkIndexX The chunk's index on the X axis.
+     *
+     * @return The starting absolute (world) position of the chunk on the X axis.
+     */
+    public int getChunkStartPositionX(int chunkIndexX) {
+        return chunkIndexX << m_chunkSizeBits.x;
+    }
+
+    /**
+     * Gets the chunk's starting position on the Y axis according to its index.
+     *
+     * @param chunkIndexY The chunk's index on the Y axis.
+     *
+     * @return The starting absolute (world) position of the chunk on the Y axis.
+     */
+    public int getChunkStartPositionY(int chunkIndexY) {
+        return chunkIndexY << m_chunkSizeBits.y;
+    }
+
+    /**
+     * Gets the chunk's starting position on the Z axis according to its index.
+     *
+     * @param chunkIndexZ The chunk's index on the Z axis.
+     *
+     * @return The starting absolute (world) position of the chunk on the Z axis.
+     */
+    public int getChunkStartPositionZ(int chunkIndexZ) {
+        return chunkIndexZ << m_chunkSizeBits.z;
+    }
+
+    /**
+     * Gets the chunk's starting position according to its index. The method is local, meaning that the supplied chunk's starting position will be {@link Vector3i#set(int, int, *
+     * int)} and returned.
+     *
+     * @param chunkIndex         The chunk's index.
+     * @param chunkStartPosition The chunk's starting position that will be modified and returned.
+     *
+     * @return The starting absolute (world) position of the chunk, which is the same reference as the given parameter.
+     */
+    public Vector3i getChunkStartPositionLocal(Vector3i chunkIndex, Vector3i chunkStartPosition) {
+        return chunkStartPosition.set(getChunkStartPositionX(chunkIndex.x), getChunkStartPositionY(chunkIndex.y), getChunkStartPositionZ(chunkIndex.z));
+    }
+
+    /**
+     * Gets the chunk's starting position according to its index.
+     *
+     * @param chunkIndex The chunk's index.
+     *
+     * @return The starting absolute (world) position of the chunk.
+     */
+    public Vector3i getChunkStartPosition(Vector3i chunkIndex) {
+        return getChunkStartPositionLocal(chunkIndex, new Vector3i());
+    }
+
+    /**
      * Converts locally a world decimal position into a voxel absolute index. The method is local because the parameter voxelIndex is {@link Vector3i#set(int, int, int)} and then
      * returned, so the reference is actually the same.
      *
@@ -187,6 +244,63 @@ public class World {
      */
     public Vector3i worldPositionToVoxelIndex(Vector3f worldPosition) {
         return worldPositionToVoxelIndexLocal(worldPosition, new Vector3i());
+    }
+
+    /**
+     * Gets the voxel chunk's relative index from its absolute (world) index on the X axis.
+     *
+     * @param absoluteVoxelIndexX The voxel absolute (world) index on the X axis.
+     *
+     * @return The voxel chunk's relative index on the X axis.
+     */
+    public int getVoxelRelativeIndexX(int absoluteVoxelIndexX) {
+        return absoluteVoxelIndexX - (getChunkIndex(absoluteVoxelIndexX, m_chunkSizeBits.x) << m_chunkSizeBits.x);
+    }
+
+    /**
+     * Gets the voxel chunk's relative index from its absolute (world) index on the Y axis.
+     *
+     * @param absoluteVoxelIndexY The voxel absolute (world) index on the Y axis.
+     *
+     * @return The voxel chunk's relative index on the Y axis.
+     */
+    public int getVoxelRelativeIndexY(int absoluteVoxelIndexY) {
+        return absoluteVoxelIndexY - (getChunkIndex(absoluteVoxelIndexY, m_chunkSizeBits.y) << m_chunkSizeBits.y);
+    }
+
+    /**
+     * Gets the voxel chunk's relative index from its absolute (world) index on the Z axis.
+     *
+     * @param absoluteVoxelIndexZ The voxel absolute (world) index on the Z axis.
+     *
+     * @return The voxel chunk's relative index on the Z axis.
+     */
+    public int getVoxelRelativeIndexZ(int absoluteVoxelIndexZ) {
+        return absoluteVoxelIndexZ - (getChunkIndex(absoluteVoxelIndexZ, m_chunkSizeBits.z) << m_chunkSizeBits.z);
+    }
+
+    /**
+     * Gets the voxel chunk's relative (chunk) index from its absolute (world) index. The method is local, meaning that the supplied parameter relativeVoxelIndex will be modified
+     * and then returned.
+     *
+     * @param absoluteVoxelIndex The voxel absolute (world) index.
+     * @param relativeVoxelIndex The voxel relative (chunk) index to modify and return.
+     *
+     * @return The voxel chunk's relative index, which is the reference to the supplied voxel relative index.
+     */
+    public Vector3i getVoxelRelativeIndexLocal(Vector3i absoluteVoxelIndex, Vector3i relativeVoxelIndex) {
+        return relativeVoxelIndex.set(getVoxelRelativeIndexX(absoluteVoxelIndex.x), getVoxelRelativeIndexX(absoluteVoxelIndex.y), getVoxelRelativeIndexX(absoluteVoxelIndex.z));
+    }
+
+    /**
+     * Gets the voxel chunk's relative (chunk) index from its absolute (world) index.
+     *
+     * @param absoluteVoxelIndex The voxel absolute (world) index.
+     *
+     * @return The voxel chunk's relative index.
+     */
+    public Vector3i getVoxelRelativeIndex(Vector3i absoluteVoxelIndex) {
+        return getVoxelRelativeIndexLocal(absoluteVoxelIndex, new Vector3i());
     }
 
     /**
