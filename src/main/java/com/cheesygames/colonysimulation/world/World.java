@@ -127,16 +127,44 @@ public class World {
     }
 
     /**
-     * Gets the chunk index based upon the supplied absolute position. The indices are axis independent, meaning that it does matter which is axis is chosen, as long as the
+     * Gets the chunk index based upon the supplied absolute voxel index. The indices are axis independent, meaning that it does matter which is axis is chosen, as long as the
      * parameters belong to the same one.
      *
-     * @param absolutePosition The absolute position in the world.
-     * @param chunkSizeBits    The bit shift count for the chunk size. This allows to not mention the axis.
+     * @param absoluteVoxelIndex The absolute voxel index in the world.
+     * @param chunkSizeBits      The bit shift count for the chunk size. This allows to not mention the axis.
      *
      * @return The chunk's singular dimensional index.
      */
-    public int getChunkIndex(int absolutePosition, int chunkSizeBits) {
-        return absolutePosition >> chunkSizeBits;
+    private static int getChunkIndex(int absoluteVoxelIndex, int chunkSizeBits) {
+        return absoluteVoxelIndex >> chunkSizeBits;
+    }
+
+    /**
+     * Gets the chunk index based upon the supplied absolute voxel index. The method is local, meaning that the given chunkIndex's components will be set to different values and that
+     * it will be returned, even though it's still the same reference.
+     *
+     * @param absoluteVoxelIndex The absolute voxel index in the world.
+     * @param chunkIndex       The chunk index to modify and return.
+     *
+     * @return The modified chunk index.
+     */
+    private Vector3i getChunkIndexLocal(Vector3i absoluteVoxelIndex, Vector3i chunkIndex) {
+        return chunkIndex.set(getChunkIndex(absoluteVoxelIndex.x, m_chunkSizeBits.x),
+            getChunkIndex(absoluteVoxelIndex.y, m_chunkSizeBits.y),
+            getChunkIndex(absoluteVoxelIndex.z, m_chunkSizeBits.z));
+    }
+
+    /**
+     * Gets the chunk index based upon the supplied absolute voxel index.
+     *
+     * @param absoluteVoxelIndex The absolute voxel index in the world.
+     *
+     * @return The chunk index.
+     */
+    private Vector3i getChunkIndex(Vector3i absoluteVoxelIndex) {
+        return new Vector3i().set(getChunkIndex(absoluteVoxelIndex.x, m_chunkSizeBits.x),
+            getChunkIndex(absoluteVoxelIndex.y, m_chunkSizeBits.y),
+            getChunkIndex(absoluteVoxelIndex.z, m_chunkSizeBits.z));
     }
 
     /**
