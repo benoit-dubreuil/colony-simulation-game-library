@@ -125,6 +125,7 @@ public class VoxelRay_Tests {
             return false;
         });
 
+        // Upper border is exclusive, so length + 1
         assertEquals(length + 1, traversedVoxelCount.get());
     }
 
@@ -144,6 +145,7 @@ public class VoxelRay_Tests {
             return false;
         });
 
-        assertEquals(length + 1, traversedVoxelCount.get());
+        // Lower border is inclusive, so no need for + 1
+        assertEquals(length, traversedVoxelCount.get());
     }
 }
