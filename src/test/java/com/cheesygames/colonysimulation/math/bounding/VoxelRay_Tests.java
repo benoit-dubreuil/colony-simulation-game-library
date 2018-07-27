@@ -202,4 +202,30 @@ public class VoxelRay_Tests {
 
         assertEquals(7, traversedVoxelCount.get());
     }
+
+    @RepeatedTest(REPEAT_COUNT_HALF_EXTENT * DIAGONAL_COUNT)
+    public void rayCast_1lengthAllDiagonalDirectionsTowardsZero_4TraversedVoxels(RepetitionInfo repetitionInfo) {
+        final int length = 1;
+        final int currentRepetitionPlusVecComponentCount = repetitionInfo.getCurrentRepetition() + DIAGONAL_COUNT - 1;
+
+        int binaryDirection = (repetitionInfo.getCurrentRepetition() - 1) % DIAGONAL_COUNT;
+        int halfExtentIndex =  currentRepetitionPlusVecComponentCount / DIAGONAL_COUNT;
+
+        m_voxelRay.getStart().x = MathExt.getSignZeroPositive((binaryDirection >>> 2) - 1) * halfExtentIndex;
+        m_voxelRay.getStart().y = MathExt.getSignZeroPositive(((binaryDirection & (1 << 1)) >>> 1) - 1) * halfExtentIndex;
+        m_voxelRay.getStart().z = MathExt.getSignZeroPositive((binaryDirection & 1) - 1) * halfExtentIndex;
+        m_voxelRay.setDirection(m_voxelRay.getStart().negate().normalizeLocal());
+
+        m_halfExtent *= halfExtentIndex;
+        m_voxelRay.setLength(length * halfExtentIndex);
+
+        AtomicInteger traversedVoxelCount = new AtomicInteger();
+
+        m_voxelRay.rayCast(m_halfExtent, (voxelIndex) -> {
+            traversedVoxelCount.incrementAndGet();
+            return false;
+        });
+
+        assertEquals(4, traversedVoxelCount.get());
+    }
 }
