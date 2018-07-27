@@ -15,6 +15,8 @@ import java.util.Map;
  */
 public class World {
 
+    public static final float VOXEL_HALF_EXTENT = 0.5f;
+
     private static final Vector3i DEFAULT_CHUNK_SIZE_BITS = new Vector3i(5, 5, 5);
     private static final Vector3i DEFAULT_CHUNK_SIZE = new Vector3i(1 << DEFAULT_CHUNK_SIZE_BITS.x, 1 << DEFAULT_CHUNK_SIZE_BITS.y, 1 << DEFAULT_CHUNK_SIZE_BITS.z);
 

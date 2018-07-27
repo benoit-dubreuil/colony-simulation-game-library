@@ -16,6 +16,4 @@ public interface IChunkMeshGenerator {
     Mesh generateMesh(World world, Chunk chunk);
 
     void generateVoxelMesh(Chunk chunk, Map<Direction3D, IChunkVoxelData> adjacentChunks, int x, int y, int z, List<Vector3f> vertices, List<Vector3f> normals);
-
-    float getHalfExtent();
 }

@@ -238,6 +238,8 @@ public class VoxelRay {
      */
     private static int getPositionIndex(double position, double halfExtent) {
         double gridDecimal = (position + halfExtent) / (halfExtent * 2);
+
+        // TODO : Is it actaully *always* working?
         return (int) (gridDecimal >= 0 && gridDecimal < 1 ? gridDecimal : Math.floor(gridDecimal));
     }
 
