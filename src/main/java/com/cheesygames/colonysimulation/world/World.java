@@ -356,6 +356,18 @@ public class World {
         return m_chunks.get(index);
     }
 
+    /**
+     * Gets the {@link Chunk} at the supplied index. If it does not exist, then get the {@link EmptyChunk#DEFAULT_EMPTY_CHUNK}.
+     *
+     * @param index The index at which to get the {@link Chunk}.
+     *
+     * @return The {@link Chunk} at the supplied index if it exists. Otherwise, return {@link EmptyChunk#DEFAULT_EMPTY_CHUNK}.
+     */
+    public IChunkVoxelData getOrEmptyChunkAt(Vector3i index) {
+        Chunk chunk = m_chunks.get(index);
+        return chunk != null ? chunk : EmptyChunk.DEFAULT_EMPTY_CHUNK;
+    }
+
     public Map<Direction3D, IChunkVoxelData> getAdjacentChunks(Vector3i index) {
         Map<Direction3D, IChunkVoxelData> adjacentChunks = new HashMap<>(Direction3D.ORTHOGONALS.length);
         Vector3i adjacentChunkIndex = new Vector3i();

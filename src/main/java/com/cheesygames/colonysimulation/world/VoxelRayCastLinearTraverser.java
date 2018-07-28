@@ -1,7 +1,7 @@
 package com.cheesygames.colonysimulation.world;
 
 import com.cheesygames.colonysimulation.math.vector.Vector3i;
-import com.cheesygames.colonysimulation.world.chunk.Chunk;
+import com.cheesygames.colonysimulation.world.chunk.IChunkVoxelData;
 import com.cheesygames.colonysimulation.world.chunk.voxel.VoxelType;
 
 import java.util.function.BiFunction;
@@ -19,7 +19,7 @@ public class VoxelRayCastLinearTraverser implements Function<Vector3i, Boolean> 
 
     private World m_world;
     private Vector3i m_chunkIndex;
-    private Chunk m_chunk;
+    private IChunkVoxelData m_chunk;
     private BiFunction<Vector3i, VoxelType, Boolean> m_returnCondition;
 
     public VoxelRayCastLinearTraverser() {
@@ -51,7 +51,7 @@ public class VoxelRayCastLinearTraverser implements Function<Vector3i, Boolean> 
         m_world.getChunkIndexLocal(absoluteVoxelIndex, m_chunkIndex);
 
         if (!m_chunkIndex.equals(oldChunkIndexX, oldChunkIndexY, oldChunkIndexZ) || m_chunk == null) {
-            m_chunk = m_world.getChunkAt(m_chunkIndex);
+            m_chunk = m_world.getOrEmptyChunkAt(m_chunkIndex);
         }
 
         return m_returnCondition.apply(absoluteVoxelIndex,
