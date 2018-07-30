@@ -6,6 +6,8 @@ import com.cheesygames.colonysimulation.math.vector.Vector3i;
 import com.cheesygames.colonysimulation.world.World;
 import com.cheesygames.colonysimulation.world.chunk.voxel.VoxelType;
 
+import java.util.function.Function;
+
 /**
  * Acts like a real-time {@link java.util.Iterator}. It is used by a {@link com.cheesygames.colonysimulation.math.bounding.VoxelRay} to continuously traverse the {@link World}
  * voxels in an efficient manner and to supply the incoming direction.
@@ -19,7 +21,8 @@ import com.cheesygames.colonysimulation.world.chunk.voxel.VoxelType;
 public class VoxelFaceRayCastContinuousTraverser extends AbstractVoxelRayCastContinuousTraverser {
 
     protected Vector3i m_lastVoxelIndex;
-    protected Vector3i m_incomingDirection;
+    protected Vector3i m_incomingDirectionVector;
+    protected Direction3D m_incomingDirection;
     protected TriFunction<Vector3i, VoxelType, Direction3D, Boolean> m_returnCondition;
 
     /**
@@ -31,7 +34,7 @@ public class VoxelFaceRayCastContinuousTraverser extends AbstractVoxelRayCastCon
     public VoxelFaceRayCastContinuousTraverser(Vector3i initialVoxel) {
         super();
         m_lastVoxelIndex = initialVoxel;
-        m_incomingDirection = new Vector3i();
+        m_incomingDirectionVector = new Vector3i();
     }
 
     /**
@@ -43,7 +46,7 @@ public class VoxelFaceRayCastContinuousTraverser extends AbstractVoxelRayCastCon
     public VoxelFaceRayCastContinuousTraverser(Vector3i initialVoxel, World world) {
         super(world);
         m_lastVoxelIndex = initialVoxel;
-        m_incomingDirection = new Vector3i();
+        m_incomingDirectionVector = new Vector3i();
     }
 
     /**
@@ -58,7 +61,7 @@ public class VoxelFaceRayCastContinuousTraverser extends AbstractVoxelRayCastCon
     public VoxelFaceRayCastContinuousTraverser(Vector3i initialVoxel, TriFunction<Vector3i, VoxelType, Direction3D, Boolean> returnCondition) {
         super();
         m_lastVoxelIndex = initialVoxel;
-        m_incomingDirection = new Vector3i();
+        m_incomingDirectionVector = new Vector3i();
         m_returnCondition = returnCondition;
     }
 
@@ -74,17 +77,17 @@ public class VoxelFaceRayCastContinuousTraverser extends AbstractVoxelRayCastCon
     public VoxelFaceRayCastContinuousTraverser(Vector3i initialVoxel, World world, TriFunction<Vector3i, VoxelType, Direction3D, Boolean> returnCondition) {
         super(world);
         m_lastVoxelIndex = initialVoxel;
-        m_incomingDirection = new Vector3i();
+        m_incomingDirectionVector = new Vector3i();
         m_returnCondition = returnCondition;
     }
 
     @Override
     protected boolean applyReturnCondition(Vector3i absoluteVoxelIndex) {
-        m_incomingDirection.set(absoluteVoxelIndex).subtractLocal(m_lastVoxelIndex);
+        m_incomingDirectionVector.set(absoluteVoxelIndex).subtractLocal(m_lastVoxelIndex);
 
-        boolean returnCondition = m_returnCondition.apply(absoluteVoxelIndex,
-            getVoxalAtAbsoluteVoxelIndex(absoluteVoxelIndex),
-            Direction3D.findDirectionFromVectorLocal(m_incomingDirection));
+        m_incomingDirection = Direction3D.findDirectionFromVectorLocal(m_incomingDirectionVector);
+
+        boolean returnCondition = m_returnCondition.apply(absoluteVoxelIndex, getVoxalAtAbsoluteVoxelIndex(absoluteVoxelIndex), m_incomingDirection);
 
         m_lastVoxelIndex.set(absoluteVoxelIndex);
 
@@ -97,5 +100,18 @@ public class VoxelFaceRayCastContinuousTraverser extends AbstractVoxelRayCastCon
 
     public void setReturnCondition(TriFunction<Vector3i, VoxelType, Direction3D, Boolean> returnCondition) {
         m_returnCondition = returnCondition;
+    }
+
+    /**
+     * Gets the incoming direction from the previous traversed voxel. If there is no previous traversed voxel, then the method returns {@link Direction3D#ZERO}. If the method
+     * {@link com.cheesygames.colonysimulation.math.bounding.VoxelRay#rayCastLocal(double, Function, Vector3i)} or {@link com.cheesygames.colonysimulation.math.bounding.VoxelRay#rayCast(double,
+     * Function)} have never been called with this object, then the method returns null.
+     *
+     * @return The incoming direction from the previous traversed voxel, {@link Direction3D#ZERO} if there is no previous traversed voxel and null if the method * {@link
+     * com.cheesygames.colonysimulation.math.bounding.VoxelRay#rayCastLocal(double, Function, Vector3i)} or {@link com.cheesygames.colonysimulation.math.bounding.VoxelRay#rayCast(double,
+     * * Function)} have never been called with this object.
+     */
+    public Direction3D getIncomingDirection() {
+        return m_incomingDirection;
     }
 }
