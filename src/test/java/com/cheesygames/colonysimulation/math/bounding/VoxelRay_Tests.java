@@ -17,7 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class VoxelRay_Tests {
 
-    private static final double DEFAULT_HALF_EXTENT = new World().getMeshGenerator().getHalfExtent();
     private static final int REPEAT_COUNT_HALF_EXTENT = 3;
     private static final int VECTOR3_COMPONENT_COUNT = 3;
     private static final int DIAGONAL_COUNT = 8;
@@ -32,7 +31,7 @@ public class VoxelRay_Tests {
 
     @BeforeEach
     public void setup() {
-        m_halfExtent = DEFAULT_HALF_EXTENT;
+        m_halfExtent = World.VOXEL_HALF_EXTENT;
 
         m_voxelRay.setStart(Vector3d.ZERO);
         m_voxelRay.setDirection(Vector3d.ZERO);
