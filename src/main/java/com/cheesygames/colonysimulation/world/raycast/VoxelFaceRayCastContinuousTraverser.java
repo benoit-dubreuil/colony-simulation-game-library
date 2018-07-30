@@ -26,6 +26,16 @@ public class VoxelFaceRayCastContinuousTraverser extends AbstractVoxelRayCastCon
     protected TriFunction<Vector3i, VoxelType, Direction3D, Boolean> m_returnCondition;
 
     /**
+     * Constructs a {@link VoxelFaceRayCastContinuousTraverser}. With this constructor, initial voxel must be supplied with  and the {@link World} must be supplied with the setter
+     * {@link #setWorld(World)}.
+     */
+    public VoxelFaceRayCastContinuousTraverser() {
+        super();
+        m_lastVoxelIndex = null;
+        m_incomingDirectionVector = new Vector3i();
+    }
+
+    /**
      * Constructs a {@link VoxelFaceRayCastContinuousTraverser} with the supplied initial voxel, which is kept as a reference. With this constructor, the {@link World} must be
      * supplied with the setter {@link #setWorld(World)}.
      *
@@ -104,14 +114,25 @@ public class VoxelFaceRayCastContinuousTraverser extends AbstractVoxelRayCastCon
 
     /**
      * Gets the incoming direction from the previous traversed voxel. If there is no previous traversed voxel, then the method returns {@link Direction3D#ZERO}. If the method
-     * {@link com.cheesygames.colonysimulation.math.bounding.VoxelRay#rayCastLocal(double, Function, Vector3i)} or {@link com.cheesygames.colonysimulation.math.bounding.VoxelRay#rayCast(double,
-     * Function)} have never been called with this object, then the method returns null.
+     * {@link com.cheesygames.colonysimulation.math.bounding.VoxelRay#rayCastLocal(double, Function, Vector3i)} or
+     * {@link com.cheesygames.colonysimulation.math.bounding.VoxelRay#rayCast(double, Function)} have never been called with this object, then the method returns null.
      *
-     * @return The incoming direction from the previous traversed voxel, {@link Direction3D#ZERO} if there is no previous traversed voxel and null if the method * {@link
-     * com.cheesygames.colonysimulation.math.bounding.VoxelRay#rayCastLocal(double, Function, Vector3i)} or {@link com.cheesygames.colonysimulation.math.bounding.VoxelRay#rayCast(double,
-     * * Function)} have never been called with this object.
+     * @return The incoming direction from the previous traversed voxel, {@link Direction3D#ZERO} if there is no previous traversed voxel and null if the method
+     * {@link com.cheesygames.colonysimulation.math.bounding.VoxelRay#rayCastLocal(double, Function, Vector3i)} or
+     * {@link com.cheesygames.colonysimulation.math.bounding.VoxelRay#rayCast(double, Function)} have never been called with this object.
      */
     public Direction3D getIncomingDirection() {
         return m_incomingDirection;
+    }
+
+    /**
+     * Sets the initial voxel of the ray cast, which is kept as a reference and changed locally. Must be set before the casting the ray.
+     *
+     * @param initialVoxel The initial voxel of the ray cast, which is kept as a reference and changed locally.
+     *
+     * @return The supplied initial voxel.
+     */
+    public Vector3i setInitialVoxel(Vector3i initialVoxel) {
+        return m_lastVoxelIndex = initialVoxel;
     }
 }

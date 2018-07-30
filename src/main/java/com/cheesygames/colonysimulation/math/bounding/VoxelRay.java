@@ -2,6 +2,7 @@ package com.cheesygames.colonysimulation.math.bounding;
 
 import com.cheesygames.colonysimulation.math.MathExt;
 import com.cheesygames.colonysimulation.math.vector.Vector3i;
+import com.cheesygames.colonysimulation.world.World;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.plugins.blender.math.Vector3d;
 
@@ -84,6 +85,20 @@ public class VoxelRay {
      * Casts the ray from its starting position towards its direction whilst keeping in mind its length. A lambda parameter is supplied and called each time a voxel is traversed.
      * This allows the lambda to stop anytime the algorithm to continue its loop.
      *
+     * @param onTraversingVoxel The operation to execute when traversing a voxel. This method called the same number of times as the value of {@link #getVoxelDistance()}. The
+     *                          supplied {@link Vector3i} parameter is not a new instance but a local instance, so it is a reference. The return value {@link Boolean} defines if
+     *                          the algorithm should stop.
+     *
+     * @see <a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.42.3443&rep=rep1&type=pdf">A Fast Voxel Traversal Algorithm</a>
+     */
+    public void rayCast(Function<Vector3i, Boolean> onTraversingVoxel) {
+        rayCastLocal(World.VOXEL_HALF_EXTENT, onTraversingVoxel, new Vector3i());
+    }
+
+    /**
+     * Casts the ray from its starting position towards its direction whilst keeping in mind its length. A lambda parameter is supplied and called each time a voxel is traversed.
+     * This allows the lambda to stop anytime the algorithm to continue its loop.
+     *
      * @param voxelHalfExtent   The half extent (radius) of a voxel.
      * @param onTraversingVoxel The operation to execute when traversing a voxel. This method called the same number of times as the value of {@link #getVoxelDistance()}. The
      *                          supplied {@link Vector3i} parameter is not a new instance but a local instance, so it is a reference. The return value {@link Boolean} defines if
@@ -93,6 +108,23 @@ public class VoxelRay {
      */
     public void rayCast(double voxelHalfExtent, Function<Vector3i, Boolean> onTraversingVoxel) {
         rayCastLocal(voxelHalfExtent, onTraversingVoxel, new Vector3i());
+    }
+
+    /**
+     * Casts the ray from its starting position towards its direction whilst keeping in mind its length. A lambda parameter is supplied and called each time a voxel is traversed.
+     * This allows the lambda to stop anytime the algorithm to continue its loop.
+     * <p>
+     * This method is local because the parameter voxelIndex is locally changed to avoid creating a new instance of {@link Vector3i}.
+     *
+     * @param onTraversingVoxel The operation to execute when traversing a voxel. This method called the same number of times as the value of {@link #getVoxelDistance()}. The
+     *                          supplied {@link Vector3i} parameter is not a new instance but a local instance, so it is a reference. The return value {@link Boolean} defines if
+     *                          the algorithm should stop.
+     * @param voxelIndex        The voxel index to locally modify in order to traverse voxels. This parameter exists simply to avoid creating a new {@link Vector3i} instance.
+     *
+     * @see <a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.42.3443&rep=rep1&type=pdf">A Fast Voxel Traversal Algorithm</a>
+     */
+    public void rayCastLocal(Function<Vector3i, Boolean> onTraversingVoxel, Vector3i voxelIndex) {
+        rayCastLocal(World.VOXEL_HALF_EXTENT, onTraversingVoxel, voxelIndex);
     }
 
     /**
@@ -317,6 +349,18 @@ public class VoxelRay {
      */
     public void setLength(double length) {
         m_length = length;
+    }
+
+    /**
+     * Sets the end position of the ray, which is not a real variable but a way to set the direction and the length at the same time. The start position does matter for this
+     * method.
+     *
+     * @param end Where the ray ends.
+     */
+    public void setEnd(Vector3d end) {
+        m_direction.set(end).subtractLocal(m_start);
+        m_length = m_direction.length();
+        m_direction.normalizeLocal();
     }
 
     /**
