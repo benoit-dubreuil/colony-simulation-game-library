@@ -2,6 +2,8 @@ package com.cheesygames.colonysimulation.math.direction;
 
 import com.cheesygames.colonysimulation.math.vector.Vector3i;
 import com.cheesygames.colonysimulation.reflection.IEnumCachedValues;
+import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
 import java.util.Arrays;
@@ -144,6 +146,7 @@ public enum Direction3D {
             IEnumCachedValues.cacheValues(Direction3D.class);
             initDirection2DEquivalent();
             initOpposite();
+            initRotation();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -152,9 +155,11 @@ public enum Direction3D {
     private final Vector3i m_direction;
     private Direction2D m_direction2DEquivalent;
     private Direction3D m_opposite;
+    private Quaternion m_rotation;
 
     Direction3D(int x, int y, int z) {
         this.m_direction = new Vector3i(x, y, z);
+        this.m_rotation = new Quaternion();
     }
 
     private static void initDirection2DEquivalent() {
@@ -182,6 +187,27 @@ public enum Direction3D {
                                              .findFirst()
                                              .get();
         }
+    }
+
+    private static void initRotation() {
+        List<Direction3D> directions = Arrays.asList(values());
+        Vector3f frontDirVec = FRONT.getDirection().toVector3f().normalizeLocal();
+        Vector3f axis = new Vector3f();
+
+        directions.stream().filter(direction -> direction != ZERO && direction != FRONT).forEach(direction -> {
+            Vector3f dirVec = direction.getDirection().toVector3f().normalizeLocal();
+            float angle = frontDirVec.angleBetween(dirVec);
+
+            if (direction == BACK) {
+                axis.set(TOP.getDirection().toVector3f());
+            }
+            else {
+                axis.set(frontDirVec);
+                axis.crossLocal(dirVec);
+            }
+
+            direction.m_rotation.fromAngleAxis(angle, axis.normalizeLocal());
+        });
     }
 
     /**
@@ -298,5 +324,14 @@ public enum Direction3D {
 
     public int getDirectionZ() {
         return m_direction.z;
+    }
+
+    /**
+     * Gets the delta 3D direction rotation from the {@link #FRONT}, which is the reference.
+     *
+     * @return The delta 3D direction rotation from the {@link #FRONT}, which is the reference.
+     */
+    public Quaternion getRotation() {
+        return m_rotation;
     }
 }
