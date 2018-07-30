@@ -30,13 +30,13 @@ public class VoxelRay {
     }
 
     /**
-     * Constructs a {@link VoxelRay} from two points : start and end. The start point is kept as reference.
+     * Constructs a {@link VoxelRay} from two points : start and end.
      *
-     * @param start The absolute starting position of the ray. Is kept as reference.
+     * @param start The absolute starting position of the ray.
      * @param end   The absolute ending position of the ray.
      */
     public VoxelRay(Vector3d start, Vector3d end) {
-        this.m_start = start;
+        this.m_start = new Vector3d(start);
         this.m_direction = end.subtract(start);
         this.m_length = m_direction.length();
         this.m_direction.normalizeLocal();
@@ -56,15 +56,15 @@ public class VoxelRay {
     }
 
     /**
-     * Constructs a {@link VoxelRay} from a start, a direction and a length. The start and direction vectors are kept as references.
+     * Constructs a {@link VoxelRay} from a start, a direction and a length.
      *
-     * @param start     The absolute starting position of the ray. Is kept as reference.
-     * @param direction The direction of the ray, which is kept as reference. Must be normalized.
+     * @param start     The absolute starting position of the ray.
+     * @param direction The direction of the ray. Must be normalized.
      * @param length    The length of the ray.
      */
     public VoxelRay(Vector3d start, Vector3d direction, double length) {
-        this.m_start = start;
-        this.m_direction = direction;
+        this.m_start = new Vector3d(start);
+        this.m_direction = new Vector3d(direction);
         this.m_length = length;
     }
 
@@ -155,43 +155,42 @@ public class VoxelRay {
         assert !Double.isNaN(m_length);
 
         m_wasStopped = false;
-        double voxelExtent = voxelHalfExtent * 2;
+        final double voxelExtent = voxelHalfExtent * 2;
 
         // This id of the first/current voxel hit by the ray.
-        m_start = m_start.clone().addLocal(voxelHalfExtent, voxelHalfExtent, voxelHalfExtent);
-        voxelIndex.set((int) Math.floor(m_start.x),
-            (int) Math.floor(m_start.y),
-            (int) Math.floor(m_start.z));
+        m_start.addLocal(voxelHalfExtent, voxelHalfExtent, voxelHalfExtent);
+        voxelIndex.set((int) Math.floor(m_start.x / voxelExtent), (int) Math.floor(m_start.y / voxelExtent), (int) Math.floor(m_start.z / voxelExtent));
 
         computeVoxelDistance(voxelHalfExtent, voxelIndex);
         assert !Double.isNaN(m_voxelDistance);
 
         // In which direction the voxel ids are incremented.
-        double stepX = Math.signum(m_direction.x);
-        double stepY = Math.signum(m_direction.y);
-        double stepZ = Math.signum(m_direction.z);
+        double stepX = MathExt.getSignZeroPositive(m_direction.x);
+        double stepY = MathExt.getSignZeroPositive(m_direction.y);
+        double stepZ = MathExt.getSignZeroPositive(m_direction.z);
 
         // Distance along the ray to the next voxel border from the current position (tMaxX, tMaxY, tMaxZ).
-        double nextVoxelBoundaryX = voxelIndex.x + (stepX > 0 ? 1 : 0);
-        double nextVoxelBoundaryY = voxelIndex.y + (stepY > 0 ? 1 : 0);
-        double nextVoxelBoundaryZ = voxelIndex.z + (stepZ > 0 ? 1 : 0);
+        double nextVoxelBoundaryX = (voxelIndex.x + (stepX > 0 ? 1 : 0)) * voxelExtent;
+        double nextVoxelBoundaryY = (voxelIndex.y + (stepY > 0 ? 1 : 0)) * voxelExtent;
+        double nextVoxelBoundaryZ = (voxelIndex.z + (stepZ > 0 ? 1 : 0)) * voxelExtent;
 
         // tMaxX, tMaxY, tMaxZ -- distance until next intersection with voxel-border
         // the value of t at which the ray crosses the first vertical voxel boundary
-        double tMaxX = (m_direction.x != 0) ? (nextVoxelBoundaryX - m_start.x) / m_direction.x : Double.MAX_VALUE; //
-        double tMaxY = (m_direction.y != 0) ? (nextVoxelBoundaryY - m_start.y) / m_direction.y : Double.MAX_VALUE; //
-        double tMaxZ = (m_direction.z != 0) ? (nextVoxelBoundaryZ - m_start.z) / m_direction.z : Double.MAX_VALUE; //
+        double tMaxX = (m_direction.x != 0) ? (nextVoxelBoundaryX - m_start.x) / m_direction.x : Double.MAX_VALUE;
+        double tMaxY = (m_direction.y != 0) ? (nextVoxelBoundaryY - m_start.y) / m_direction.y : Double.MAX_VALUE;
+        double tMaxZ = (m_direction.z != 0) ? (nextVoxelBoundaryZ - m_start.z) / m_direction.z : Double.MAX_VALUE;
 
         // tDeltaX, tDeltaY, tDeltaZ --
         // how far along the ray we must move for the horizontal component to equal the width of a voxel
         // the direction in which we traverse the grid
         // can only be FLT_MAX if we never go in that direction
-        double tDeltaX = (m_direction.x != 0) ? stepX / m_direction.x : Double.MAX_VALUE;
-        double tDeltaY = (m_direction.y != 0) ? stepY / m_direction.y : Double.MAX_VALUE;
-        double tDeltaZ = (m_direction.z != 0) ? stepZ / m_direction.z : Double.MAX_VALUE;
+        double tDeltaX = (m_direction.x != 0) ? stepX * voxelExtent / m_direction.x : Double.MAX_VALUE;
+        double tDeltaY = (m_direction.y != 0) ? stepY * voxelExtent / m_direction.y : Double.MAX_VALUE;
+        double tDeltaZ = (m_direction.z != 0) ? stepZ * voxelExtent / m_direction.z : Double.MAX_VALUE;
 
         if (onTraversingVoxel.apply(voxelIndex)) {
             m_wasStopped = true;
+            m_start.subtractLocal(voxelHalfExtent, voxelHalfExtent, voxelHalfExtent);
             return;
         }
 
@@ -212,9 +211,11 @@ public class VoxelRay {
 
             if (onTraversingVoxel.apply(voxelIndex)) {
                 m_wasStopped = true;
-                return;
+                break;
             }
         }
+
+        m_start.subtractLocal(voxelHalfExtent, voxelHalfExtent, voxelHalfExtent);
     }
 
     /**
