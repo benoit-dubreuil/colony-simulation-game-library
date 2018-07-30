@@ -124,11 +124,7 @@ public class VoxelRay {
         double voxelExtent = voxelHalfExtent * 2;
 
         // This id of the first/current voxel hit by the ray.
-        // Using floor (round down) is actually very important,
-        // the implicit int-casting will round up for negative numbers.
-        voxelIndex.set((int) Math.floor((m_start.x + voxelHalfExtent) / voxelExtent),
-            (int) Math.floor((m_start.y + voxelHalfExtent) / voxelExtent),
-            (int) Math.floor((m_start.z + voxelHalfExtent) / voxelExtent));
+        VoxelWorldUtils.getVoxelIndexLocal(voxelExtent, m_start, voxelIndex);
 
         computeVoxelDistance(voxelHalfExtent, voxelIndex);
         assert !Double.isNaN(m_voxelDistance);
