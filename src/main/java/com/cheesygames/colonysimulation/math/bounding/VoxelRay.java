@@ -17,6 +17,7 @@ public class VoxelRay {
     private Vector3d m_direction;
     private double m_length;
     private int m_voxelDistance;
+    private boolean m_wasStopped;
 
     /**
      * Constructs an invalid {@link VoxelRay} as its direction and length are null. The setters must be called after constructing a {@link VoxelRay} with this constructors.
@@ -121,6 +122,7 @@ public class VoxelRay {
 
         assert !Double.isNaN(m_length);
 
+        m_wasStopped = false;
         double voxelExtent = voxelHalfExtent * 2;
 
         // This id of the first/current voxel hit by the ray.
@@ -154,6 +156,7 @@ public class VoxelRay {
         double tDeltaZ = (m_direction.z != 0) ? voxelExtent / m_direction.z * stepZ : Double.MAX_VALUE;
 
         if (onTraversingVoxel.apply(voxelIndex)) {
+            m_wasStopped = true;
             return;
         }
 
@@ -181,6 +184,7 @@ public class VoxelRay {
             }
 
             if (onTraversingVoxel.apply(voxelIndex)) {
+                m_wasStopped = true;
                 return;
             }
         }
@@ -313,5 +317,14 @@ public class VoxelRay {
      */
     public void setLength(double length) {
         m_length = length;
+    }
+
+    /**
+     * Gets if the voxel ray cast was stopped by the "onTraversingVoxel" method call.
+     *
+     * @return True if the voxel ray cast was stopped by the "onTraversingVoxel" method call, false otherwise.
+     */
+    public boolean wasStopped() {
+        return m_wasStopped;
     }
 }
