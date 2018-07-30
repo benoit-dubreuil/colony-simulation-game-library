@@ -158,20 +158,23 @@ public class VoxelRay {
         double voxelExtent = voxelHalfExtent * 2;
 
         // This id of the first/current voxel hit by the ray.
-        VoxelWorldUtils.getVoxelIndexLocal(voxelHalfExtent, m_start, voxelIndex);
+        m_start = m_start.clone().addLocal(voxelHalfExtent, voxelHalfExtent, voxelHalfExtent);
+        voxelIndex.set((int) Math.floor(m_start.x),
+            (int) Math.floor(m_start.y),
+            (int) Math.floor(m_start.z));
 
         computeVoxelDistance(voxelHalfExtent, voxelIndex);
         assert !Double.isNaN(m_voxelDistance);
 
         // In which direction the voxel ids are incremented.
-        double stepX = MathExt.getSignZeroPositive(m_direction.x);
-        double stepY = MathExt.getSignZeroPositive(m_direction.y);
-        double stepZ = MathExt.getSignZeroPositive(m_direction.z);
+        double stepX = Math.signum(m_direction.x);
+        double stepY = Math.signum(m_direction.y);
+        double stepZ = Math.signum(m_direction.z);
 
         // Distance along the ray to the next voxel border from the current position (tMaxX, tMaxY, tMaxZ).
-        double nextVoxelBoundaryX = (voxelIndex.x + stepX) * voxelExtent;
-        double nextVoxelBoundaryY = (voxelIndex.y + stepY) * voxelExtent;
-        double nextVoxelBoundaryZ = (voxelIndex.z + stepZ) * voxelExtent;
+        double nextVoxelBoundaryX = voxelIndex.x + (stepX > 0 ? 1 : 0);
+        double nextVoxelBoundaryY = voxelIndex.y + (stepY > 0 ? 1 : 0);
+        double nextVoxelBoundaryZ = voxelIndex.z + (stepZ > 0 ? 1 : 0);
 
         // tMaxX, tMaxY, tMaxZ -- distance until next intersection with voxel-border
         // the value of t at which the ray crosses the first vertical voxel boundary
@@ -183,9 +186,9 @@ public class VoxelRay {
         // how far along the ray we must move for the horizontal component to equal the width of a voxel
         // the direction in which we traverse the grid
         // can only be FLT_MAX if we never go in that direction
-        double tDeltaX = (m_direction.x != 0) ? voxelExtent / m_direction.x * stepX : Double.MAX_VALUE;
-        double tDeltaY = (m_direction.y != 0) ? voxelExtent / m_direction.y * stepY : Double.MAX_VALUE;
-        double tDeltaZ = (m_direction.z != 0) ? voxelExtent / m_direction.z * stepZ : Double.MAX_VALUE;
+        double tDeltaX = (m_direction.x != 0) ? stepX / m_direction.x : Double.MAX_VALUE;
+        double tDeltaY = (m_direction.y != 0) ? stepY / m_direction.y : Double.MAX_VALUE;
+        double tDeltaZ = (m_direction.z != 0) ? stepZ / m_direction.z : Double.MAX_VALUE;
 
         if (onTraversingVoxel.apply(voxelIndex)) {
             m_wasStopped = true;
@@ -194,25 +197,17 @@ public class VoxelRay {
 
         int traversedVoxelCount = 0;
         while (++traversedVoxelCount < m_voxelDistance) {
-            if (tMaxX < tMaxY) {
-                if (tMaxX < tMaxZ) {
-                    voxelIndex.x += stepX;
-                    tMaxX += tDeltaX;
-                }
-                else {
-                    voxelIndex.z += stepZ;
-                    tMaxZ += tDeltaZ;
-                }
+            if (tMaxX < tMaxY && tMaxX < tMaxZ) {
+                voxelIndex.x += stepX;
+                tMaxX += tDeltaX;
+            }
+            else if (tMaxY < tMaxZ) {
+                voxelIndex.y += stepY;
+                tMaxY += tDeltaY;
             }
             else {
-                if (tMaxY < tMaxZ) {
-                    voxelIndex.y += stepY;
-                    tMaxY += tDeltaY;
-                }
-                else {
-                    voxelIndex.z += stepZ;
-                    tMaxZ += tDeltaZ;
-                }
+                voxelIndex.z += stepZ;
+                tMaxZ += tDeltaZ;
             }
 
             if (onTraversingVoxel.apply(voxelIndex)) {
