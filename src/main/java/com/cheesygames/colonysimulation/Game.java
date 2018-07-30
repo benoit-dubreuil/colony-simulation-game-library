@@ -57,7 +57,7 @@ public abstract class Game extends SimpleApplication {
 
     protected abstract void updateGame();
 
-    private void initKeys() {
+    protected void initKeys() {
         inputManager.clearMappings();
 
         // TODO : Temporary, remove comments
