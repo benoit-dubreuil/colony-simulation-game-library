@@ -2,6 +2,7 @@ package com.cheesygames.colonysimulation.math.direction;
 
 import com.cheesygames.colonysimulation.math.vector.Vector3i;
 import com.cheesygames.colonysimulation.reflection.IEnumCachedValues;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
 import java.util.Arrays;
@@ -103,8 +104,29 @@ public enum Direction3D {
     /**
      * All the directions except the ZERO (0, 0, 0).
      */
-    public static final Direction3D[] ALL_EXCEPT_ZERO = { LEFT, RIGHT, BOTTOM, TOP, BACK, FRONT, TOP_RIGHT, BOTTOM_RIGHT, BOTTOM_LEFT, TOP_LEFT, TOP_FRONT, BOTTOM_FRONT,
-        BOTTOM_BACK, TOP_BACK, TOP_FRONT_RIGHT, TOP_BACK_RIGHT, BOTTOM_FRONT_RIGHT, BOTTOM_BACK_RIGHT, TOP_FRONT_LEFT, TOP_BACK_LEFT, BOTTOM_FRONT_LEFT, BOTTOM_BACK_LEFT };
+    public static final Direction3D[] ALL_EXCEPT_ZERO = {
+        LEFT,
+        RIGHT,
+        BOTTOM,
+        TOP,
+        BACK,
+        FRONT,
+        TOP_RIGHT,
+        BOTTOM_RIGHT,
+        BOTTOM_LEFT,
+        TOP_LEFT,
+        TOP_FRONT,
+        BOTTOM_FRONT,
+        BOTTOM_BACK,
+        TOP_BACK,
+        TOP_FRONT_RIGHT,
+        TOP_BACK_RIGHT,
+        BOTTOM_FRONT_RIGHT,
+        BOTTOM_BACK_RIGHT,
+        TOP_FRONT_LEFT,
+        TOP_BACK_LEFT,
+        BOTTOM_FRONT_LEFT,
+        BOTTOM_BACK_LEFT };
     /**
      * The orthogonal directions in a croissant and dimension order. In a cube, these directions are the faces.
      */
@@ -116,8 +138,8 @@ public enum Direction3D {
     /**
      * All the edges in a cube. Includes the DIAGONALS_2D.
      */
-    public static final Direction3D[] CUBE_EDGES = { FRONT_RIGHT, BACK_RIGHT, BACK_LEFT, FRONT_LEFT, TOP_RIGHT, BOTTOM_RIGHT, BOTTOM_LEFT, TOP_LEFT, TOP_FRONT, BOTTOM_FRONT,
-        BOTTOM_BACK, TOP_BACK };
+    public static final Direction3D[] CUBE_EDGES = {
+        FRONT_RIGHT, BACK_RIGHT, BACK_LEFT, FRONT_LEFT, TOP_RIGHT, BOTTOM_RIGHT, BOTTOM_LEFT, TOP_LEFT, TOP_FRONT, BOTTOM_FRONT, BOTTOM_BACK, TOP_BACK };
     /**
      * The two dimensional diagonal directions. 2D in the sens only two dimensions are used per enum value. In a cube, these directions are the edges between the top and bottom
      * faces. Ordered in a clockwise manner.
@@ -126,8 +148,8 @@ public enum Direction3D {
     /**
      * The three dimensional diagonals directions. 3D in the sens all three dimensions are used per enum value. In a cube, these directions are the corners.
      */
-    public static final Direction3D[] DIAGONALS_3D = { TOP_FRONT_RIGHT, TOP_BACK_RIGHT, BOTTOM_FRONT_RIGHT, BOTTOM_BACK_RIGHT, TOP_FRONT_LEFT, TOP_BACK_LEFT, BOTTOM_FRONT_LEFT,
-        BOTTOM_BACK_LEFT };
+    public static final Direction3D[] DIAGONALS_3D = {
+        TOP_FRONT_RIGHT, TOP_BACK_RIGHT, BOTTOM_FRONT_RIGHT, BOTTOM_BACK_RIGHT, TOP_FRONT_LEFT, TOP_BACK_LEFT, BOTTOM_FRONT_LEFT, BOTTOM_BACK_LEFT };
     /**
      * Duplicate with a Direction2D static variable because the circular dependency causes bugs when accessing enum names, which are generated before everything else, even before
      * the static blocks.
@@ -144,6 +166,7 @@ public enum Direction3D {
             IEnumCachedValues.cacheValues(Direction3D.class);
             initDirection2DEquivalent();
             initOpposite();
+            initRotation();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -152,9 +175,11 @@ public enum Direction3D {
     private final Vector3i m_direction;
     private Direction2D m_direction2DEquivalent;
     private Direction3D m_opposite;
+    private Quaternion m_rotation;
 
     Direction3D(int x, int y, int z) {
         this.m_direction = new Vector3i(x, y, z);
+        this.m_rotation = new Quaternion();
     }
 
     private static void initDirection2DEquivalent() {
@@ -182,6 +207,27 @@ public enum Direction3D {
                                              .findFirst()
                                              .get();
         }
+    }
+
+    private static void initRotation() {
+        List<Direction3D> directions = Arrays.asList(values());
+        Vector3f frontDirVec = FRONT.getDirection().toVector3f().normalizeLocal();
+        Vector3f axis = new Vector3f();
+
+        directions.stream().filter(direction -> direction != ZERO && direction != FRONT).forEach(direction -> {
+            Vector3f dirVec = direction.getDirection().toVector3f().normalizeLocal();
+            float angle = frontDirVec.angleBetween(dirVec);
+
+            if (direction == BACK) {
+                axis.set(TOP.getDirection().toVector3f());
+            }
+            else {
+                axis.set(frontDirVec);
+                axis.crossLocal(dirVec);
+            }
+
+            direction.m_rotation.fromAngleAxis(angle, axis.normalizeLocal());
+        });
     }
 
     /**
@@ -298,5 +344,14 @@ public enum Direction3D {
 
     public int getDirectionZ() {
         return m_direction.z;
+    }
+
+    /**
+     * Gets the delta 3D direction rotation from the {@link #FRONT}, which is the reference.
+     *
+     * @return The delta 3D direction rotation from the {@link #FRONT}, which is the reference.
+     */
+    public Quaternion getRotation() {
+        return m_rotation;
     }
 }

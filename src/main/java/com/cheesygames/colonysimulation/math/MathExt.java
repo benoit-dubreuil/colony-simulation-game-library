@@ -15,8 +15,46 @@ import java.util.Map;
 public final class MathExt {
 
     public static final float FLOAT_BIG_EPSILON = 0.0001f;
+    public static final int SIGN_BIT_MASK = 0x80000000;
+    public static final int BIT_COUNT_EXCLUDING_SIGN_32 = 31;
+    public static final int BIT_COUNT_EXCLUDING_SIGN_64 = 63;
+    public static final int FLOAT_DECIMAL_DIGIT_COUNT = 8;
+    public static final int DOUBLE_DECIMAL_DIGIT_COUNT = 16;
 
     private MathExt() {
+    }
+
+    /**
+     * Gets the absolute (always positive sign) of the supplied number.
+     *
+     * @param number The number to return its absolute.
+     *
+     * @return The absolute of the supplied value
+     */
+    public static int abs(int number) {
+        return number * getSignZeroPositive(number);
+    }
+
+    /**
+     * Gets the absolute (always positive sign) of the supplied number.
+     *
+     * @param number The number to return its absolute.
+     *
+     * @return The absolute of the supplied value
+     */
+    public static float abs(float number) {
+        return number * getSignZeroPositive(number);
+    }
+
+    /**
+     * Gets the absolute (always positive sign) of the supplied number.
+     *
+     * @param number The number to return its absolute.
+     *
+     * @return The absolute of the supplied value
+     */
+    public static double abs(double number) {
+        return number * getSignZeroPositive(number);
     }
 
     /**
@@ -27,29 +65,92 @@ public final class MathExt {
      * @return An index that is either 0 (negative) or 1 (null or positive normal).
      */
     public static int indexifyNormalZeroPositive(int normal) {
-        return ~((normal | 1) - 1 >> 31) & 1;
+        return (normal >>> BIT_COUNT_EXCLUDING_SIGN_32) ^ 1;
     }
 
     /**
      * Indexifies a normal that is either -1, 0 or 1. In other words, negative numbers become 0, positive numbers become 1 and zero is left unchanged.
      *
-     * @param normal A normal that should be either -1, 0 or 1. If it's smaller than -1, it will treated as -1. If it's bigger than 1, it will be treated as 1.
+     * @param normal A normal that should be either -1, 0 or 1. If it's smaller than -1, it will treated as -1. If it's bigger than 1, it will be treated as 1. Must not be equal to
+     *               {@link Integer#MIN_VALUE} and if it does, then the result is positive 1. An assert checks if the normal is not {@link Integer#MIN_VALUE}.
      *
-     * @return An index that is either 0 (negative and null normal) or 1 (positive normal).
+     * @return An index that is either 0 (negative and null normal) or 1 (positive normal). Positive 1 if the normal is {@link Integer#MIN_VALUE}.
      */
     public static int indexifyNormal(int normal) {
-        return ~(normal - 1 >> 31) & 1;
+        assert normal != Integer.MIN_VALUE;
+        return ~(normal - 1 >> BIT_COUNT_EXCLUDING_SIGN_32) & 1;
     }
 
     /**
-     * Checks if the supplied number is a power of 2.
+     * Gets the sign of the supplied number. The method being "zero position" means that the sign of zero is 1.
      *
-     * @param number The number to check against.
+     * @param number The number to get the sign from.
      *
-     * @return True if the given number is a power of 2, false otherwise.
+     * @return The number's sign.
      */
-    public static boolean isPowerOfTwo(int number) {
-        return number > 0 && ((number & (number - 1)) == 0);
+    public static int getSignZeroPositive(int number) {
+        return (number & SIGN_BIT_MASK) >> BIT_COUNT_EXCLUDING_SIGN_32 | 1;
+    }
+
+    /**
+     * Gets the sign of the supplied number. The method being "zero position" means that the sign of zero is 1.
+     *
+     * @param number The number to get the sign from.
+     *
+     * @return The number's sign.
+     */
+    public static int getSignZeroPositive(float number) {
+        assert !Float.isNaN(number);
+        return getNegativeSign(number) | 1;
+    }
+
+    /**
+     * Gets the sign of the supplied number. The method being "zero position" means that the sign of zero is 1.
+     *
+     * @param number The number to get the sign from.
+     *
+     * @return The number's sign.
+     */
+    public static long getSignZeroPositive(double number) {
+        assert !Double.isNaN(number);
+        return getNegativeSign(number) | 1;
+    }
+
+    /**
+     * Gets the negative sign of the supplied number. So, in other words, if the number is negative, -1 is returned but if the number is positive or zero, then zero is returned.
+     *
+     * @param number The number to get its negative sign.
+     *
+     * @return -1 if the number is negative, 0 otherwise.
+     */
+    public static int getNegativeSign(int number) {
+        return number >> BIT_COUNT_EXCLUDING_SIGN_32;
+    }
+
+    /**
+     * Gets the negative sign of the supplied number. So, in other words, if the number is negative, -1 is returned but if the number is positive or zero, then zero is returned. It
+     * does not check if the parameter is NaN.
+     *
+     * @param number The number to get its negative sign.
+     *
+     * @return -1 if the number is negative, 0 otherwise.
+     */
+    public static int getNegativeSign(float number) {
+        assert !Float.isNaN(number);
+        return Float.floatToRawIntBits(number) >> BIT_COUNT_EXCLUDING_SIGN_32;
+    }
+
+    /**
+     * Gets the negative sign of the supplied number. So, in other words, if the number is negative, -1 is returned but if the number is positive or zero, then zero is returned. It
+     * does not check if the parameter is NaN.
+     *
+     * @param number The number to get its negative sign.
+     *
+     * @return -1 if the number is negative, 0 otherwise.
+     */
+    public static long getNegativeSign(double number) {
+        assert !Double.isNaN(number);
+        return Double.doubleToRawLongBits(number) >> BIT_COUNT_EXCLUDING_SIGN_64;
     }
 
     /**

@@ -33,11 +33,19 @@ public class GradientWorldGenerator implements IWorldGenerator {
     }
 
     @Override
-    public void generateChunk(World world, Vector3i index) {
+    public Chunk createChunk(Vector3i index) {
         Chunk chunk = new Chunk(index);
         chunk.generateData(this);
 
-        world.getChunks().put(index, chunk);
+        return chunk;
+    }
+
+    @Override
+    public Chunk generateChunk(World world, Vector3i index) {
+        Chunk chunk = createChunk(index);
+        world.addChunk(chunk);
+
+        return chunk;
     }
 
     @Override
