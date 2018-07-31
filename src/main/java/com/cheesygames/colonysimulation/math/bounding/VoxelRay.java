@@ -15,6 +15,7 @@ import java.util.function.Function;
 public class VoxelRay {
 
     private Vector3d m_start;
+    private Vector3d m_offsettedStart;
     private Vector3d m_direction;
     private double m_length;
     private int m_voxelDistance;
@@ -25,6 +26,7 @@ public class VoxelRay {
      */
     public VoxelRay() {
         this.m_start = new Vector3d();
+        this.m_offsettedStart = new Vector3d();
         this.m_direction = new Vector3d();
         this.m_length = 0;
     }
@@ -37,6 +39,7 @@ public class VoxelRay {
      */
     public VoxelRay(Vector3d start, Vector3d end) {
         this.m_start = new Vector3d(start);
+        this.m_offsettedStart = new Vector3d();
         this.m_direction = end.subtract(start);
         this.m_length = m_direction.length();
         this.m_direction.normalizeLocal();
@@ -50,6 +53,7 @@ public class VoxelRay {
      */
     public VoxelRay(Vector3f start, Vector3f end) {
         this.m_start = new Vector3d(start);
+        this.m_offsettedStart = new Vector3d();
         this.m_direction = new Vector3d(end).subtractLocal(m_start);
         this.m_length = m_direction.length();
         this.m_direction.normalizeLocal();
@@ -64,6 +68,7 @@ public class VoxelRay {
      */
     public VoxelRay(Vector3d start, Vector3d direction, double length) {
         this.m_start = new Vector3d(start);
+        this.m_offsettedStart = new Vector3d();
         this.m_direction = new Vector3d(direction);
         this.m_length = length;
     }
@@ -77,6 +82,7 @@ public class VoxelRay {
      */
     public VoxelRay(Vector3f start, Vector3f direction, float length) {
         this.m_start = new Vector3d(start);
+        this.m_offsettedStart = new Vector3d();
         this.m_direction = new Vector3d(direction);
         this.m_length = length;
     }
@@ -158,8 +164,8 @@ public class VoxelRay {
         final double voxelExtent = voxelHalfExtent * 2;
 
         // This id of the first/current voxel hit by the ray.
-        m_start.addLocal(voxelHalfExtent, voxelHalfExtent, voxelHalfExtent);
-        VoxelWorldUtils.getVoxelIndexNoOffsetLocal(voxelExtent, m_start, voxelIndex);
+        m_offsettedStart.set(m_start).addLocal(voxelHalfExtent, voxelHalfExtent, voxelHalfExtent);
+        VoxelWorldUtils.getVoxelIndexNoOffsetLocal(voxelExtent, m_offsettedStart, voxelIndex);
 
         computeVoxelDistance(voxelExtent, voxelIndex);
         assert !Double.isNaN(m_voxelDistance);
@@ -170,15 +176,15 @@ public class VoxelRay {
         double stepZ = MathExt.getSignZeroPositive(m_direction.z);
 
         // Distance along the ray to the next voxel border from the current position (tMaxX, tMaxY, tMaxZ).
-        double nextVoxelBoundaryX = (voxelIndex.x + (stepX > 0 ? 1 : 0)) * voxelExtent;
-        double nextVoxelBoundaryY = (voxelIndex.y + (stepY > 0 ? 1 : 0)) * voxelExtent;
-        double nextVoxelBoundaryZ = (voxelIndex.z + (stepZ > 0 ? 1 : 0)) * voxelExtent;
+        double nextVoxelBoundaryX = (voxelIndex.x + (MathExt.getNegativeSign(stepX) + 1)) * voxelExtent;
+        double nextVoxelBoundaryY = (voxelIndex.y + (MathExt.getNegativeSign(stepY) + 1)) * voxelExtent;
+        double nextVoxelBoundaryZ = (voxelIndex.z + (MathExt.getNegativeSign(stepZ) + 1)) * voxelExtent;
 
         // tMaxX, tMaxY, tMaxZ -- distance until next intersection with voxel-border
         // the value of t at which the ray crosses the first vertical voxel boundary
-        double tMaxX = (m_direction.x != 0) ? (nextVoxelBoundaryX - m_start.x) / m_direction.x : Double.MAX_VALUE;
-        double tMaxY = (m_direction.y != 0) ? (nextVoxelBoundaryY - m_start.y) / m_direction.y : Double.MAX_VALUE;
-        double tMaxZ = (m_direction.z != 0) ? (nextVoxelBoundaryZ - m_start.z) / m_direction.z : Double.MAX_VALUE;
+        double tMaxX = (m_direction.x != 0) ? (nextVoxelBoundaryX - m_offsettedStart.x) / m_direction.x : Double.MAX_VALUE;
+        double tMaxY = (m_direction.y != 0) ? (nextVoxelBoundaryY - m_offsettedStart.y) / m_direction.y : Double.MAX_VALUE;
+        double tMaxZ = (m_direction.z != 0) ? (nextVoxelBoundaryZ - m_offsettedStart.z) / m_direction.z : Double.MAX_VALUE;
 
         // tDeltaX, tDeltaY, tDeltaZ --
         // how far along the ray we must move for the horizontal component to equal the width of a voxel
@@ -190,7 +196,6 @@ public class VoxelRay {
 
         if (onTraversingVoxel.apply(voxelIndex)) {
             m_wasStopped = true;
-            m_start.subtractLocal(voxelHalfExtent, voxelHalfExtent, voxelHalfExtent);
             return;
         }
 
@@ -214,8 +219,6 @@ public class VoxelRay {
                 break;
             }
         }
-
-        m_start.subtractLocal(voxelHalfExtent, voxelHalfExtent, voxelHalfExtent);
     }
 
     /**
@@ -226,9 +229,9 @@ public class VoxelRay {
      */
     private void computeVoxelDistance(double voxelExtent, Vector3i startIndex) {
         m_voxelDistance = 1 +
-            MathExt.abs(VoxelWorldUtils.getVoxelIndexNoOffset(voxelExtent, m_start.x + m_direction.x * m_length) - startIndex.x) +
-            MathExt.abs(VoxelWorldUtils.getVoxelIndexNoOffset(voxelExtent, m_start.y + m_direction.y * m_length) - startIndex.y) +
-            MathExt.abs(VoxelWorldUtils.getVoxelIndexNoOffset(voxelExtent, m_start.z + m_direction.z * m_length) - startIndex.z);
+            MathExt.abs(VoxelWorldUtils.getVoxelIndexNoOffset(voxelExtent, m_offsettedStart.x + m_direction.x * m_length) - startIndex.x) +
+            MathExt.abs(VoxelWorldUtils.getVoxelIndexNoOffset(voxelExtent, m_offsettedStart.y + m_direction.y * m_length) - startIndex.y) +
+            MathExt.abs(VoxelWorldUtils.getVoxelIndexNoOffset(voxelExtent, m_offsettedStart.z + m_direction.z * m_length) - startIndex.z);
     }
 
     public Vector3d getStart() {
