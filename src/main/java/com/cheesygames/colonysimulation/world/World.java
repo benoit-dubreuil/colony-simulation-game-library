@@ -221,32 +221,6 @@ public class World {
     }
 
     /**
-     * Converts locally a world decimal position into a voxel absolute index. The method is local because the parameter voxelIndex is {@link Vector3i#set(int, int, int)} and then
-     * returned, so the reference is actually the same.
-     *
-     * @param worldPosition      The decimal world position to convert.
-     * @param absoluteVoxelIndex The absolute voxel index to modify and return.
-     *
-     * @return The modified absolute voxel index that was computed from the world position.
-     */
-    public Vector3i worldPositionToVoxelIndexLocal(Vector3f worldPosition, Vector3i absoluteVoxelIndex) {
-        return absoluteVoxelIndex.set((int) Math.floor(worldPosition.x + VOXEL_HALF_EXTENT),
-            (int) Math.floor(worldPosition.y + VOXEL_HALF_EXTENT),
-            (int) Math.floor(worldPosition.z + VOXEL_HALF_EXTENT));
-    }
-
-    /**
-     * Converts a world decimal position into a voxel absolute index.
-     *
-     * @param worldPosition The decimal world position to convert.
-     *
-     * @return The absolute voxel index that was computed from the world position.
-     */
-    public Vector3i worldPositionToVoxelIndex(Vector3f worldPosition) {
-        return worldPositionToVoxelIndexLocal(worldPosition, new Vector3i());
-    }
-
-    /**
      * Gets the voxel chunk's relative index from its absolute (world) index on the X axis.
      *
      * @param absoluteVoxelIndexX The voxel absolute (world) index on the X axis.
