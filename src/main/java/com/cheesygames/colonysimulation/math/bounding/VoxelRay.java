@@ -159,9 +159,9 @@ public class VoxelRay {
 
         // This id of the first/current voxel hit by the ray.
         m_start.addLocal(voxelHalfExtent, voxelHalfExtent, voxelHalfExtent);
-        voxelIndex.set((int) Math.floor(m_start.x / voxelExtent), (int) Math.floor(m_start.y / voxelExtent), (int) Math.floor(m_start.z / voxelExtent));
+        VoxelWorldUtils.getVoxelIndexNoOffsetLocal(voxelExtent, m_start, voxelIndex);
 
-        computeVoxelDistance(voxelHalfExtent, voxelIndex);
+        computeVoxelDistance(voxelExtent, voxelIndex);
         assert !Double.isNaN(m_voxelDistance);
 
         // In which direction the voxel ids are incremented.
@@ -221,76 +221,14 @@ public class VoxelRay {
     /**
      * Computes the voxel distance, a.k.a. the number of voxel to traverse, for the ray cast.
      *
-     * @param halfExtent The half extent of a voxel.
+     * @param voxelExtent The extent of a voxel, which is the equivalent for a cube of a sphere's radius.
      * @param startIndex The starting position's index.
      */
-    private void computeVoxelDistance(double halfExtent, Vector3i startIndex) {
-        int voxelDistanceX = computeAxisVoxelDistance(m_start.x, startIndex.x, halfExtent, m_direction.x);
-        int voxelDistanceY = computeAxisVoxelDistance(m_start.y, startIndex.y, halfExtent, m_direction.y);
-        int voxelDistanceZ = computeAxisVoxelDistance(m_start.z, startIndex.z, halfExtent, m_direction.z);
-
-        m_voxelDistance = 1 + voxelDistanceX * MathExt.getSignZeroPositive(voxelDistanceX) + voxelDistanceY * MathExt.getSignZeroPositive(voxelDistanceY) + voxelDistanceZ * MathExt
-            .getSignZeroPositive(voxelDistanceZ);
-    }
-
-    /**
-     * Computes the voxel distance, a.k.a. the number of voxel to traverse, for the ray cast.
-     *
-     * @param halfExtent The half extent of a voxel.
-     */
-    private void computeVoxelDistance(double halfExtent) {
-        computeVoxelDistance(halfExtent, getPositionIndex(m_start, halfExtent));
-    }
-
-    /**
-     * Computes the axis voxel distance for the supplied values according to the supposition that those values belong to the same axis.
-     *
-     * @param start      The starting double value.
-     * @param startIndex The starting index.
-     * @param halfExtent The half extent of a voxel.
-     * @param direction  The direction of the ray.
-     *
-     * @return The axis voxel distance. It may be positive, negative or zero.
-     */
-    private int computeAxisVoxelDistance(double start, int startIndex, double halfExtent, double direction) {
-        return getPositionIndex(start - startIndex * halfExtent * 2 + direction * m_length, halfExtent);
-    }
-
-    /**
-     * Gets the position's integer index, according to the half extent of a voxel.
-     *
-     * @param position   The axis independent position.
-     * @param halfExtent The half extent (radius) of a voxel.
-     *
-     * @return The position's integer index.
-     */
-    private static int getPositionIndex(double position, double halfExtent) {
-        return (int) Math.floor((position + halfExtent) / (halfExtent * 2));
-    }
-
-    /**
-     * Gets the 3D double position's 3D integer index. This method is local, as it modifies the supplied parameter index instead of creating a new {@link Vector3i}.
-     *
-     * @param position   The 3D double position to get its index.
-     * @param halfExtent The half extent of a voxel.
-     * @param index      The index that will be set to the position's index.
-     *
-     * @return The supplied index that was set to the position's index.
-     */
-    private static Vector3i getPositionIndexLocal(Vector3d position, double halfExtent, Vector3i index) {
-        return index.set(getPositionIndex(position.x, halfExtent), getPositionIndex(position.y, halfExtent), getPositionIndex(position.z, halfExtent));
-    }
-
-    /**
-     * Gets the 3D double position's 3D integer index.
-     *
-     * @param position   The 3D double position to get its index.
-     * @param halfExtent The half extent of a voxel.
-     *
-     * @return A  newly created index that is set to the position's index.
-     */
-    private static Vector3i getPositionIndex(Vector3d position, double halfExtent) {
-        return getPositionIndexLocal(position, halfExtent, new Vector3i());
+    private void computeVoxelDistance(double voxelExtent, Vector3i startIndex) {
+        m_voxelDistance = 1 +
+            MathExt.abs(VoxelWorldUtils.getVoxelIndexNoOffset(voxelExtent, m_start.x + m_direction.x * m_length) - startIndex.x) +
+            MathExt.abs(VoxelWorldUtils.getVoxelIndexNoOffset(voxelExtent, m_start.y + m_direction.y * m_length) - startIndex.y) +
+            MathExt.abs(VoxelWorldUtils.getVoxelIndexNoOffset(voxelExtent, m_start.z + m_direction.z * m_length) - startIndex.z);
     }
 
     public Vector3d getStart() {

@@ -47,6 +47,17 @@ public final class MathExt {
     }
 
     /**
+     * Gets the absolute (always positive sign) of the supplied number.
+     *
+     * @param number The number to return its absolute.
+     *
+     * @return The absolute of the supplied value
+     */
+    public static double abs(double number) {
+        return number * getSignZeroPositive(number);
+    }
+
+    /**
      * Indexifies a normal that is either -1, 0 or 1. In other words, negative numbers become 0 and positive numbers, including 0, become 1.
      *
      * @param normal A normal that should be either -1, 0 or 1. If it's smaller than -1, it will treated as -1. If it's bigger than 1, it will be treated as 1.
