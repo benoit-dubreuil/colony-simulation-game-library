@@ -263,7 +263,7 @@ public class World {
      * @return The voxel chunk's relative index, which is the reference to the supplied voxel relative index.
      */
     public Vector3i getVoxelRelativeIndexLocal(Vector3i absoluteVoxelIndex, Vector3i relativeVoxelIndex) {
-        return relativeVoxelIndex.set(getVoxelRelativeIndexX(absoluteVoxelIndex.x), getVoxelRelativeIndexX(absoluteVoxelIndex.y), getVoxelRelativeIndexX(absoluteVoxelIndex.z));
+        return relativeVoxelIndex.set(getVoxelRelativeIndexX(absoluteVoxelIndex.x), getVoxelRelativeIndexY(absoluteVoxelIndex.y), getVoxelRelativeIndexZ(absoluteVoxelIndex.z));
     }
 
     /**
