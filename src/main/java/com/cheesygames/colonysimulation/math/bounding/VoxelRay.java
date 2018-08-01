@@ -171,9 +171,9 @@ public class VoxelRay {
         assert !Double.isNaN(m_voxelDistance);
 
         // In which direction the voxel ids are incremented.
-        double stepX = MathExt.getSignZeroPositive(m_direction.x);
-        double stepY = MathExt.getSignZeroPositive(m_direction.y);
-        double stepZ = MathExt.getSignZeroPositive(m_direction.z);
+        int stepX = (int) MathExt.getSignZeroPositive(m_direction.x);
+        int stepY = (int) MathExt.getSignZeroPositive(m_direction.y);
+        int stepZ = (int) MathExt.getSignZeroPositive(m_direction.z);
 
         // Distance along the ray to the next voxel border from the current position (tMaxX, tMaxY, tMaxZ).
         double nextVoxelBoundaryX = (voxelIndex.x + (MathExt.getNegativeSign(stepX) + 1)) * voxelExtent;
