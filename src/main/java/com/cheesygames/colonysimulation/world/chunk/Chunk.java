@@ -43,6 +43,11 @@ public class Chunk extends AbstractChunk {
     }
 
     @Override
+    public VoxelType getVoxelAt(Vector3i voxelIndex) {
+        return m_voxels[voxelIndex.x][voxelIndex.y][voxelIndex.z];
+    }
+
+    @Override
     public VoxelType getVoxelAt(int x, int y, int z) {
         return m_voxels[x][y][z];
     }
@@ -58,6 +63,10 @@ public class Chunk extends AbstractChunk {
 
     public void setMesh(Mesh mesh) {
         m_mesh = mesh;
+    }
+
+    public void setVoxelAt(VoxelType voxelType, Vector3i voxelIndex) {
+        m_voxels[voxelIndex.x][voxelIndex.y][voxelIndex.z] = voxelType;
     }
 
     public void setVoxelAt(VoxelType voxelType, int x, int y, int z) {

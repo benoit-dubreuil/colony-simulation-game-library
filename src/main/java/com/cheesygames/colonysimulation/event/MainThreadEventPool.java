@@ -1,4 +1,4 @@
-package com.cheesygames.colonysimulation.mainthread;
+package com.cheesygames.colonysimulation.event;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 

@@ -1,4 +1,4 @@
-package com.cheesygames.colonysimulation.mainthread;
+package com.cheesygames.colonysimulation.event;
 
 /**
  * Interface for a main thread event data structure.

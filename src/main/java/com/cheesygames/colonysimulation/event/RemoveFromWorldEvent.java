@@ -1,4 +1,4 @@
-package com.cheesygames.colonysimulation.mainthread;
+package com.cheesygames.colonysimulation.event;
 
 import com.cheesygames.colonysimulation.jme3.Node.INode;
 import com.jme3.scene.Node;
