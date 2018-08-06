@@ -1,22 +1,23 @@
 package com.cheesygames.colonysimulation.world.raycast;
 
+import com.cheesygames.colonysimulation.math.bounding.ray.VoxelRay;
+import com.cheesygames.colonysimulation.math.bounding.ray.VoxelRayOnTraversing;
 import com.cheesygames.colonysimulation.math.vector.Vector3i;
 import com.cheesygames.colonysimulation.world.World;
 import com.cheesygames.colonysimulation.world.chunk.IChunkVoxelData;
 import com.cheesygames.colonysimulation.world.chunk.voxel.VoxelType;
 
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 /**
- * Acts like a real-time {@link java.util.Iterator}. It is used by a {@link com.cheesygames.colonysimulation.math.bounding.VoxelRay} to continuously traverse the {@link World}
+ * Acts like a real-time {@link java.util.Iterator}. It is used by a {@link VoxelRay} to continuously traverse the {@link World}
  * voxels in an efficient manner.
  * <p>
- * The user supplies a {@link BiFunction} that acts as the break condition of the {@link com.cheesygames.colonysimulation.math.bounding.VoxelRay} and as what to do whilst
+ * The user supplies a {@link BiFunction} that acts as the break condition of the {@link VoxelRay} and as what to do whilst
  * traversing the world. The break condition takes the absolute voxel index, the voxel type and returns a boolean that signifies if the voxel traversal should stop (true) or not
  * (false). Bear in mind to not modify the absolute index, as it will interfere will the ray cast.
  */
-public class VoxelRayCastContinuousTraverser implements Function<Vector3i, Boolean> {
+public class VoxelRayCastContinuousTraverser implements VoxelRayOnTraversing {
 
     protected World m_world;
     protected Vector3i m_chunkIndex;
@@ -45,11 +46,15 @@ public class VoxelRayCastContinuousTraverser implements Function<Vector3i, Boole
     }
 
     @Override
+    public void startRayCast() {
+    }
+
+    @Override
     public Boolean apply(Vector3i absoluteVoxelIndex) {
         m_world.getVoxelRelativeIndexLocal(absoluteVoxelIndex, m_relativeVoxelIndex);
         detectChunk(absoluteVoxelIndex);
 
-        return applyReturnCondition(absoluteVoxelIndex);
+        return applyOnTraversing(absoluteVoxelIndex);
     }
 
     /**
@@ -77,7 +82,7 @@ public class VoxelRayCastContinuousTraverser implements Function<Vector3i, Boole
      *
      * @return True if the voxel traversing should stop, false otherwise.
      */
-    protected boolean applyReturnCondition(Vector3i absoluteVoxelIndex) {
+    protected boolean applyOnTraversing(Vector3i absoluteVoxelIndex) {
         return m_returnCondition.apply(absoluteVoxelIndex, m_chunk.getVoxelAt(m_relativeVoxelIndex));
     }
 

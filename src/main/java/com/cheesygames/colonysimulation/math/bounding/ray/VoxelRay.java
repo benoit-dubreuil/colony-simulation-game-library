@@ -1,16 +1,15 @@
-package com.cheesygames.colonysimulation.math.bounding;
+package com.cheesygames.colonysimulation.math.bounding.ray;
 
 import com.cheesygames.colonysimulation.math.MathExt;
+import com.cheesygames.colonysimulation.math.bounding.VoxelWorldUtils;
 import com.cheesygames.colonysimulation.math.vector.Vector3i;
 import com.cheesygames.colonysimulation.world.World;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.plugins.blender.math.Vector3d;
 
-import java.util.function.Function;
-
 /**
  * Ray for ray casting inside a voxel world. Each voxel is considered as a cube within this ray. A ray consists of a starting position, a direction and a length. The voxel distance
- * is computed once the method {@link #rayCastLocal(double, Function, Vector3i)} or {@link #rayCast(double, Function)} is called.
+ * is computed once the method {@link #rayCastLocal(double, VoxelRayOnTraversing, Vector3i)} or {@link #rayCast(double, VoxelRayOnTraversing)} is called.
  */
 public class VoxelRay {
 
@@ -97,7 +96,7 @@ public class VoxelRay {
      *
      * @see <a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.42.3443&rep=rep1&type=pdf">A Fast Voxel Traversal Algorithm</a>
      */
-    public void rayCast(Function<Vector3i, Boolean> onTraversingVoxel) {
+    public void rayCast(VoxelRayOnTraversing onTraversingVoxel) {
         rayCastLocal(World.VOXEL_HALF_EXTENT, onTraversingVoxel, new Vector3i());
     }
 
@@ -112,7 +111,7 @@ public class VoxelRay {
      *
      * @see <a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.42.3443&rep=rep1&type=pdf">A Fast Voxel Traversal Algorithm</a>
      */
-    public void rayCast(double voxelHalfExtent, Function<Vector3i, Boolean> onTraversingVoxel) {
+    public void rayCast(double voxelHalfExtent, VoxelRayOnTraversing onTraversingVoxel) {
         rayCastLocal(voxelHalfExtent, onTraversingVoxel, new Vector3i());
     }
 
@@ -129,7 +128,7 @@ public class VoxelRay {
      *
      * @see <a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.42.3443&rep=rep1&type=pdf">A Fast Voxel Traversal Algorithm</a>
      */
-    public void rayCastLocal(Function<Vector3i, Boolean> onTraversingVoxel, Vector3i voxelIndex) {
+    public void rayCastLocal(VoxelRayOnTraversing onTraversingVoxel, Vector3i voxelIndex) {
         rayCastLocal(World.VOXEL_HALF_EXTENT, onTraversingVoxel, voxelIndex);
     }
 
@@ -147,7 +146,7 @@ public class VoxelRay {
      *
      * @see <a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.42.3443&rep=rep1&type=pdf">A Fast Voxel Traversal Algorithm</a>
      */
-    public void rayCastLocal(double voxelHalfExtent, Function<Vector3i, Boolean> onTraversingVoxel, Vector3i voxelIndex) {
+    public void rayCastLocal(double voxelHalfExtent, VoxelRayOnTraversing onTraversingVoxel, Vector3i voxelIndex) {
         assert !Double.isNaN(voxelHalfExtent);
 
         assert !Double.isNaN(m_start.x);
@@ -194,6 +193,8 @@ public class VoxelRay {
         double tDeltaY = (m_direction.y != 0) ? stepY * voxelExtent / m_direction.y : Double.MAX_VALUE;
         double tDeltaZ = (m_direction.z != 0) ? stepZ * voxelExtent / m_direction.z : Double.MAX_VALUE;
 
+        onTraversingVoxel.startRayCast();
+
         if (onTraversingVoxel.apply(voxelIndex)) {
             m_wasStopped = true;
             return;
@@ -225,13 +226,12 @@ public class VoxelRay {
      * Computes the voxel distance, a.k.a. the number of voxel to traverse, for the ray cast.
      *
      * @param voxelExtent The extent of a voxel, which is the equivalent for a cube of a sphere's radius.
-     * @param startIndex The starting position's index.
+     * @param startIndex  The starting position's index.
      */
     private void computeVoxelDistance(double voxelExtent, Vector3i startIndex) {
-        m_voxelDistance = 1 +
-            MathExt.abs(VoxelWorldUtils.getVoxelIndexNoOffset(voxelExtent, m_offsettedStart.x + m_direction.x * m_length) - startIndex.x) +
-            MathExt.abs(VoxelWorldUtils.getVoxelIndexNoOffset(voxelExtent, m_offsettedStart.y + m_direction.y * m_length) - startIndex.y) +
-            MathExt.abs(VoxelWorldUtils.getVoxelIndexNoOffset(voxelExtent, m_offsettedStart.z + m_direction.z * m_length) - startIndex.z);
+        m_voxelDistance = 1 + MathExt.abs(VoxelWorldUtils.getVoxelIndexNoOffset(voxelExtent, m_offsettedStart.x + m_direction.x * m_length) - startIndex.x) + MathExt.abs(
+            VoxelWorldUtils.getVoxelIndexNoOffset(voxelExtent, m_offsettedStart.y + m_direction.y * m_length) - startIndex.y) + MathExt.abs(
+            VoxelWorldUtils.getVoxelIndexNoOffset(voxelExtent, m_offsettedStart.z + m_direction.z * m_length) - startIndex.z);
     }
 
     public Vector3d getStart() {

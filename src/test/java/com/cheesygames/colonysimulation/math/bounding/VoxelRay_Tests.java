@@ -1,6 +1,7 @@
 package com.cheesygames.colonysimulation.math.bounding;
 
 import com.cheesygames.colonysimulation.math.MathExt;
+import com.cheesygames.colonysimulation.math.bounding.ray.VoxelRay;
 import com.cheesygames.colonysimulation.math.vector.Vector3i;
 import com.cheesygames.colonysimulation.world.World;
 import com.jme3.scene.plugins.blender.math.Vector3d;
