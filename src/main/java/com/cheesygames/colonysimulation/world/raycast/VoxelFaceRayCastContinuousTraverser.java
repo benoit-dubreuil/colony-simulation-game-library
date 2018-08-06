@@ -3,6 +3,7 @@ package com.cheesygames.colonysimulation.world.raycast;
 import com.cheesygames.colonysimulation.math.direction.Direction3D;
 import com.cheesygames.colonysimulation.math.vector.Vector3i;
 import com.cheesygames.colonysimulation.world.World;
+import com.cheesygames.colonysimulation.world.chunk.IChunkVoxelData;
 import com.cheesygames.colonysimulation.world.chunk.voxel.VoxelType;
 
 import java.util.function.BiFunction;
@@ -21,6 +22,8 @@ import java.util.function.Function;
 public class VoxelFaceRayCastContinuousTraverser extends VoxelRayCastContinuousTraverser {
 
     protected Vector3i m_lastTraversedVoxelIndex;
+    protected IChunkVoxelData m_lastTraversedChunk;
+    protected Vector3i m_lastTraversedRelativeVoxelIndex;
     protected Vector3i m_incomingDirectionVector;
     protected Direction3D m_incomingDirection;
 
@@ -31,6 +34,7 @@ public class VoxelFaceRayCastContinuousTraverser extends VoxelRayCastContinuousT
     public VoxelFaceRayCastContinuousTraverser() {
         super();
         m_lastTraversedVoxelIndex = null;
+        m_lastTraversedRelativeVoxelIndex = new Vector3i();
         m_incomingDirectionVector = new Vector3i();
     }
 
@@ -43,6 +47,7 @@ public class VoxelFaceRayCastContinuousTraverser extends VoxelRayCastContinuousT
     public VoxelFaceRayCastContinuousTraverser(Vector3i initialVoxel) {
         super();
         m_lastTraversedVoxelIndex = initialVoxel;
+        m_lastTraversedRelativeVoxelIndex = new Vector3i();
         m_incomingDirectionVector = new Vector3i();
     }
 
@@ -55,6 +60,7 @@ public class VoxelFaceRayCastContinuousTraverser extends VoxelRayCastContinuousT
     public VoxelFaceRayCastContinuousTraverser(Vector3i initialVoxel, World world) {
         super(world);
         m_lastTraversedVoxelIndex = initialVoxel;
+        m_lastTraversedRelativeVoxelIndex = new Vector3i();
         m_incomingDirectionVector = new Vector3i();
     }
 
@@ -70,6 +76,7 @@ public class VoxelFaceRayCastContinuousTraverser extends VoxelRayCastContinuousT
     public VoxelFaceRayCastContinuousTraverser(Vector3i initialVoxel, BiFunction<Vector3i, VoxelType, Boolean> returnCondition) {
         super(returnCondition);
         m_lastTraversedVoxelIndex = initialVoxel;
+        m_lastTraversedRelativeVoxelIndex = new Vector3i();
         m_incomingDirectionVector = new Vector3i();
     }
 
@@ -85,6 +92,7 @@ public class VoxelFaceRayCastContinuousTraverser extends VoxelRayCastContinuousT
     public VoxelFaceRayCastContinuousTraverser(Vector3i initialVoxel, World world, BiFunction<Vector3i, VoxelType, Boolean> returnCondition) {
         super(world, returnCondition);
         m_lastTraversedVoxelIndex = initialVoxel;
+        m_lastTraversedRelativeVoxelIndex = new Vector3i();
         m_incomingDirectionVector = new Vector3i();
     }
 
@@ -96,6 +104,8 @@ public class VoxelFaceRayCastContinuousTraverser extends VoxelRayCastContinuousT
         boolean returnCondition = super.applyReturnCondition(absoluteVoxelIndex);
 
         m_lastTraversedVoxelIndex.set(absoluteVoxelIndex);
+        m_lastTraversedRelativeVoxelIndex.set(m_relativeVoxelIndex);
+        m_lastTraversedChunk = m_chunk;
 
         return returnCondition;
     }
@@ -136,6 +146,14 @@ public class VoxelFaceRayCastContinuousTraverser extends VoxelRayCastContinuousT
 
     public Vector3i getIncomingDirectionVector() {
         return m_incomingDirectionVector;
+    }
+
+    public IChunkVoxelData getLastTraversedChunk() {
+        return m_lastTraversedChunk;
+    }
+
+    public Vector3i getLastTraversedRelativeVoxelIndex() {
+        return m_lastTraversedRelativeVoxelIndex;
     }
 
     /**

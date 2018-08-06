@@ -21,10 +21,12 @@ public class VoxelRayCastContinuousTraverser implements Function<Vector3i, Boole
     protected World m_world;
     protected Vector3i m_chunkIndex;
     protected IChunkVoxelData m_chunk;
+    protected Vector3i m_relativeVoxelIndex;
     protected BiFunction<Vector3i, VoxelType, Boolean> m_returnCondition;
 
     public VoxelRayCastContinuousTraverser() {
         m_chunkIndex = new Vector3i();
+        m_relativeVoxelIndex = new Vector3i();
     }
 
     public VoxelRayCastContinuousTraverser(World world) {
@@ -44,7 +46,9 @@ public class VoxelRayCastContinuousTraverser implements Function<Vector3i, Boole
 
     @Override
     public Boolean apply(Vector3i absoluteVoxelIndex) {
+        m_world.getVoxelRelativeIndexLocal(absoluteVoxelIndex, m_relativeVoxelIndex);
         detectChunk(absoluteVoxelIndex);
+
         return applyReturnCondition(absoluteVoxelIndex);
     }
 
@@ -67,19 +71,6 @@ public class VoxelRayCastContinuousTraverser implements Function<Vector3i, Boole
     }
 
     /**
-     * Gets the voxel at the supplied voxel absolute (world) index. The absolute (world) index must be within the bounds of the member variable {@link #m_chunk}.
-     *
-     * @param absoluteVoxelIndex The absolute (world) index at which to get the voxel.
-     *
-     * @return The voxel at the supplied absolute (world) index.
-     */
-    protected VoxelType getVoxalAtAbsoluteVoxelIndex(Vector3i absoluteVoxelIndex) {
-        return m_chunk.getVoxelAt(m_world.getVoxelRelativeIndexX(absoluteVoxelIndex.x),
-            m_world.getVoxelRelativeIndexY(absoluteVoxelIndex.y),
-            m_world.getVoxelRelativeIndexZ(absoluteVoxelIndex.z));
-    }
-
-    /**
      * Applies the return condition, which decides what to do with the traversed voxel and if the voxel traversal should continue.
      *
      * @param absoluteVoxelIndex The absolute (world) index at which to get the voxel.
@@ -87,7 +78,7 @@ public class VoxelRayCastContinuousTraverser implements Function<Vector3i, Boole
      * @return True if the voxel traversing should stop, false otherwise.
      */
     protected boolean applyReturnCondition(Vector3i absoluteVoxelIndex) {
-        return m_returnCondition.apply(absoluteVoxelIndex, getVoxalAtAbsoluteVoxelIndex(absoluteVoxelIndex));
+        return m_returnCondition.apply(absoluteVoxelIndex, m_chunk.getVoxelAt(m_relativeVoxelIndex));
     }
 
     public BiFunction<Vector3i, VoxelType, Boolean> getReturnCondition() {
@@ -122,5 +113,15 @@ public class VoxelRayCastContinuousTraverser implements Function<Vector3i, Boole
      */
     public IChunkVoxelData getChunk() {
         return m_chunk;
+    }
+
+    /**
+     * Gets the currently traversing voxel's (or last traversed voxel if the ray cast has finished) chunk relative index. Do not modify the returned value, as it is changed locally
+     * for each traversed voxel.
+     *
+     * @return The currently traversing voxel's chunk relative index.
+     */
+    public Vector3i getRelativeVoxelIndex() {
+        return m_relativeVoxelIndex;
     }
 }

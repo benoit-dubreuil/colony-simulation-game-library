@@ -5,7 +5,7 @@ import com.cheesygames.colonysimulation.input.ActionInputAppState;
 /**
  * App state that interfaces in a modular way gameplay input and control classes.
  */
-public class GameplayActionInputAppState extends ActionInputAppState<GameplayActionInput> {
+public class GameplayActionInputAppState extends ActionInputAppState<GameplayActionInput, GameplayActionListener, GameplayActionListener> {
 
     public GameplayActionInputAppState() {
         this(new GameplayActionListener());
