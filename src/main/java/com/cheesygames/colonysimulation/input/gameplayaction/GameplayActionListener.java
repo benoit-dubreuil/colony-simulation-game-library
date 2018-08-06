@@ -5,7 +5,7 @@ import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
 
 /**
- * Listens to the input events from {@link GameplayActionInput}. Should be used inside the {@link com.cheesygames.colonysimulation.input.ActionInputAppState} app state.
+ * Listens to the input events from {@link GameplayActionInput}. Should be used inside the {@link com.cheesygames.colonysimulation.game.input.ActionInputAppState} app state.
  */
 public class GameplayActionListener implements AnalogListener, ActionListener {
 
