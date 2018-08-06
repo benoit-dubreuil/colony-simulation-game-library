@@ -197,8 +197,10 @@ public class World {
     }
 
     /**
-     * Gets the chunk's starting position according to its index. The method is local, meaning that the supplied chunk's starting position will be {@link Vector3i#set(int, int, *
-     * int)} and returned.
+     * Gets the chunk's starting position according to its index. The method is local, meaning that the supplied chunk's starting position will be
+     * <pre>
+     * {@link Vector3i#set(int, int, int)} and returned.
+     * </pre>
      *
      * @param chunkIndex         The chunk's index.
      * @param chunkStartPosition The chunk's starting position that will be modified and returned.
@@ -284,7 +286,7 @@ public class World {
      * @param chunkRelativeIndex The chunk relative index, a.k.a. the index in the chunk's data multidimensional array.
      * @param chunkSizeBits      The bit shift count for the chunk size. This allows to not mention the axis.
      *
-     * @retur The absolute index.
+     * @return The absolute index.
      */
     private int getAbsoluteIndex(int chunkIndex, int chunkRelativeIndex, int chunkSizeBits) {
         return (chunkIndex << chunkSizeBits) + chunkRelativeIndex;
@@ -296,7 +298,7 @@ public class World {
      * @param chunkIndex         The chunk's index for the specified axis.
      * @param chunkRelativeIndex The chunk relative index, a.k.a. the axis index in the chunk's data multidimensional array.
      *
-     * @retur The absolute index for the specified axis.
+     * @return The absolute index for the specified axis.
      */
     public int getAbsoluteIndexX(int chunkIndex, int chunkRelativeIndex) {
         return getAbsoluteIndex(chunkIndex, chunkRelativeIndex, m_chunkSizeBits.x);
@@ -308,7 +310,7 @@ public class World {
      * @param chunkIndex         The chunk's index for the specified axis.
      * @param chunkRelativeIndex The chunk relative index, a.k.a. the axis index in the chunk's data multidimensional array.
      *
-     * @retur The absolute index for the specified axis.
+     * @return The absolute index for the specified axis.
      */
     public int getAbsoluteIndexY(int chunkIndex, int chunkRelativeIndex) {
         return getAbsoluteIndex(chunkIndex, chunkRelativeIndex, m_chunkSizeBits.y);
@@ -320,7 +322,7 @@ public class World {
      * @param chunkIndex         The chunk's index for the specified axis.
      * @param chunkRelativeIndex The chunk relative index, a.k.a. the axis index in the chunk's data multidimensional array.
      *
-     * @retur The absolute index for the specified axis.
+     * @return The absolute index for the specified axis.
      */
     public int getAbsoluteIndexZ(int chunkIndex, int chunkRelativeIndex) {
         return getAbsoluteIndex(chunkIndex, chunkRelativeIndex, m_chunkSizeBits.z);

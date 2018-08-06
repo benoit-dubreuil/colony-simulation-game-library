@@ -63,7 +63,7 @@ public interface IPolygon3f {
      *
      * @param point the point to snap onto the polygon.
      *
-     * @return The supplied point cloned & snapped onto the polygon.
+     * @return The supplied point cloned and snapped onto the polygon.
      */
     Vector3f snapPointToPolygonLocal(Vector3f point);
 

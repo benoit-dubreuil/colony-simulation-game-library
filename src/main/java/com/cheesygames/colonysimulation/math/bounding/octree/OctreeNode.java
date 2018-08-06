@@ -50,7 +50,8 @@ public class OctreeNode<E extends IOctreeEntity> {
     /**
      * Constructor for super parent octree nodes. A super parent has the maximum depth.
      *
-     * @param index The index at which resides the super parent octree node in the octree.
+     * @param octree The parent octree.
+     * @param index  The index at which resides the super parent octree node in the octree.
      */
     public OctreeNode(Octree<E> octree, Vector3i index) {
         this.m_octree = octree;

@@ -199,6 +199,8 @@ public class Vector3i implements Savable, Cloneable, java.io.Serializable, IVect
      *
      * @param scalar The value to multiply this vector by.
      * @param add    The value to add
+     *
+     * @return The current instance scale-added.
      */
     public Vector3i scaleAdd(int scalar, Vector3i add) {
         x = x * scalar + add.x;
@@ -214,6 +216,8 @@ public class Vector3i implements Savable, Cloneable, java.io.Serializable, IVect
      * @param scalar the value to multiply this vector by.
      * @param mult   the value to multiply the scalar by
      * @param add    the value to add
+     *
+     * @return The current instance scale-added.
      */
     public Vector3i scaleAdd(int scalar, Vector3i mult, Vector3i add) {
         this.x = mult.x * scalar + add.x;
@@ -582,6 +586,8 @@ public class Vector3i implements Savable, Cloneable, java.io.Serializable, IVect
      * <code>maxLocal</code> Computes the maximum value for each component in this and <code>other</code> vector. The result is stored in this vector.
      *
      * @param other The other vector from which to compute and set to this the maximum.
+     *
+     * @return The current instance with the maximum values.
      */
     public Vector3i maxLocal(Vector3i other) {
         x = other.x > x ? other.x : x;
@@ -595,6 +601,8 @@ public class Vector3i implements Savable, Cloneable, java.io.Serializable, IVect
      * <code>minLocal</code> computes the minimum value for each component in this and <code>other</code> vector. The result is stored in this vector.
      *
      * @param other The other vector from which to compute and set to this the minimum.
+     *
+     * @return The current instance with the minimum values.
      */
     public Vector3i minLocal(Vector3i other) {
         x = other.x < x ? other.x : x;
@@ -606,6 +614,8 @@ public class Vector3i implements Savable, Cloneable, java.io.Serializable, IVect
 
     /**
      * <code>zero</code> Resets this vector's data to zero internally.
+     *
+     * @return The current instance with all components set to zero.
      */
     public Vector3i zero() {
         x = y = z = 0;
@@ -617,6 +627,8 @@ public class Vector3i implements Savable, Cloneable, java.io.Serializable, IVect
      *
      * @param finalVec   The vector to interpolate towards
      * @param changeAmnt An amount between 0.0 - 1.0 representing a precentage change from this towards finalVec
+     *
+     * @return The current instance with its components locally interpolated.
      */
     public Vector3i interpolateLocal(Vector3i finalVec, int changeAmnt) {
         this.x = (1 - changeAmnt) * this.x + changeAmnt * finalVec.x;
@@ -632,6 +644,8 @@ public class Vector3i implements Savable, Cloneable, java.io.Serializable, IVect
      * @param beginVec   the beging vector (changeAmnt=0)
      * @param finalVec   The vector to interpolate towards
      * @param changeAmnt An amount between 0.0 - 1.0 representing a precentage change from beginVec towards finalVec
+     *
+     * @return The current instance with its components locally interpolated.
      */
     public Vector3i interpolateLocal(Vector3i beginVec, Vector3i finalVec, int changeAmnt) {
         this.x = (1 - changeAmnt) * beginVec.x + changeAmnt * finalVec.x;

@@ -3,8 +3,7 @@ package com.cheesygames.colonysimulation.input.gameplayaction;
 import com.cheesygames.colonysimulation.input.ActionInputAppState;
 
 /**
- * App state that interfaces in a modular way the {@link com.cheesygames.colonysimulation.input.fpscamera.FPSCameraActionInput} and the {@link
- * com.cheesygames.colonysimulation.input.fpscamera.FPSCameraControl} classes.
+ * App state that interfaces in a modular way gameplay input and control classes.
  */
 public class GameplayActionInputAppState extends ActionInputAppState<GameplayActionInput> {
 

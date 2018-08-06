@@ -59,7 +59,7 @@ public interface IPolygon3i {
      *
      * @param point the point to snap onto the polygon.
      *
-     * @return The supplied point cloned & snapped onto the polygon.
+     * @return The supplied point cloned and snapped onto the polygon.
      */
     default Vector3i snapPointToPolygon(Vector3i point) {
         return snapPointToPolygonLocal(point.clone());
