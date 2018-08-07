@@ -1,14 +1,18 @@
-package com.cheesygames.colonysimulation.world.chunk;
+package com.cheesygames.colonysimulation.world.chunk.mesh;
 
+import com.cheesygames.colonysimulation.GameGlobal;
 import com.cheesygames.colonysimulation.math.MeshBufferUtils;
 import com.cheesygames.colonysimulation.math.direction.Direction3D;
 import com.cheesygames.colonysimulation.math.vector.Vector3i;
 import com.cheesygames.colonysimulation.world.World;
+import com.cheesygames.colonysimulation.world.chunk.Chunk;
+import com.cheesygames.colonysimulation.world.chunk.IChunkVoxelData;
 import com.cheesygames.colonysimulation.world.chunk.voxel.VoxelType;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.VertexBuffer;
 
+import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,11 +31,16 @@ public class BlockMeshGenerator implements IChunkMeshGenerator {
         new Vector3f(-World.VOXEL_HALF_EXTENT, World.VOXEL_HALF_EXTENT, World.VOXEL_HALF_EXTENT) };
 
     @Override
-    public Mesh generateMesh(World world, Chunk chunk) {
-        Mesh mesh = new ChunkMesh();
+    public Mesh generateMesh(Chunk chunk) {
+        Mesh mesh = chunk.getMesh();
+
+        if (mesh == null) {
+            mesh = new ChunkMesh();
+            chunk.setMesh(mesh);
+        }
 
         Vector3i chunkSize = chunk.getSize();
-        Map<Direction3D, IChunkVoxelData> adjacentChunks = world.getAdjacentChunks(chunk.getIndex());
+        Map<Direction3D, IChunkVoxelData> adjacentChunks = GameGlobal.world.getAdjacentChunks(chunk.getIndex());
 
         List<Vector3f> vertices = new ArrayList<>();
         List<Vector3f> normals = new ArrayList<>();

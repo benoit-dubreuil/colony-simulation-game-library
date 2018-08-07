@@ -52,6 +52,8 @@ public abstract class Game extends SimpleApplication {
             updateGame();
         }
 
+        GameGlobal.world.redrawChunksThatNeedIt();
+
         m_isUpdating = false;
     }
 

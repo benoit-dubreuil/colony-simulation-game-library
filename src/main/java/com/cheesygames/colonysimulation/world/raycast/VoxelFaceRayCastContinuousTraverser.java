@@ -1,6 +1,7 @@
 package com.cheesygames.colonysimulation.world.raycast;
 
 import com.cheesygames.colonysimulation.math.bounding.ray.VoxelRay;
+import com.cheesygames.colonysimulation.math.bounding.ray.VoxelRayOnTraversing;
 import com.cheesygames.colonysimulation.math.direction.Direction3D;
 import com.cheesygames.colonysimulation.math.vector.Vector3i;
 import com.cheesygames.colonysimulation.world.World;
@@ -21,6 +22,7 @@ import java.util.function.Function;
 public class VoxelFaceRayCastContinuousTraverser extends VoxelRayCastContinuousTraverser {
 
     protected Vector3i m_lastTraversedVoxelIndex;
+    protected Vector3i m_lastTraversedChunkIndex;
     protected IChunkVoxelData m_lastTraversedChunk;
     protected Vector3i m_lastTraversedRelativeVoxelIndex;
     protected Vector3i m_incomingDirectionVector;
@@ -36,6 +38,7 @@ public class VoxelFaceRayCastContinuousTraverser extends VoxelRayCastContinuousT
     public VoxelFaceRayCastContinuousTraverser() {
         super();
         m_lastTraversedVoxelIndex = new Vector3i();
+        m_lastTraversedChunkIndex = new Vector3i();
         m_lastTraversedRelativeVoxelIndex = new Vector3i();
         m_incomingDirectionVector = new Vector3i();
     }
@@ -50,6 +53,7 @@ public class VoxelFaceRayCastContinuousTraverser extends VoxelRayCastContinuousT
     public VoxelFaceRayCastContinuousTraverser(World world) {
         super(world);
         m_lastTraversedVoxelIndex = new Vector3i();
+        m_lastTraversedChunkIndex = new Vector3i();
         m_lastTraversedRelativeVoxelIndex = new Vector3i();
         m_incomingDirectionVector = new Vector3i();
     }
@@ -65,6 +69,7 @@ public class VoxelFaceRayCastContinuousTraverser extends VoxelRayCastContinuousT
     public VoxelFaceRayCastContinuousTraverser(BiFunction<Vector3i, VoxelType, Boolean> returnCondition) {
         super(returnCondition);
         m_lastTraversedVoxelIndex = new Vector3i();
+        m_lastTraversedChunkIndex = new Vector3i();
         m_lastTraversedRelativeVoxelIndex = new Vector3i();
         m_incomingDirectionVector = new Vector3i();
     }
@@ -80,6 +85,7 @@ public class VoxelFaceRayCastContinuousTraverser extends VoxelRayCastContinuousT
     public VoxelFaceRayCastContinuousTraverser(World world, BiFunction<Vector3i, VoxelType, Boolean> returnCondition) {
         super(world, returnCondition);
         m_lastTraversedVoxelIndex = new Vector3i();
+        m_lastTraversedChunkIndex = new Vector3i();
         m_lastTraversedRelativeVoxelIndex = new Vector3i();
         m_incomingDirectionVector = new Vector3i();
     }
@@ -102,6 +108,7 @@ public class VoxelFaceRayCastContinuousTraverser extends VoxelRayCastContinuousT
         boolean returnCondition = super.applyOnTraversing(absoluteVoxelIndex);
 
         m_lastTraversedVoxelIndex.set(absoluteVoxelIndex);
+        m_lastTraversedChunkIndex.set(m_chunkIndex);
         m_lastTraversedRelativeVoxelIndex.set(m_relativeVoxelIndex);
         m_lastTraversedChunk = m_chunk;
 
@@ -113,21 +120,21 @@ public class VoxelFaceRayCastContinuousTraverser extends VoxelRayCastContinuousT
     /**
      * Gets the incoming direction from the previous traversed voxel. If there is no previous traversed voxel, then the method returns {@link Direction3D#ZERO}. If the method
      * <pre>
-     * {@link VoxelRay#rayCastLocal(double, Function, Vector3i)}
+     * {@link VoxelRay#rayCastLocal(double, VoxelRayOnTraversing, Vector3i)}
      * </pre>
      * or
      * <pre>
-     * {@link VoxelRay#rayCast(double, Function)}
+     * {@link VoxelRay#rayCast(double, VoxelRayOnTraversing)}
      * </pre>
      * have never been called with this object, then the method returns null.
      *
      * @return The incoming direction from the previous traversed voxel, {@link Direction3D#ZERO} if there is no previous traversed voxel and null if the method
      * <pre>
-     * {@link VoxelRay#rayCastLocal(double, Function, Vector3i)}
+     * {@link VoxelRay#rayCastLocal(double, VoxelRayOnTraversing, Vector3i)}
      * </pre>
      * or
      * <pre>
-     * {@link VoxelRay#rayCast(double, Function)}
+     * {@link VoxelRay#rayCast(double, VoxelRayOnTraversing)}
      * </pre>
      * have never been called with this object.
      */
@@ -146,6 +153,10 @@ public class VoxelFaceRayCastContinuousTraverser extends VoxelRayCastContinuousT
 
     public Vector3i getIncomingDirectionVector() {
         return m_incomingDirectionVector;
+    }
+
+    public Vector3i getLastTraversedChunkIndex() {
+        return m_lastTraversedChunkIndex;
     }
 
     public IChunkVoxelData getLastTraversedChunk() {
