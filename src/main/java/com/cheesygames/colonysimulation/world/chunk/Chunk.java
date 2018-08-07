@@ -54,7 +54,7 @@ public class Chunk extends AbstractChunk {
         for (int x = 0; x < chunkSize.x; ++x) {
             for (int y = 0; y < chunkSize.y; ++y) {
                 for (int z = 0; z < chunkSize.z; ++z) {
-                    isEmpty &= m_voxels[x][y][z] == VoxelType.SOLID;
+                    isEmpty &= m_voxels[x][y][z] != VoxelType.SOLID;
                 }
             }
         }
