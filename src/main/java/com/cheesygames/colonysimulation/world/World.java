@@ -100,6 +100,18 @@ public class World extends AbstractWorldEventEmitter {
     public boolean addChunk(Chunk chunk) {
         if (!m_chunks.containsKey(chunk.getIndex()) && !chunk.isEmpty()) {
             m_chunks.put(chunk.getIndex(), chunk);
+
+            Vector3i redrawAdjacentChunkIndex = new Vector3i();
+
+            for (Direction3D adjacentChunkDirection : Direction3D.ORTHOGONALS) {
+                redrawAdjacentChunkIndex.set(chunk.getIndex());
+                redrawAdjacentChunkIndex.addLocal(adjacentChunkDirection.getDirection());
+
+                if (m_chunks.containsKey(redrawAdjacentChunkIndex)) {
+                    m_chunksToRedraw.add(m_chunks.get(redrawAdjacentChunkIndex));
+                }
+            }
+
             m_chunksToRedraw.add(chunk);
 
             return true;
