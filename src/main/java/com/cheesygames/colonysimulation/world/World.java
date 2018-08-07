@@ -80,6 +80,18 @@ public class World extends AbstractWorldEventEmitter {
     }
 
     /**
+     * Adds the chunk at the chunk's index to the list of chunks that need to be redrawn. It only does so if it is already in the world, a.k.a. if the world contains the specified
+     * chunk.
+     *
+     * @param chunkIndex The chunk's index that indicates which chunk needs to be redrawn.
+     */
+    public void redrawChunk(Vector3i chunkIndex) {
+        if (m_chunks.containsKey(chunkIndex)) {
+            m_chunksToRedraw.add(m_chunks.get(chunkIndex));
+        }
+    }
+
+    /**
      * Adds the supplied chunk to the list of chunks that need to be redrawn. It only does so if it is already in the world, a.k.a. if the world contains the specified chunk.
      *
      * @param chunk The chunk that needs to be redrawn.
