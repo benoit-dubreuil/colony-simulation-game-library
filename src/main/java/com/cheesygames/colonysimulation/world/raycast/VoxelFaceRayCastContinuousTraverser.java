@@ -166,4 +166,8 @@ public class VoxelFaceRayCastContinuousTraverser extends VoxelRayCastContinuousT
     public Vector3i getLastTraversedRelativeVoxelIndex() {
         return m_lastTraversedRelativeVoxelIndex;
     }
+
+    public int getTraversedVoxelCount() {
+        return m_traversedVoxelCount;
+    }
 }
