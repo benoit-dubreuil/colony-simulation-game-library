@@ -2,8 +2,8 @@ package com.cheesygames.colonysimulation.world.chunk;
 
 import com.cheesygames.colonysimulation.GameGlobal;
 import com.cheesygames.colonysimulation.math.vector.Vector3i;
-import com.cheesygames.colonysimulation.world.IWorldGenerator;
 import com.cheesygames.colonysimulation.world.chunk.voxel.VoxelType;
+import com.cheesygames.colonysimulation.world.generation.IWorldGenerator;
 import com.jme3.scene.Mesh;
 
 /**
@@ -42,6 +42,31 @@ public class Chunk extends AbstractChunk {
         }
     }
 
+    /**
+     * Checks if the chunk is empty and overrides the previous {@link #isEmpty()} state.
+     *
+     * @return True if the chunk is empty, false otherwise.
+     */
+    public boolean computeIsEmpty() {
+        boolean isEmpty = true;
+        Vector3i chunkSize = getSize();
+
+        for (int x = 0; x < chunkSize.x; ++x) {
+            for (int y = 0; y < chunkSize.y; ++y) {
+                for (int z = 0; z < chunkSize.z; ++z) {
+                    isEmpty &= m_voxels[x][y][z] != VoxelType.SOLID;
+                }
+            }
+        }
+
+        return m_isEmpty = isEmpty;
+    }
+
+    @Override
+    public VoxelType getVoxelAt(Vector3i voxelIndex) {
+        return m_voxels[voxelIndex.x][voxelIndex.y][voxelIndex.z];
+    }
+
     @Override
     public VoxelType getVoxelAt(int x, int y, int z) {
         return m_voxels[x][y][z];
@@ -52,12 +77,20 @@ public class Chunk extends AbstractChunk {
         return m_isEmpty;
     }
 
+    public void setEmpty(boolean empty) {
+        m_isEmpty = empty;
+    }
+
     public Mesh getMesh() {
         return m_mesh;
     }
 
     public void setMesh(Mesh mesh) {
         m_mesh = mesh;
+    }
+
+    public void setVoxelAt(VoxelType voxelType, Vector3i voxelIndex) {
+        m_voxels[voxelIndex.x][voxelIndex.y][voxelIndex.z] = voxelType;
     }
 
     public void setVoxelAt(VoxelType voxelType, int x, int y, int z) {

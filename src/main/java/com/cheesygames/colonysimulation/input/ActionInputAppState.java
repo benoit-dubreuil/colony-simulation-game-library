@@ -12,14 +12,15 @@ import com.jme3.input.controls.AnalogListener;
  *
  * @param <E> An enum that implements the IActionInput. It's an enum that represents player actions associated to inputs.
  */
-public abstract class ActionInputAppState<E extends Enum<E> & IActionInput> extends AbstractAppState implements AnalogListener, ActionListener {
+public abstract class ActionInputAppState<E extends Enum<E> & IActionInput, AnalogType extends AnalogListener, ActionType extends ActionListener> extends AbstractAppState
+    implements AnalogListener, ActionListener {
 
     private InputManager m_inputManager;
     private Class<E> m_playerActionInputClass;
-    private AnalogListener m_analogListener;
-    private ActionListener m_actionListener;
+    protected AnalogType m_analogListener;
+    protected ActionType m_actionListener;
 
-    public ActionInputAppState(Class<E> playerActionInputClass, AnalogListener analogListener, ActionListener actionListener) {
+    public ActionInputAppState(Class<E> playerActionInputClass, AnalogType analogListener, ActionType actionListener) {
         this.m_playerActionInputClass = playerActionInputClass;
         this.m_analogListener = analogListener;
         this.m_actionListener = actionListener;

@@ -1,6 +1,6 @@
 package com.cheesygames.colonysimulation;
 
-import com.cheesygames.colonysimulation.mainthread.MainThreadEventPool;
+import com.cheesygames.colonysimulation.event.MainThreadEventPool;
 import com.jme3.app.LostFocusBehavior;
 import com.jme3.app.SimpleApplication;
 import com.jme3.system.AppSettings;
@@ -51,6 +51,8 @@ public abstract class Game extends SimpleApplication {
             // BehaviorClock.update(tpf);
             updateGame();
         }
+
+        GameGlobal.world.redrawChunksThatNeedIt();
 
         m_isUpdating = false;
     }

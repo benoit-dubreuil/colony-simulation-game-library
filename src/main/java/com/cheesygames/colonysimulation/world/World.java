@@ -2,18 +2,23 @@ package com.cheesygames.colonysimulation.world;
 
 import com.cheesygames.colonysimulation.math.direction.Direction3D;
 import com.cheesygames.colonysimulation.math.vector.Vector3i;
-import com.cheesygames.colonysimulation.world.chunk.*;
+import com.cheesygames.colonysimulation.world.chunk.Chunk;
+import com.cheesygames.colonysimulation.world.chunk.EmptyChunk;
+import com.cheesygames.colonysimulation.world.chunk.IChunkVoxelData;
+import com.cheesygames.colonysimulation.world.chunk.mesh.BlockMeshGenerator;
+import com.cheesygames.colonysimulation.world.chunk.mesh.IChunkMeshGenerator;
 import com.cheesygames.colonysimulation.world.chunk.voxel.VoxelType;
+import com.cheesygames.colonysimulation.world.generation.GradientWorldGenerator;
+import com.cheesygames.colonysimulation.world.generation.IWorldGenerator;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * A world holds multiple chunks of voxels.
  */
-public class World {
+public class World extends AbstractWorldEventEmitter {
 
     public static final float VOXEL_HALF_EXTENT = 0.5f;
 
@@ -24,16 +29,18 @@ public class World {
     private IChunkMeshGenerator m_meshGenerator;
     private IWorldGenerator m_worldGenerator;
     private boolean m_isWorldGenerated;
-    private boolean m_areMeshesGenerated;
     private Vector3i m_chunkSizeBits;
     private Vector3i m_chunkSize;
+    private Set<Chunk> m_chunksToRedraw;
 
     public World() {
+        super();
         this.m_chunks = new HashMap<>();
         this.m_meshGenerator = new BlockMeshGenerator();
         this.m_worldGenerator = new GradientWorldGenerator(new Vector3f(-2, 16, -5));
         this.m_chunkSizeBits = new Vector3i(DEFAULT_CHUNK_SIZE_BITS);
         this.m_chunkSize = new Vector3i(DEFAULT_CHUNK_SIZE);
+        this.m_chunksToRedraw = new HashSet<>();
 
         assert FastMath.isPowerOfTwo(m_chunkSize.getX());
         assert FastMath.isPowerOfTwo(m_chunkSize.getY());
@@ -41,16 +48,58 @@ public class World {
     }
 
     public void generateWorld() {
-        m_worldGenerator.generateWorld(this);
+        m_worldGenerator.generateWorld();
+        m_chunksToRedraw.addAll(m_chunks.values());
+
         m_isWorldGenerated = true;
     }
 
-    public void generateMeshes() {
-        for (Chunk chunk : m_chunks.values()) {
-            chunk.setMesh(m_meshGenerator.generateMesh(this, chunk));
-        }
+    /**
+     * Redraws, i.e. reconstructs, the mesh of chunks that need their mesh to be redrawn. It also checks if those chunks are still not empty.
+     */
+    public void redrawChunksThatNeedIt() {
+        if (!m_chunksToRedraw.isEmpty()) {
+            Iterator<Chunk> chunksToRedrawIterator = m_chunksToRedraw.iterator();
 
-        m_areMeshesGenerated = true;
+            while (chunksToRedrawIterator.hasNext()) {
+                Chunk chunkToRedraw = chunksToRedrawIterator.next();
+
+                if (chunkToRedraw.computeIsEmpty()) {
+                    m_chunks.remove(chunkToRedraw.getIndex());
+                    chunkIsEmpty(chunkToRedraw);
+                }
+                else {
+                    boolean wasMeshNullBefore = chunkToRedraw.getMesh() == null;
+                    m_meshGenerator.generateMesh(chunkToRedraw);
+                    chunkRedrawn(chunkToRedraw, wasMeshNullBefore);
+                }
+
+                chunksToRedrawIterator.remove();
+            }
+        }
+    }
+
+    /**
+     * Adds the chunk at the chunk's index to the list of chunks that need to be redrawn. It only does so if it is already in the world, a.k.a. if the world contains the specified
+     * chunk.
+     *
+     * @param chunkIndex The chunk's index that indicates which chunk needs to be redrawn.
+     */
+    public void redrawChunk(Vector3i chunkIndex) {
+        if (m_chunks.containsKey(chunkIndex)) {
+            m_chunksToRedraw.add(m_chunks.get(chunkIndex));
+        }
+    }
+
+    /**
+     * Adds the supplied chunk to the list of chunks that need to be redrawn. It only does so if it is already in the world, a.k.a. if the world contains the specified chunk.
+     *
+     * @param chunk The chunk that needs to be redrawn.
+     */
+    public void redrawChunk(Chunk chunk) {
+        if (m_chunks.containsKey(chunk.getIndex())) {
+            m_chunksToRedraw.add(chunk);
+        }
     }
 
     /**
@@ -63,6 +112,19 @@ public class World {
     public boolean addChunk(Chunk chunk) {
         if (!m_chunks.containsKey(chunk.getIndex()) && !chunk.isEmpty()) {
             m_chunks.put(chunk.getIndex(), chunk);
+
+            Vector3i redrawAdjacentChunkIndex = new Vector3i();
+
+            for (Direction3D adjacentChunkDirection : Direction3D.ORTHOGONALS) {
+                redrawAdjacentChunkIndex.set(chunk.getIndex());
+                redrawAdjacentChunkIndex.addLocal(adjacentChunkDirection.getDirection());
+
+                if (m_chunks.containsKey(redrawAdjacentChunkIndex)) {
+                    m_chunksToRedraw.add(m_chunks.get(redrawAdjacentChunkIndex));
+                }
+            }
+
+            m_chunksToRedraw.add(chunk);
 
             return true;
         }
@@ -197,8 +259,10 @@ public class World {
     }
 
     /**
-     * Gets the chunk's starting position according to its index. The method is local, meaning that the supplied chunk's starting position will be {@link Vector3i#set(int, int, *
-     * int)} and returned.
+     * Gets the chunk's starting position according to its index. The method is local, meaning that the supplied chunk's starting position will be
+     * <pre>
+     * {@link Vector3i#set(int, int, int)} and returned.
+     * </pre>
      *
      * @param chunkIndex         The chunk's index.
      * @param chunkStartPosition The chunk's starting position that will be modified and returned.
@@ -284,7 +348,7 @@ public class World {
      * @param chunkRelativeIndex The chunk relative index, a.k.a. the index in the chunk's data multidimensional array.
      * @param chunkSizeBits      The bit shift count for the chunk size. This allows to not mention the axis.
      *
-     * @retur The absolute index.
+     * @return The absolute index.
      */
     private int getAbsoluteIndex(int chunkIndex, int chunkRelativeIndex, int chunkSizeBits) {
         return (chunkIndex << chunkSizeBits) + chunkRelativeIndex;
@@ -296,7 +360,7 @@ public class World {
      * @param chunkIndex         The chunk's index for the specified axis.
      * @param chunkRelativeIndex The chunk relative index, a.k.a. the axis index in the chunk's data multidimensional array.
      *
-     * @retur The absolute index for the specified axis.
+     * @return The absolute index for the specified axis.
      */
     public int getAbsoluteIndexX(int chunkIndex, int chunkRelativeIndex) {
         return getAbsoluteIndex(chunkIndex, chunkRelativeIndex, m_chunkSizeBits.x);
@@ -308,7 +372,7 @@ public class World {
      * @param chunkIndex         The chunk's index for the specified axis.
      * @param chunkRelativeIndex The chunk relative index, a.k.a. the axis index in the chunk's data multidimensional array.
      *
-     * @retur The absolute index for the specified axis.
+     * @return The absolute index for the specified axis.
      */
     public int getAbsoluteIndexY(int chunkIndex, int chunkRelativeIndex) {
         return getAbsoluteIndex(chunkIndex, chunkRelativeIndex, m_chunkSizeBits.y);
@@ -320,7 +384,7 @@ public class World {
      * @param chunkIndex         The chunk's index for the specified axis.
      * @param chunkRelativeIndex The chunk relative index, a.k.a. the axis index in the chunk's data multidimensional array.
      *
-     * @retur The absolute index for the specified axis.
+     * @return The absolute index for the specified axis.
      */
     public int getAbsoluteIndexZ(int chunkIndex, int chunkRelativeIndex) {
         return getAbsoluteIndex(chunkIndex, chunkRelativeIndex, m_chunkSizeBits.z);
@@ -357,10 +421,6 @@ public class World {
 
     public boolean isWorldGenerated() {
         return m_isWorldGenerated;
-    }
-
-    public boolean isAreMeshesGenerated() {
-        return m_areMeshesGenerated;
     }
 
     public Vector3i getChunkSizeBits() {

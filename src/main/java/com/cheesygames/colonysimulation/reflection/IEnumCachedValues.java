@@ -27,7 +27,8 @@ public interface IEnumCachedValues<E extends Enum<E>> {
     /**
      * Gets the cached array of the supplied enum values from the method values().
      *
-     * @param enumClass The class of the enum.
+     * @param <E>       The class (type) of the enum.
+     * @param enumClass The class instance of the enum.
      *
      * @return A cached array containing all enum values for the supplied enum.
      */

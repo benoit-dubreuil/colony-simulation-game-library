@@ -160,11 +160,12 @@ public enum AssetType {
     }
 
     /**
-     * Creates an {@link AssetKey#} depending on the asset key class of the asset type.
+     * Creates an {@link AssetKey} depending on the asset key class of the asset type.
      *
      * @param path The asset's path.
+     * @param <T>  The asset type's specific asset key.
      *
-     * @return A nbewly created {@link AssetKey#}.
+     * @return A newly created {@link AssetKey}.
      */
     @SuppressWarnings("rawtypes")
     public <T extends AssetKey> T createAssetKey(String path) {

@@ -85,6 +85,8 @@ public class Line2D {
      * Sets the end vector with the supplied Vector3f. Only the X and Z components are used.
      *
      * @param start The starting point for the line.
+     *
+     * @return The locally modified start vector3. It is not the supplied reference.
      */
     public Vector2f setStartVector3(Vector3f start) {
         return m_start.setFromVec3XZ(start);
@@ -98,6 +100,8 @@ public class Line2D {
      * Sets the end vector with the supplied Vector3f. Only the X and Z components are used.
      *
      * @param end The ending point for the line.
+     *
+     * @return The locally modified end vector3. It is not the supplied reference.
      */
     public Vector2f setEndVector3(Vector3f end) {
         return m_end.setFromVec3XZ(end);

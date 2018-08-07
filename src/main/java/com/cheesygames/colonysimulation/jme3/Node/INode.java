@@ -1,7 +1,7 @@
 package com.cheesygames.colonysimulation.jme3.Node;
 
 import com.cheesygames.colonysimulation.GameGlobal;
-import com.cheesygames.colonysimulation.mainthread.*;
+import com.cheesygames.colonysimulation.event.*;
 import com.jme3.material.Material;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
