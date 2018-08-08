@@ -10,12 +10,11 @@ import com.cheesygames.colonysimulation.world.chunk.voxel.VoxelType;
 import java.util.function.BiFunction;
 
 /**
- * Acts like a real-time {@link java.util.Iterator}. It is used by a {@link VoxelRay} to continuously traverse the {@link World}
- * voxels in an efficient manner.
+ * Acts like a real-time {@link java.util.Iterator}. It is used by a {@link VoxelRay} to continuously traverse the {@link World} voxels in an efficient manner.
  * <p>
- * The user supplies a {@link BiFunction} that acts as the break condition of the {@link VoxelRay} and as what to do whilst
- * traversing the world. The break condition takes the absolute voxel index, the voxel type and returns a boolean that signifies if the voxel traversal should stop (true) or not
- * (false). Bear in mind to not modify the absolute index, as it will interfere will the ray cast.
+ * The user supplies a {@link BiFunction} that acts as the break condition of the {@link VoxelRay} and as what to do whilst traversing the world. The break condition takes the
+ * absolute voxel index, the voxel type and returns a boolean that signifies if the voxel traversal should stop (true) or not (false). Bear in mind to not modify the absolute
+ * index, as it will interfere will the ray cast.
  */
 public class VoxelRayCastContinuousTraverser implements VoxelRayOnTraversing {
 
@@ -118,6 +117,19 @@ public class VoxelRayCastContinuousTraverser implements VoxelRayOnTraversing {
      */
     public IChunkVoxelData getChunk() {
         return m_chunk;
+    }
+
+    /**
+     * Sets the currently traversing chunk. This must only be called if the chunk was an instance of {@link com.cheesygames.colonysimulation.world.chunk.EmptyChunk} and that a new
+     * {@link com.cheesygames.colonysimulation.world.chunk.Chunk} instance was generated.
+     * <p>
+     * It can also be called if the chunk was removed from the {@link World} and so the constant {@link com.cheesygames.colonysimulation.world.chunk.EmptyChunk} should be
+     * supplied.
+     *
+     * @param chunk The currently traversing chunk.
+     */
+    public void setChunk(IChunkVoxelData chunk) {
+        m_chunk = chunk;
     }
 
     /**

@@ -9,15 +9,14 @@ import com.cheesygames.colonysimulation.world.chunk.IChunkVoxelData;
 import com.cheesygames.colonysimulation.world.chunk.voxel.VoxelType;
 
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 /**
- * Acts like a real-time {@link java.util.Iterator}. It is used by a {@link VoxelRay} to continuously traverse the {@link World}
- * voxels in an efficient manner and to supply the incoming direction.
+ * Acts like a real-time {@link java.util.Iterator}. It is used by a {@link VoxelRay} to continuously traverse the {@link World} voxels in an efficient manner and to supply the
+ * incoming direction.
  * <p>
- * The user supplies a {@link BiFunction} that acts as the break condition of the {@link VoxelRay} and as what to do whilst
- * traversing the world. The break condition takes the absolute voxel index, the voxel type and returns a boolean that signifies if the voxel traversal should stop (true) or not
- * (false). Bear in mind to not modify the absolute index, as it will interfere will the ray cast.
+ * The user supplies a {@link BiFunction} that acts as the break condition of the {@link VoxelRay} and as what to do whilst traversing the world. The break condition takes the
+ * absolute voxel index, the voxel type and returns a boolean that signifies if the voxel traversal should stop (true) or not (false). Bear in mind to not modify the absolute
+ * index, as it will interfere will the ray cast.
  */
 public class VoxelFaceRayCastContinuousTraverser extends VoxelRayCastContinuousTraverser {
 
@@ -62,9 +61,9 @@ public class VoxelFaceRayCastContinuousTraverser extends VoxelRayCastContinuousT
      * Constructs a {@link VoxelFaceRayCastContinuousTraverser}. With this constructor, the {@link World} must be supplied with the setter {@link
      * VoxelRayCastContinuousTraverser#setWorld(World)}.
      *
-     * @param returnCondition {@link VoxelRay} and as what to do whilst traversing the world. The break condition takes the absolute
-     *                        voxel index, the voxel type and returns a boolean that signifies if the voxel traversal should stop (true) or not (false). Bear in mind to not modify
-     *                        the absolute index, as it will interfere will the ray cast.
+     * @param returnCondition {@link VoxelRay} and as what to do whilst traversing the world. The break condition takes the absolute voxel index, the voxel type and returns a
+     *                        boolean that signifies if the voxel traversal should stop (true) or not (false). Bear in mind to not modify the absolute index, as it will interfere
+     *                        will the ray cast.
      */
     public VoxelFaceRayCastContinuousTraverser(BiFunction<Vector3i, VoxelType, Boolean> returnCondition) {
         super(returnCondition);
@@ -78,9 +77,9 @@ public class VoxelFaceRayCastContinuousTraverser extends VoxelRayCastContinuousT
      * Constructs a {@link VoxelFaceRayCastContinuousTraverser}.
      *
      * @param world           The world in which to traverse voxels.
-     * @param returnCondition {@link VoxelRay} and as what to do whilst traversing the world. The break condition takes the absolute
-     *                        voxel index, the voxel type and returns a boolean that signifies if the voxel traversal should stop (true) or not (false). Bear in mind to not modify
-     *                        the absolute index, as it will interfere will the ray cast.
+     * @param returnCondition {@link VoxelRay} and as what to do whilst traversing the world. The break condition takes the absolute voxel index, the voxel type and returns a
+     *                        boolean that signifies if the voxel traversal should stop (true) or not (false). Bear in mind to not modify the absolute index, as it will interfere
+     *                        will the ray cast.
      */
     public VoxelFaceRayCastContinuousTraverser(World world, BiFunction<Vector3i, VoxelType, Boolean> returnCondition) {
         super(world, returnCondition);
@@ -161,6 +160,19 @@ public class VoxelFaceRayCastContinuousTraverser extends VoxelRayCastContinuousT
 
     public IChunkVoxelData getLastTraversedChunk() {
         return m_lastTraversedChunk;
+    }
+
+    /**
+     * Sets the last traversed chunk. This must only be called if the last traversed chunk was an instance of {@link com.cheesygames.colonysimulation.world.chunk.EmptyChunk} and
+     * that a new {@link com.cheesygames.colonysimulation.world.chunk.Chunk} instance was generated.
+     * <p>
+     * It can also be called if the last traversed chunk was removed from the {@link World} and so the constant {@link com.cheesygames.colonysimulation.world.chunk.EmptyChunk}
+     * should be supplied.
+     *
+     * @param lastTraversedChunk The last traversed chunk.
+     */
+    public void setLastTraversedChunk(IChunkVoxelData lastTraversedChunk) {
+        m_lastTraversedChunk = lastTraversedChunk;
     }
 
     public Vector3i getLastTraversedRelativeVoxelIndex() {
