@@ -2,6 +2,7 @@ package com.cheesygames.colonysimulation.world.chunk;
 
 import com.cheesygames.colonysimulation.GameGlobal;
 import com.cheesygames.colonysimulation.math.vector.Vector3i;
+import com.cheesygames.colonysimulation.world.chunk.voxel.Voxel;
 import com.cheesygames.colonysimulation.world.chunk.voxel.VoxelType;
 import com.cheesygames.colonysimulation.world.generation.IWorldGenerator;
 import com.jme3.scene.Mesh;
@@ -11,7 +12,7 @@ import com.jme3.scene.Mesh;
  */
 public class Chunk extends AbstractChunk {
 
-    private VoxelType[][][] m_voxels;
+    private Voxel[][][] m_voxels;
     private Mesh m_mesh;
     private boolean m_isEmpty;
 
@@ -27,7 +28,7 @@ public class Chunk extends AbstractChunk {
      */
     public void generateData(IWorldGenerator generator) {
         final Vector3i chunkSize = getSize();
-        m_voxels = new VoxelType[chunkSize.x][chunkSize.y][chunkSize.z];
+        m_voxels = new Voxel[chunkSize.x][chunkSize.y][chunkSize.z];
 
         for (int x = 0; x < chunkSize.x; ++x) {
             for (int y = 0; y < chunkSize.y; ++y) {
@@ -36,7 +37,7 @@ public class Chunk extends AbstractChunk {
                         GameGlobal.world.getAbsoluteIndexY(m_index.y, y),
                         GameGlobal.world.getAbsoluteIndexZ(m_index.z, z));
 
-                    m_isEmpty &= (m_voxels[x][y][z] == VoxelType.AIR);
+                    m_isEmpty &= (m_voxels[x][y][z].voxelType == VoxelType.AIR);
                 }
             }
         }
@@ -54,7 +55,7 @@ public class Chunk extends AbstractChunk {
         for (int x = 0; x < chunkSize.x; ++x) {
             for (int y = 0; y < chunkSize.y; ++y) {
                 for (int z = 0; z < chunkSize.z; ++z) {
-                    isEmpty &= m_voxels[x][y][z] != VoxelType.SOLID;
+                    isEmpty &= m_voxels[x][y][z].voxelType != VoxelType.SOLID;
                 }
             }
         }
@@ -63,12 +64,12 @@ public class Chunk extends AbstractChunk {
     }
 
     @Override
-    public VoxelType getVoxelAt(Vector3i voxelIndex) {
+    public Voxel getVoxelAt(Vector3i voxelIndex) {
         return m_voxels[voxelIndex.x][voxelIndex.y][voxelIndex.z];
     }
 
     @Override
-    public VoxelType getVoxelAt(int x, int y, int z) {
+    public Voxel getVoxelAt(int x, int y, int z) {
         return m_voxels[x][y][z];
     }
 
@@ -89,11 +90,11 @@ public class Chunk extends AbstractChunk {
         m_mesh = mesh;
     }
 
-    public void setVoxelAt(VoxelType voxelType, Vector3i voxelIndex) {
-        m_voxels[voxelIndex.x][voxelIndex.y][voxelIndex.z] = voxelType;
+    public void setVoxelTypeAt(VoxelType voxelType, Vector3i voxelIndex) {
+        m_voxels[voxelIndex.x][voxelIndex.y][voxelIndex.z].voxelType = voxelType;
     }
 
-    public void setVoxelAt(VoxelType voxelType, int x, int y, int z) {
-        m_voxels[x][y][z] = voxelType;
+    public void setVoxelTypeAt(VoxelType voxelType, int x, int y, int z) {
+        m_voxels[x][y][z].voxelType = voxelType;
     }
 }

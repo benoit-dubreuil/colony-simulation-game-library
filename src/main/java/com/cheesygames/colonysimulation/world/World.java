@@ -175,7 +175,7 @@ public class World extends AbstractWorldEventEmitter {
             m_worldGenerator.createChunk(chunkIndex);
         }
 
-        chunk.setVoxelAt(voxelType, chunkRelativeX, chunkRelativeY, chunkRelativeZ);
+        chunk.setVoxelTypeAt(voxelType, chunkRelativeX, chunkRelativeY, chunkRelativeZ);
 
         if (chunkDoesNotExist) {
             addChunk(chunk);

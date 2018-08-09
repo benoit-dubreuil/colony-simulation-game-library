@@ -82,7 +82,7 @@ public class VoxelRayCastContinuousTraverser implements VoxelRayOnTraversing {
      * @return True if the voxel traversing should stop, false otherwise.
      */
     protected boolean applyOnTraversing(Vector3i absoluteVoxelIndex) {
-        return m_returnCondition.apply(absoluteVoxelIndex, m_chunk.getVoxelAt(m_relativeVoxelIndex));
+        return m_returnCondition.apply(absoluteVoxelIndex, m_chunk.getVoxelAt(m_relativeVoxelIndex).voxelType);
     }
 
     public BiFunction<Vector3i, VoxelType, Boolean> getReturnCondition() {

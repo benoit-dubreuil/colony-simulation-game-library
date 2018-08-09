@@ -2,8 +2,8 @@ package com.cheesygames.colonysimulation.world.generation;
 
 import com.cheesygames.colonysimulation.GameGlobal;
 import com.cheesygames.colonysimulation.math.vector.Vector3i;
-import com.cheesygames.colonysimulation.world.World;
 import com.cheesygames.colonysimulation.world.chunk.Chunk;
+import com.cheesygames.colonysimulation.world.chunk.voxel.Voxel;
 import com.cheesygames.colonysimulation.world.chunk.voxel.VoxelType;
 import com.jme3.math.Vector3f;
 
@@ -51,9 +51,9 @@ public class GradientWorldGenerator implements IWorldGenerator {
     }
 
     @Override
-    public VoxelType generateVoxel(int x, int y, int z) {
+    public Voxel generateVoxel(int x, int y, int z) {
         float gradientValue = new Vector3f(x, y, z).dot(m_gradient) / m_gradientLengthSquared;
 
-        return gradientValue < 1f ? VoxelType.SOLID : VoxelType.AIR;
+        return gradientValue < 1f ? new Voxel(VoxelType.SOLID) : new Voxel(VoxelType.AIR);
     }
 }
