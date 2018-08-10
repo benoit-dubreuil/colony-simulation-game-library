@@ -1,9 +1,7 @@
 package com.cheesygames.colonysimulation.world.generation;
 
-import com.cheesygames.colonysimulation.GameGlobal;
 import com.cheesygames.colonysimulation.math.vector.Vector3i;
-import com.cheesygames.colonysimulation.world.chunk.Chunk;
-import com.cheesygames.colonysimulation.world.chunk.voxel.Voxel;
+import com.cheesygames.colonysimulation.world.chunk.Chunk;import com.cheesygames.colonysimulation.world.chunk.voxel.Voxel;
 import com.cheesygames.colonysimulation.world.chunk.voxel.VoxelType;
 import com.jme3.math.Vector3f;
 
@@ -32,22 +30,6 @@ public class GradientWorldGenerator implements IWorldGenerator {
                 }
             }
         }
-    }
-
-    @Override
-    public Chunk createChunk(Vector3i index) {
-        Chunk chunk = new Chunk(index);
-        chunk.generateData(this);
-
-        return chunk;
-    }
-
-    @Override
-    public Chunk generateChunk(Vector3i index) {
-        Chunk chunk = createChunk(index);
-        GameGlobal.world.addChunk(chunk);
-
-        return chunk;
     }
 
     @Override

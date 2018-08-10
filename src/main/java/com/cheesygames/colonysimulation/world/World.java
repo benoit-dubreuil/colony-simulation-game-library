@@ -8,10 +8,9 @@ import com.cheesygames.colonysimulation.world.chunk.IChunkVoxelData;
 import com.cheesygames.colonysimulation.world.chunk.mesh.BlockMeshGenerator;
 import com.cheesygames.colonysimulation.world.chunk.mesh.IChunkMeshGenerator;
 import com.cheesygames.colonysimulation.world.chunk.voxel.VoxelType;
-import com.cheesygames.colonysimulation.world.generation.GradientWorldGenerator;
 import com.cheesygames.colonysimulation.world.generation.IWorldGenerator;
+import com.cheesygames.colonysimulation.world.generation.MountainousWorldGenerator;
 import com.jme3.math.FastMath;
-import com.jme3.math.Vector3f;
 
 import java.util.*;
 
@@ -37,7 +36,7 @@ public class World extends AbstractWorldEventEmitter {
         super();
         this.m_chunks = new HashMap<>();
         this.m_meshGenerator = new BlockMeshGenerator();
-        this.m_worldGenerator = new GradientWorldGenerator(new Vector3f(-2, 16, -5));
+        this.m_worldGenerator = new MountainousWorldGenerator();
         this.m_chunkSizeBits = new Vector3i(DEFAULT_CHUNK_SIZE_BITS);
         this.m_chunkSize = new Vector3i(DEFAULT_CHUNK_SIZE);
         this.m_chunksToRedraw = new HashSet<>();

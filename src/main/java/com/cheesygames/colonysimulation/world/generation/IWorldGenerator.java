@@ -1,5 +1,6 @@
 package com.cheesygames.colonysimulation.world.generation;
 
+import com.cheesygames.colonysimulation.GameGlobal;
 import com.cheesygames.colonysimulation.math.vector.Vector3i;
 import com.cheesygames.colonysimulation.world.chunk.Chunk;
 import com.cheesygames.colonysimulation.world.chunk.voxel.Voxel;
@@ -18,7 +19,12 @@ public interface IWorldGenerator {
      *
      * @return A newly created and generated chunk.
      */
-    Chunk createChunk(Vector3i index);
+    default Chunk createChunk(Vector3i index) {
+        Chunk chunk = new Chunk(index);
+        chunk.generateData(this);
+
+        return chunk;
+    }
 
     /**
      * Generates a chunk at the specified index and add it to the world if it's not empty.
@@ -27,7 +33,12 @@ public interface IWorldGenerator {
      *
      * @return The newly created chunk, whether it is added to the world or not.
      */
-    Chunk generateChunk(Vector3i index);
+    default Chunk generateChunk(Vector3i index) {
+        Chunk chunk = createChunk(index);
+        GameGlobal.world.addChunk(chunk);
+
+        return chunk;
+    }
 
     Voxel generateVoxel(int x, int y, int z);
 }
