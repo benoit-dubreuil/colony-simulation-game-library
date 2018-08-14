@@ -26,6 +26,22 @@ public final class VoxelLightUtils {
     public static final int SUN_LIGHT_BITS = 0xF << SUN_LIGHT_BIT_POSITION;
 
     /**
+     * Propagates the light from the source into the destination and then returns the result.
+     *
+     * @param source      The source of the light to propagate. Must be the light from an adjacent voxel to the destination.
+     * @param destination The destination where the light will propagate. Must be the light from an adjacent voxel to the source.
+     *
+     * @return The destination's light affected by the propagation of the source's light.
+     */
+    public static int propagateLight(int source, int destination) {
+        for (int componentIndex = 0; componentIndex < COLOR_COMPONENT_COUNT; ++componentIndex) {
+            if (getComponent(source, componentIndex) > getComponent(destination, componentIndex)) {
+                destination = setComponentIntensity(destination, getComponentIntensity(source, componentIndex) - 1, componentIndex);
+            }
+        }
+
+        return destination;
+    }
 
     /**
      * Gets the color component of the supplied light at the specified index.
