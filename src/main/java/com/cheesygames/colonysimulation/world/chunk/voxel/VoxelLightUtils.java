@@ -84,6 +84,18 @@ public final class VoxelLightUtils {
     }
 
     /**
+     * Sets the color component of the supplied light at the specified index.
+     *
+     * @param light The light that needs its color component set at the specified index.
+     * @param index The color component's index.
+     *
+     * @return The light with the color component set to the supplied parameter at the specified index.
+     */
+    public static int setComponent(int light, int color, int index) {
+        return light | getComponent(color, index);
+    }
+
+    /**
      * Sets the red component of the supplied light.
      *
      * @param light The light that needs its red component set.
@@ -185,8 +197,22 @@ public final class VoxelLightUtils {
     }
 
     /**
-     * Sets the red component's intensity of the supplied. The intensity must be inclusively between 0 and {@link #LIGHT_MAXIMUM_INTENSITY}. In other words, the intensity of a
-     * light component is the value of the latter without the bit shift.
+     * Sets the color component's intensity of the supplied light. The intensity must be inclusively between 0 and {@link #LIGHT_MAXIMUM_INTENSITY}. In other words, the intensity
+     * of a light component is the value of the latter without the bit shift.
+     *
+     * @param light     The light that needs its color component's intensity set at the specified index.
+     * @param intensity The color component's intensity to set to the supplied light at the specified index.
+     * @param index     The color component's index.
+     *
+     * @return The light which its color component's intensity was set at the specified index.
+     */
+    public static int setComponentIntensity(int light, int intensity, int index) {
+        return light | ((intensity << (index * INDIVIDUAL_LIGHT_BIT_COUNT)));
+    }
+
+    /**
+     * Sets the red component's intensity of the supplied light. The intensity must be inclusively between 0 and {@link #LIGHT_MAXIMUM_INTENSITY}. In other words, the intensity of
+     * a light component is the value of the latter without the bit shift.
      *
      * @param light        The light that needs its red component's intensity set.
      * @param redIntensity The red component's intensity to set to the supplied light.
@@ -194,12 +220,12 @@ public final class VoxelLightUtils {
      * @return The light which its red component's intensity was set.
      */
     public static int setRedIntensity(int light, int redIntensity) {
-        return light | ((redIntensity << R_LIGHT_BIT_POSITION) & R_LIGHT_BITS);
+        return light | ((redIntensity << R_LIGHT_BIT_POSITION));
     }
 
     /**
-     * Sets the green component's intensity of the supplied. The intensity must be inclusively between 0 and {@link #LIGHT_MAXIMUM_INTENSITY}. In other words, the intensity of a
-     * light component is the value of the latter without the bit shift.
+     * Sets the green component's intensity of the supplied light. The intensity must be inclusively between 0 and {@link #LIGHT_MAXIMUM_INTENSITY}. In other words, the intensity
+     * of a light component is the value of the latter without the bit shift.
      *
      * @param light          The light that needs its green component's intensity set.
      * @param greenIntensity The green component's intensity to set to the supplied light.
@@ -207,12 +233,12 @@ public final class VoxelLightUtils {
      * @return The light which its green component's intensity was set.
      */
     public static int setGreenIntensity(int light, int greenIntensity) {
-        return light | ((greenIntensity << G_LIGHT_BIT_POSITION) & G_LIGHT_BITS);
+        return light | ((greenIntensity << G_LIGHT_BIT_POSITION));
     }
 
     /**
-     * Sets the blue component's intensity of the supplied. The intensity must be inclusively between 0 and {@link #LIGHT_MAXIMUM_INTENSITY}. In other words, the intensity of a
-     * light component is the value of the latter without the bit shift.
+     * Sets the blue component's intensity of the supplied light. The intensity must be inclusively between 0 and {@link #LIGHT_MAXIMUM_INTENSITY}. In other words, the intensity of
+     * a light component is the value of the latter without the bit shift.
      *
      * @param light         The light that needs its blue component's intensity set.
      * @param blueIntensity The blue component's intensity to set to the supplied light.
@@ -220,12 +246,12 @@ public final class VoxelLightUtils {
      * @return The light which its blue component's intensity was set.
      */
     public static int setBlueIntensity(int light, int blueIntensity) {
-        return light | ((blueIntensity << B_LIGHT_BIT_POSITION) & B_LIGHT_BITS);
+        return light | ((blueIntensity << B_LIGHT_BIT_POSITION));
     }
 
     /**
-     * Sets the sun component's intensity of the supplied. The intensity must be inclusively between 0 and {@link #LIGHT_MAXIMUM_INTENSITY}. In other words, the intensity of a
-     * light component is the value of the latter without the bit shift.
+     * Sets the sun component's intensity of the supplied light. The intensity must be inclusively between 0 and {@link #LIGHT_MAXIMUM_INTENSITY}. In other words, the intensity of
+     * a light component is the value of the latter without the bit shift.
      *
      * @param light        The light that needs its sun component's intensity set.
      * @param sunIntensity The sun component's intensity to set to the supplied light.
@@ -233,7 +259,7 @@ public final class VoxelLightUtils {
      * @return The light which its sun component's intensity was set.
      */
     public static int setSunIntensity(int light, int sunIntensity) {
-        return light | ((sunIntensity << SUN_LIGHT_BIT_POSITION) & SUN_LIGHT_BITS);
+        return light | ((sunIntensity << SUN_LIGHT_BIT_POSITION));
     }
 
     private VoxelLightUtils() {
