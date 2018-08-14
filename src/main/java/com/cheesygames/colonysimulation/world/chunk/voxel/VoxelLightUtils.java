@@ -13,7 +13,9 @@ public final class VoxelLightUtils {
     public static final int G_INDEX = R_INDEX + 1;
     public static final int B_INDEX = G_INDEX + 1;
     public static final int SUN_INDEX = B_INDEX + 1;
-    public static final int COLOR_COMPONENT_COUNT = SUN_INDEX + 1;
+
+    public static final int COLOR_COMPONENT_COUNT = B_INDEX + 1;
+    public static final int COLOR_WITH_SUN_COMPONENT_COUNT = SUN_INDEX + 1;
 
     public static final int R_LIGHT_BIT_POSITION = R_INDEX * INDIVIDUAL_LIGHT_BIT_COUNT;
     public static final int G_LIGHT_BIT_POSITION = G_INDEX * INDIVIDUAL_LIGHT_BIT_COUNT;
@@ -26,7 +28,7 @@ public final class VoxelLightUtils {
     public static final int SUN_LIGHT_BITS = 0xF << SUN_LIGHT_BIT_POSITION;
 
     /**
-     * Propagates the light from the source into the destination and then returns the result.
+     * Propagates the light from the source into the destination and then returns the result. Does not propagate the sunlight.
      *
      * @param source      The source of the light to propagate. Must be the light from an adjacent voxel to the destination.
      * @param destination The destination where the light will propagate. Must be the light from an adjacent voxel to the source.
@@ -41,6 +43,24 @@ public final class VoxelLightUtils {
         }
 
         return destination;
+    }
+
+    /**
+     * Checks if the source light can propagate its light into the destination light. It only checks for the color lighting and the sunlight.
+     *
+     * @param source      The source light that needs to know if its light can propagate.
+     * @param destination The destination into which the source light needs to know if its light can propagate.
+     *
+     * @return True if the source light can propagate into the destination, false otherwise.
+     */
+    public static boolean canPropagateLight(int source, int destination) {
+        boolean canPropagateLight = false;
+
+        for (int componentIndex = 0; componentIndex < COLOR_COMPONENT_COUNT && !canPropagateLight; ++componentIndex) {
+            canPropagateLight |= getComponent(source, componentIndex) > getComponent(destination, componentIndex);
+        }
+
+        return canPropagateLight;
     }
 
     /**
