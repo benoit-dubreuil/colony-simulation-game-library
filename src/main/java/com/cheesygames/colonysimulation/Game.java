@@ -3,6 +3,7 @@ package com.cheesygames.colonysimulation;
 import com.cheesygames.colonysimulation.event.MainThreadEventPool;
 import com.jme3.app.LostFocusBehavior;
 import com.jme3.app.SimpleApplication;
+import com.jme3.math.ColorRGBA;
 import com.jme3.system.AppSettings;
 
 import java.awt.*;
@@ -21,7 +22,7 @@ public abstract class Game extends SimpleApplication {
         DisplayMode displayMode = GameGlobal.getDefaultDisplayMode();
 
         AppSettings appSettings = new AppSettings(true);
-        appSettings.setRenderer(AppSettings.LWJGL_OPENGL4);
+        appSettings.setRenderer(AppSettings.LWJGL_OPENGL33);
         appSettings.setVSync(true);
         appSettings.setGammaCorrection(true);
         appSettings.setDepthBits(displayMode.getBitDepth());
@@ -36,6 +37,10 @@ public abstract class Game extends SimpleApplication {
     public void simpleInitApp() {
         setLostFocusBehavior(LostFocusBehavior.PauseOnLostFocus);
         GameGlobal.initStatics(this, assetManager, stateManager, rootNode);
+
+        ColorRGBA backgroundColor = new ColorRGBA(76, 196, 255, 255);
+        backgroundColor.multLocal(1 / 255f);
+        viewPort.setBackgroundColor(backgroundColor);
 
         initKeys();
     }

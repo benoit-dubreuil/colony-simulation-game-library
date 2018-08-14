@@ -4,12 +4,14 @@ import com.cheesygames.colonysimulation.GameGlobal;
 import com.cheesygames.colonysimulation.math.direction.Direction3D;
 import com.cheesygames.colonysimulation.math.vector.Vector3i;
 import com.cheesygames.colonysimulation.world.chunk.voxel.Voxel;
+import com.cheesygames.colonysimulation.world.chunk.voxel.VoxelLightUtils;
 import com.cheesygames.colonysimulation.world.chunk.voxel.VoxelType;
 import com.cheesygames.colonysimulation.world.generation.IWorldGenerator;
 import com.jme3.math.FastMath;
 import com.jme3.scene.Mesh;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -72,18 +74,45 @@ public class Chunk extends AbstractChunk {
      * Resets the lighting and then propagates all the lights.
      */
     public void computeLighting() {
-        List<Vector3i> lights = new ArrayList<>();
+        List<Vector3i> voxelsToPropagate = new ArrayList<>();
         Vector3i chunkSize = getSize();
 
+        // Reset lighting and find lights
         for (int x = 0; x < chunkSize.x; ++x) {
             for (int y = 0; y < chunkSize.y; ++y) {
                 for (int z = 0; z < chunkSize.z; ++z) {
                     if (m_voxels[x][y][z].voxelType.emitsLight() && doesVoxelHaveRoomToPropagateLight(x, y, z)) {
-                        lights.add(new Vector3i(x, y, z));
+                        voxelsToPropagate.add(new Vector3i(x, y, z));
                     }
 
                     // TODO : Remove stellar light?
                     m_voxels[x][y][z].light = m_voxels[x][y][z].voxelType.getLight();
+                }
+            }
+        }
+
+        // Propagate light
+        Iterator<Vector3i> lightPropagationIterator = voxelsToPropagate.iterator();
+        while (lightPropagationIterator.hasNext()) {
+            Vector3i voxelIndexToPropagate = lightPropagationIterator.next();
+            Voxel voxelToPropagate = getVoxelAt(voxelIndexToPropagate);
+
+            for (int directionIndex = 0; directionIndex < Direction3D.ORTHOGONALS.length; ++directionIndex) {
+                Vector3i adjacentVoxelDirection = Direction3D.ORTHOGONALS[directionIndex].getDirection();
+
+                int adjacentVoxelX = voxelIndexToPropagate.x + adjacentVoxelDirection.x;
+                int adjacentVoxelY = voxelIndexToPropagate.y + adjacentVoxelDirection.y;
+                int adjacentVoxelZ = voxelIndexToPropagate.z + adjacentVoxelDirection.z;
+
+                if (adjacentVoxelX >= 0 && adjacentVoxelX < chunkSize.x && adjacentVoxelY >= 0 && adjacentVoxelY < chunkSize.y && adjacentVoxelZ >= 0
+                    && adjacentVoxelZ < chunkSize.z) {
+                    Voxel adjacentVoxel = m_voxels[adjacentVoxelX][adjacentVoxelY][adjacentVoxelZ];
+
+                    if (!adjacentVoxel.voxelType.isSolid()) {
+                        adjacentVoxel.light = VoxelLightUtils.propagateLight(voxelToPropagate.light, adjacentVoxel.light);
+
+                        // TODO : Add adjacent voxels that can receive light propagation to the list
+                    }
                 }
             }
         }
@@ -93,7 +122,7 @@ public class Chunk extends AbstractChunk {
 
     /**
      * Checks if the voxel at the supplied indices has room to propagate light. For a voxel, having room to propagate light means that at least one adjacent voxel of the same chunk
-     * is empty ({@link VoxelType#AIR}) or transparent.
+     * is empty ({@link VoxelType#AIR}) or transparent. If true, then it also checks if those voxels have a lower light intensity than the source voxel.
      *
      * @param x The index on the X axis.
      * @param y The index on the Y axis.
@@ -104,6 +133,7 @@ public class Chunk extends AbstractChunk {
     private boolean doesVoxelHaveRoomToPropagateLight(int x, int y, int z) {
         boolean isThereRoomToPropagateLight = false;
         Vector3i chunkSize = getSize();
+        Voxel voxel = m_voxels[x][y][z];
 
         for (int directionIndex = 0; directionIndex < Direction3D.ORTHOGONALS.length && !isThereRoomToPropagateLight; ++directionIndex) {
             Vector3i adjacentVoxelDirection = Direction3D.ORTHOGONALS[directionIndex].getDirection();
@@ -113,7 +143,9 @@ public class Chunk extends AbstractChunk {
             int adjacentVoxelZ = z + adjacentVoxelDirection.z;
 
             if (adjacentVoxelX >= 0 && adjacentVoxelX < chunkSize.x && adjacentVoxelY >= 0 && adjacentVoxelY < chunkSize.y && adjacentVoxelZ >= 0 && adjacentVoxelZ < chunkSize.z) {
-                isThereRoomToPropagateLight |= !m_voxels[x][y][z].voxelType.isSolid();
+
+                Voxel adjacentVoxel = m_voxels[adjacentVoxelX][adjacentVoxelY][adjacentVoxelZ];
+                isThereRoomToPropagateLight |= !adjacentVoxel.voxelType.isSolid() && VoxelLightUtils.canPropagateLight(voxel.light, adjacentVoxel.light);
             }
         }
 
