@@ -9,30 +9,20 @@ public enum VoxelType {
     LIGHT(true, 0x0FF);
 
     private final boolean m_isSolid;
-    private final boolean m_emitsLight;
     private final int m_light;
 
     VoxelType() {
         m_isSolid = true;
-        m_emitsLight = false;
         m_light = 0;
     }
 
     VoxelType(boolean isSolid) {
         m_isSolid = isSolid;
-        m_emitsLight = false;
         m_light = 0;
     }
 
-    VoxelType(boolean emitsLight, int light) {
-        m_isSolid = true;
-        m_emitsLight = emitsLight;
-        m_light = light;
-    }
-
-    VoxelType(boolean isSolid, boolean emitsLight, int light) {
+    VoxelType(boolean isSolid, int light) {
         m_isSolid = isSolid;
-        m_emitsLight = emitsLight;
         m_light = light;
     }
 
@@ -41,7 +31,7 @@ public enum VoxelType {
     }
 
     public boolean emitsLight() {
-        return m_emitsLight;
+        return m_light != 0;
     }
 
     public int getLight() {

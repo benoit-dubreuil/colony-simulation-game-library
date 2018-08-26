@@ -22,10 +22,12 @@ public class Chunk extends AbstractChunk {
     private Voxel[][][] m_voxels;
     private Mesh m_mesh;
     private boolean m_isEmpty;
+    private ChunkLightingState m_lightingState;
 
     public Chunk(Vector3i index) {
         super(index);
         this.m_isEmpty = true;
+        this.m_lightingState = ChunkLightingState.AWAITING_RESET;
     }
 
     /**
@@ -44,10 +46,14 @@ public class Chunk extends AbstractChunk {
                         GameGlobal.world.getAbsoluteIndexY(m_index.y, y),
                         GameGlobal.world.getAbsoluteIndexZ(m_index.z, z));
 
+                    m_voxels[x][y][z].light = m_voxels[x][y][z].voxelType.getLight();
+
                     m_isEmpty &= (m_voxels[x][y][z].voxelType == VoxelType.AIR);
                 }
             }
         }
+
+        m_lightingState = ChunkLightingState.AWAITING_COMPUTATION;
     }
 
     /**
@@ -74,6 +80,8 @@ public class Chunk extends AbstractChunk {
      * Resets the lighting and then propagates all the lights.
      */
     public void computeLighting() {
+        m_lightingState = ChunkLightingState.AWAITING_RESET;
+
         List<Vector3i> voxelsToPropagate = new ArrayList<>();
         Vector3i chunkSize = getSize();
 
@@ -89,6 +97,8 @@ public class Chunk extends AbstractChunk {
                     m_voxels[x][y][z].light = m_voxels[x][y][z].voxelType.getLight();
                 }
             }
+
+            m_lightingState = ChunkLightingState.AWAITING_COMPUTATION;
         }
 
         // Propagate light
@@ -117,6 +127,7 @@ public class Chunk extends AbstractChunk {
             }
         }
 
+        m_lightingState = ChunkLightingState.OK;
         // TODO : Finish
     }
 
