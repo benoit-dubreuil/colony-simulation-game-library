@@ -682,12 +682,8 @@ public class Vector3i implements Savable, Cloneable, java.io.Serializable, IVect
         return this.x == x && this.y == y && this.z == z;
     }
 
-    public boolean equals(Vector3i rhs) {
-        return x == rhs.x && y == rhs.y && z == rhs.z;
-    }
-
     public boolean equals(Vector3f rhs) {
-        return x == (int) rhs.x && y == (int) rhs.y && z == (int) rhs.z;
+        return rhs != null && x == (int) rhs.x && y == (int) rhs.y && z == (int) rhs.z;
     }
 
     /**
@@ -706,33 +702,18 @@ public class Vector3i implements Savable, Cloneable, java.io.Serializable, IVect
         return hash;
     }
 
-    /**
-     * aAe these two vectors the same? They are is they both have the same x,y, and z values.
-     *
-     * @param o The object to compare for equality
-     *
-     * @return True if they are equal
-     */
+    @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Vector3i)) {
-            return false;
-        }
-
-        if (this == o) {
+        if (o == this) {
             return true;
         }
+        if (o == null || o.getClass() != getClass()) {
+            return false;
+        }
 
-        Vector3i comp = (Vector3i) o;
-        if (Float.compare(x, comp.x) != 0) {
-            return false;
-        }
-        if (Float.compare(y, comp.y) != 0) {
-            return false;
-        }
-        if (Float.compare(z, comp.z) != 0) {
-            return false;
-        }
-        return true;
+        Vector3i other = (Vector3i) o;
+
+        return x == other.x && y == other.y && z == other.z;
     }
 
     @Override
