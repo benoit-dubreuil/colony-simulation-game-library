@@ -1,4 +1,4 @@
-package com.cheesygames.colonysimulation.world.chunk;
+package com.cheesygames.colonysimulation.world.chunk.lighting;
 
 /**
  * Chunk lighting state. Does the lighting in a chunk needs to be reset, computed or is it ok?

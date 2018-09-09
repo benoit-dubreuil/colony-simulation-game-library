@@ -8,12 +8,12 @@ import com.cheesygames.colonysimulation.world.chunk.Chunk;
 public interface IWorldEventCommunicator {
 
     /**
-     * Notice listeners or be noticed by the "chunk redrawn" event. The chunk is not empty and exists in the world.
+     * Notice listeners or be noticed by the "chunk remeshed" event. The chunk is not empty and exists in the world.
      *
-     * @param chunk             The chunk that was redrawn.
-     * @param wasMeshNullBefore Was the chunk's mesh null before the redraw?
+     * @param chunk             The chunk that was remeshed.
+     * @param wasMeshNullBefore Was the chunk's mesh null before the remeshing?
      */
-    void chunkRedrawn(Chunk chunk, boolean wasMeshNullBefore);
+    void chunkRemeshed(Chunk chunk, boolean wasMeshNullBefore);
 
     /**
      * Notice listeners or be noticed by the "chunk is empty" event. That means the chunk was removed from the world because it is empty.

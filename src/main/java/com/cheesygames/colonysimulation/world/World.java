@@ -3,6 +3,7 @@ package com.cheesygames.colonysimulation.world;
 import com.cheesygames.colonysimulation.math.direction.Direction3D;
 import com.cheesygames.colonysimulation.math.vector.Vector3i;
 import com.cheesygames.colonysimulation.world.chunk.Chunk;
+import com.cheesygames.colonysimulation.world.chunk.ChunkUpdateManager;
 import com.cheesygames.colonysimulation.world.chunk.EmptyChunk;
 import com.cheesygames.colonysimulation.world.chunk.IChunkVoxelData;
 import com.cheesygames.colonysimulation.world.chunk.mesh.BlockMeshGenerator;
@@ -25,21 +26,21 @@ public class World extends AbstractWorldEventEmitter {
     private static final Vector3i DEFAULT_CHUNK_SIZE = new Vector3i(1 << DEFAULT_CHUNK_SIZE_BITS.x, 1 << DEFAULT_CHUNK_SIZE_BITS.y, 1 << DEFAULT_CHUNK_SIZE_BITS.z);
 
     private Map<Vector3i, Chunk> m_chunks;
-    private IChunkMeshGenerator m_meshGenerator;
     private IWorldGenerator m_worldGenerator;
     private boolean m_isWorldGenerated;
     private Vector3i m_chunkSizeBits;
     private Vector3i m_chunkSize;
-    private Set<Chunk> m_chunksToRedraw;
+    private ChunkUpdateManager m_chunkUpdateManager;
 
     public World() {
         super();
         this.m_chunks = new HashMap<>();
-        this.m_meshGenerator = new BlockMeshGenerator();
         this.m_worldGenerator = new MountainousWorldGenerator();
         this.m_chunkSizeBits = new Vector3i(DEFAULT_CHUNK_SIZE_BITS);
         this.m_chunkSize = new Vector3i(DEFAULT_CHUNK_SIZE);
-        this.m_chunksToRedraw = new HashSet<>();
+        this.m_chunkUpdateManager = new ChunkUpdateManager(new BlockMeshGenerator());
+
+        m_chunkUpdateManager.addListener(this);
 
         assert FastMath.isPowerOfTwo(m_chunkSize.getX());
         assert FastMath.isPowerOfTwo(m_chunkSize.getY());
@@ -48,56 +49,29 @@ public class World extends AbstractWorldEventEmitter {
 
     public void generateWorld() {
         m_worldGenerator.generateWorld();
-        m_chunksToRedraw.addAll(m_chunks.values());
-
         m_isWorldGenerated = true;
     }
 
     /**
-     * Redraws, i.e. reconstructs, the mesh of chunks that need their mesh to be redrawn. It also checks if those chunks are still not empty.
-     */
-    public void redrawChunksThatNeedIt() {
-        if (!m_chunksToRedraw.isEmpty()) {
-            Iterator<Chunk> chunksToRedrawIterator = m_chunksToRedraw.iterator();
-
-            while (chunksToRedrawIterator.hasNext()) {
-                Chunk chunkToRedraw = chunksToRedrawIterator.next();
-
-                if (chunkToRedraw.computeIsEmpty()) {
-                    m_chunks.remove(chunkToRedraw.getIndex());
-                    chunkIsEmpty(chunkToRedraw);
-                }
-                else {
-                    boolean wasMeshNullBefore = chunkToRedraw.getMesh() == null;
-                    m_meshGenerator.generateMesh(chunkToRedraw);
-                    chunkRedrawn(chunkToRedraw, wasMeshNullBefore);
-                }
-
-                chunksToRedrawIterator.remove();
-            }
-        }
-    }
-
-    /**
-     * Adds the chunk at the chunk's index to the list of chunks that need to be redrawn. It only does so if it is already in the world, a.k.a. if the world contains the specified
+     * Adds the chunk at the chunk's index to the list of chunks that need to be remeshed. It only does so if it is already in the world, a.k.a. if the world contains the specified
      * chunk.
      *
-     * @param chunkIndex The chunk's index that indicates which chunk needs to be redrawn.
+     * @param chunkIndex The chunk's index that indicates which chunk needs to be remeshed.
      */
-    public void redrawChunk(Vector3i chunkIndex) {
+    public void remeshChunk(Vector3i chunkIndex) {
         if (m_chunks.containsKey(chunkIndex)) {
-            m_chunksToRedraw.add(m_chunks.get(chunkIndex));
+            m_chunkUpdateManager.addToRemeshing(m_chunks.get(chunkIndex));
         }
     }
 
     /**
-     * Adds the supplied chunk to the list of chunks that need to be redrawn. It only does so if it is already in the world, a.k.a. if the world contains the specified chunk.
+     * Adds the supplied chunk to the list of chunks that need to be remeshed. It only does so if it is already in the world, a.k.a. if the world contains the specified chunk.
      *
-     * @param chunk The chunk that needs to be redrawn.
+     * @param chunk The chunk that needs to be remeshed.
      */
-    public void redrawChunk(Chunk chunk) {
+    public void remeshChunk(Chunk chunk) {
         if (m_chunks.containsKey(chunk.getIndex())) {
-            m_chunksToRedraw.add(chunk);
+            m_chunkUpdateManager.addToRemeshing(chunk);
         }
     }
 
@@ -119,11 +93,11 @@ public class World extends AbstractWorldEventEmitter {
                 redrawAdjacentChunkIndex.addLocal(adjacentChunkDirection.getDirection());
 
                 if (m_chunks.containsKey(redrawAdjacentChunkIndex)) {
-                    m_chunksToRedraw.add(m_chunks.get(redrawAdjacentChunkIndex));
+                    m_chunkUpdateManager.addToRemeshing(m_chunks.get(redrawAdjacentChunkIndex));
                 }
             }
 
-            m_chunksToRedraw.add(chunk);
+            m_chunkUpdateManager.addToRemeshing(chunk);
 
             return true;
         }
@@ -131,6 +105,17 @@ public class World extends AbstractWorldEventEmitter {
         assert false;
 
         return false;
+    }
+
+    /**
+     * Removes the chunk at the supplied index.
+     *
+     * @param chunkIndex The chunk's index.
+     *
+     * @return True if the chunk was removed, false otherwise.
+     */
+    public boolean removeChunk(Vector3i chunkIndex) {
+        return m_chunks.remove(chunkIndex) != null;
     }
 
     /**
@@ -430,8 +415,8 @@ public class World extends AbstractWorldEventEmitter {
         return m_chunkSize;
     }
 
-    public IChunkMeshGenerator getMeshGenerator() {
-        return m_meshGenerator;
+    public ChunkUpdateManager getChunkUpdateManager() {
+        return m_chunkUpdateManager;
     }
 
     public IWorldGenerator getWorldGenerator() {

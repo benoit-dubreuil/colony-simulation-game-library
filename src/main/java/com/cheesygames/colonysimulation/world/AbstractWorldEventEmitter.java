@@ -17,9 +17,9 @@ public class AbstractWorldEventEmitter implements IWorldEventCommunicator {
     }
 
     @Override
-    public void chunkRedrawn(Chunk chunk, boolean wasMeshNullBefore) {
+    public void chunkRemeshed(Chunk chunk, boolean wasMeshNullBefore) {
         for (IWorldEventCommunicator listener : m_listeners) {
-            listener.chunkRedrawn(chunk, wasMeshNullBefore);
+            listener.chunkRemeshed(chunk, wasMeshNullBefore);
         }
     }
 

@@ -57,7 +57,7 @@ public abstract class Game extends SimpleApplication {
             updateGame();
         }
 
-        GameGlobal.world.redrawChunksThatNeedIt();
+        GameGlobal.world.getChunkUpdateManager().computeChunkMeshes();
 
         m_isUpdating = false;
     }
